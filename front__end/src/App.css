@@ -1,0 +1,17 @@
+.ShowRed {
+  border-color: red !important;
+}
+
+.navbar__link {
+  color: #ffffff !important;
+  border-bottom: 3px solid transparent !important;
+  transition: color 1s ease-in !important;
+  margin-top: 5px;
+}
+
+.navbar__link--active {
+  color: red !important;
+  border-bottom: 3px solid #29b6f6 !important;
+  transition: border-bottom 1s ease-in-out !important;
+  margin-top: 5px;
+}
