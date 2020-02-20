@@ -33,7 +33,7 @@ export default class NavBar extends Component {
               to="/"
             >
               <Typography variant="h6" color="inherit">
-                <HomeIcon style={{ fontSize: 30 }} />
+                <HomeIcon style={{ fontSize: 48 }} />
               </Typography>
             </NavLink>
 
@@ -43,7 +43,7 @@ export default class NavBar extends Component {
               to="/Tenants"
             >
               <Typography variant="h6" color="inherit">
-                <PeopleIcon />
+                <PeopleIcon style={{ fontSize: 48 }} />
               </Typography>
             </NavLink>
 
@@ -53,7 +53,7 @@ export default class NavBar extends Component {
               to="/Receipt"
             >
               <Typography variant="h6" color="inherit">
-                <AttachMoneyIcon />
+                <AttachMoneyIcon style={{ fontSize: 48 }} />
               </Typography>
             </NavLink>
           </Toolbar>
