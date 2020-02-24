@@ -12,8 +12,6 @@ namespace AMSBackEnd.Model
         public string Store { get; set; }
         public string Tax { get; set; }
         public string TotalAmount { get; set; }
-        public string Image { get; set; }
-
-
-    }
+        public string ImageGuid { get; set; }
+      }
 }
