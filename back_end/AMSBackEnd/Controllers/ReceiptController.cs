@@ -46,7 +46,7 @@ namespace AMSBackEnd.Controllers
 
 
         }
-        /*
+        
         [HttpPost]
         [Route("{id}")]
         public async Task<IActionResult> AddImage([FromRoute]String id, [FromForm]IFormFile body) {
@@ -81,7 +81,7 @@ namespace AMSBackEnd.Controllers
                 return Ok();
 
         }
-         */
+         
 
         [HttpPost]
         [Route("[action]")]

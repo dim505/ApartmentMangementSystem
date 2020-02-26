@@ -25,7 +25,7 @@ export default class Tenants extends Component {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  99 BLue Lane Boston MA
+                  18 Maple Street Greenfield, MA
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
                   This is apartment 1
@@ -49,7 +49,7 @@ export default class Tenants extends Component {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                98 BLue Lane Boston MA
+                  65 Devans Street Greenfield, MA
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
                   This is my main house

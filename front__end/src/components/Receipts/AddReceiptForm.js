@@ -11,6 +11,12 @@ export default class ReceiptForm extends Component {
   }
 
 
+
+  isEmpty(str) {
+    return (!str || /^\s*$/.test(str));
+  }
+
+
   	// as a user types into the text fields, it updates the state with each letter and triggers the parent components to update state too
       handleChange (newState) {
         this.setState(newState, () => this.props.onChanged(this.state));
@@ -26,7 +32,7 @@ export default class ReceiptForm extends Component {
             <Col sm="10">
               <Form.Control
                 className={
-                  this.props.flag && !Boolean(this.state.Date)
+                  this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Date)
                     ? "ShowRed"
                     : " "
                 }
@@ -47,7 +53,7 @@ export default class ReceiptForm extends Component {
             <Col sm="10">
               <Form.Control
                 className={
-                  this.props.flag && !Boolean(this.state.Store)
+                  this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Store)
                     ? "ShowRed"
                     : " "
                 }
@@ -68,7 +74,7 @@ export default class ReceiptForm extends Component {
             <Col sm="10">
               <Form.Control
                 className={
-                  this.props.flag && !Boolean(this.state.Tax)
+                  this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Tax)
                     ? "ShowRed"
                     : " "
                 }
@@ -89,7 +95,7 @@ export default class ReceiptForm extends Component {
             <Col sm="10">
               <Form.Control
                 className={
-                  this.props.flag && !Boolean(this.state.TotalAmount)
+                  this.props.UploadBtnCkcOnce && this.isEmpty(this.state.TotalAmount)
                     ? "ShowRed"
                     : " "
                 }

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import NavBar from "./components/NavBar";
-import Tenants from "./components/Tenants";
-import HomeDashboard from "./components/Home_Dashboard";
-import Receipt from "./components/Receipt";
-import AddReceipt from "./components/AddReceipt";
+import NavBar from "./components/NavBar/NavBar";
+import Tenants from "./components/Tenants/Tenants";
+import HomeDashboard from "./components/Home/Home_Dashboard";
+import Receipt from "./components/Receipts/Receipt";
+import AddReceipt from "./components/Receipts/AddReceipt";
 import { Route } from "react-router-dom";
 import "./App.css"
 class App extends Component {
