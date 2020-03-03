@@ -41,7 +41,7 @@ export default class UploadReceiptBtn extends Component {
       && !this.isEmpty(this.state.filepath) ) {
 
         var ImageGuid = this.uuidv4()
-        const AddImageUrl = `https://localhost:5001/api/receipt/${ImageGuid}`;
+        const AddImageUrl = `https://amsbackend.azurewebsites.net/api/receipt/${ImageGuid}`;
         const formData = new FormData();
         formData.append("body", this.state.file);
         const config = {
@@ -66,17 +66,11 @@ export default class UploadReceiptBtn extends Component {
         }
     
          
-        var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/AddReceipt",Mydata,headers)
+        var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/AddReceipt",Mydata,headers)
         .then((AddRecResults) =>
         this.setState({ReceiptUploadedNoti: true}),
         console.log(AddRecResults)
-        
         )
-
-
-
-
-
       }
 
 
@@ -95,7 +89,7 @@ export default class UploadReceiptBtn extends Component {
   render() {
     return (
       <div> 
-
+      <div className="SnackbarClass">
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           key={{ vertical: "bottom", horizontal: "center" }}
@@ -106,7 +100,7 @@ export default class UploadReceiptBtn extends Component {
           }}
           message={<span id="message-id">Receipt Uploaded</span>}
         />
-      
+      </div>
       <form onSubmit={e => this.submit(e)}>
         <Form.Group as={Row}>
           <Form.Label column sm="2">

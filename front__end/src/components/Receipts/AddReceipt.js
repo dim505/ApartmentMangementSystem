@@ -62,7 +62,7 @@ export default class Receipt extends Component {
   render() {
     return (
       <div>
-          
+        <div className="SnackbarClass">  
           <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           key={{ vertical: "bottom", horizontal: "center" }}
@@ -73,7 +73,7 @@ export default class Receipt extends Component {
           }}
           message={<span id="message-id">Please Fill Out the Forms in red</span>}
         />
-
+      </div>
 
         <Link to="/Receipt">
           <Button

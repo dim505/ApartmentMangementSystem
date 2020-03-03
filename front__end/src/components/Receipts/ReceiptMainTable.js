@@ -11,12 +11,53 @@ import ImageIcon from "@material-ui/icons/Image";
 import Tooltip from "../Tooltip";
 import ReceiptRmvButton from "./ReceiptRmvButton";
 import Button from "@material-ui/core/Button";
+import ReceiptImageModal from "./ReceiptImageModal";
 
 export default class ReceiptMainTable extends Component {
-  state = {};
+  state = { OpenImageModal: false,ReceiptFilterdImg: [{imageUrl: "ee"}] };
+
+
+  base64ToArrayBuffer(base64) {
+    const binaryString = window.atob(base64); // Comment this if not using base64
+    const bytes = new Uint8Array(binaryString.length);
+    return bytes.map((byte, i) => binaryString.charCodeAt(i));
+  }
+
+  CreateImageUrl(ImageStr, ImageType) {
+    
+    const data = ImageStr;
+    const arrayBuffer = this.base64ToArrayBuffer(data);
+    const blob = new Blob([arrayBuffer], { type: ImageType });
+    const objectURL = URL.createObjectURL(blob);
+    return objectURL;
+  }
+
+
+  OpenImageModal(id) {
+    debugger;
+    let ReceiptFilterdImg = this.props.Receipts;
+    ReceiptFilterdImg = ReceiptFilterdImg.filter(Receipt => Receipt.id === id);
+    var objectURL = this.CreateImageUrl(ReceiptFilterdImg[0].image,ReceiptFilterdImg[0].contentType )
+    ReceiptFilterdImg.imageUrl = objectURL
+    
+    this.setState({ OpenImageModal: true, ReceiptFilterdImg: ReceiptFilterdImg });
+
+  }
+
+  CloseImageModal = () => {
+    this.setState({
+      OpenImageModal: false
+    });
+  };
 
   render() {
     return (
+      <div>
+      <ReceiptImageModal
+        OpenImageModal={this.state.OpenImageModal}
+        CloseImageModal={this.CloseImageModal}
+        objectURL={this.state.ReceiptFilterdImg.imageUrl}
+      />
       <TableContainer component={Paper}>
         <Table aria-label="spanning table">
           <TableHead>
@@ -32,20 +73,26 @@ export default class ReceiptMainTable extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.props.Receipts.map(Receipt => (
+            {this.props.Receipts.map((Receipt) => (
               <TableRow key={Receipt.id}>
-                <TableCell align="right">{Receipt.Date}</TableCell>
-                <TableCell align="right">{Receipt.Store}</TableCell>
-                <TableCell align="right">${Receipt.Tax}</TableCell>
-                <TableCell align="right">${Receipt.TotalAmount}</TableCell>
+                <TableCell align="right">{Receipt.date}</TableCell>
+                <TableCell align="right">{Receipt.store}</TableCell>
+                <TableCell align="right">${Receipt.tax}</TableCell>
+                <TableCell align="right">${Receipt.totalAmount}</TableCell>
                 <TableCell align="right">
-                  <Tooltip
-                    placement="top"
-                    trigger="hover"
-                    tooltip="Click to View Picture"
-                  >
-                    <ImageIcon />
-                  </Tooltip>
+                <Tooltip
+                      placement="top"
+                      trigger="hover"
+                      tooltip="Click to View Picture"
+                    >
+                      <a onClick={() => this.OpenImageModal(Receipt.id)}>
+                        <ImageIcon />
+                      </a>
+                    </Tooltip>
+
+                  
+
+
                 </TableCell>
                 <TableCell align="right">
                   <Button
@@ -59,6 +106,9 @@ export default class ReceiptMainTable extends Component {
                 <TableCell align="right">
                   <ReceiptRmvButton
                     OpenItmRmvNoti={this.props.OpenItmRmvNoti}
+                    id = {Receipt.id}
+                    getReceipts = {this.props.getReceipts}
+
                   />
                 </TableCell>
               </TableRow>
@@ -66,6 +116,7 @@ export default class ReceiptMainTable extends Component {
           </TableBody>
         </Table>
       </TableContainer>
+      </div>
     );
   }
 }

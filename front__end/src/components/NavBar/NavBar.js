@@ -21,7 +21,7 @@ function HomeIcon(props) {
 export default class NavBar extends Component {
   render() {
     return (
-      <div>
+      <div className="NavBar"      >
         <Flip left>
           <AppBar position="static">
             <Toolbar variant="dense">

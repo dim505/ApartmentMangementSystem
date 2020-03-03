@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Snackbar from "@material-ui/core/Snackbar";
+
 
 export default class ReceiptModalSave extends Component {
   state = { OpnSaveWarningBox: false };
@@ -18,6 +17,10 @@ export default class ReceiptModalSave extends Component {
   OpenSaveWarnBox = () => {
     this.setState({ OpnSaveWarningBox: true });
   };
+
+  Save = (e) => {
+    this.props.Update(e);
+  }
 
   render() {
     return (
@@ -39,7 +42,7 @@ export default class ReceiptModalSave extends Component {
               NO
             </Button>
             <Button
-              onClick={() => this.props.OpenItemSavedSnkBar()}
+              onClick={(e) => this.Save(e)}
               color="primary"
               autoFocus
             >

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-
+import Axios from 'axios';
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -10,9 +10,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 export default class ReceiptRmvButton extends Component {
   state = { OpnWarningBox: false };
 
-  OpenItmRmvNoti = () => {
+  OpenItmRmvNoti = async (id) => {
     this.CloseWarnBox();
+        //makes the API call 
+    await Axios.delete(`https://amsbackend.azurewebsites.net/api/receipt/delete/${id}`);
+    this.props.getReceipts();
     this.props.OpenItmRmvNoti();
+
   };
   CloseWarnBox = () => {
     this.setState({ OpnWarningBox: false });
@@ -42,7 +46,7 @@ export default class ReceiptRmvButton extends Component {
               NO
             </Button>
             <Button
-              onClick={() => this.OpenItmRmvNoti()}
+              onClick={() => this.OpenItmRmvNoti(this.props.id)}
               color="primary"
               autoFocus
             >

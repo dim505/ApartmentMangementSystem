@@ -4,37 +4,12 @@ import { Link } from "react-router-dom";
 import Snackbar from "@material-ui/core/Snackbar";
 import ReceiptMainTable from "./ReceiptMainTable";
 import ReceiptModal from "./ReceiptModal";
-import Bounce from "react-reveal/Bounce";
-
+import Flip from "react-reveal/Flip";
+import Axios from 'axios';
 
 export default class Receipt extends Component {
   state = {
-    Receipts: [
-      {
-        id: "1",
-        Date: "2020-01-20",
-        Store: "Home Depot",
-        Tax: "4",
-        TotalAmount: "20",
-        Image: "123"
-      },
-      {
-        id: "2",
-        Date: "2020-02-20",
-        Store: "Lowes",
-        Tax: "4",
-        TotalAmount: "20",
-        Image: "123"
-      },
-      {
-        id: "3",
-        Date: "2020-03-20",
-        Store: "BJ",
-        Tax: "4",
-        TotalAmount: "20",
-        Image: "123"
-      }
-    ],
+    Receipts: [],
     ReceiptFilterd: [],
     OpenItmRmvNoti: false,
     OpenItemSavedNoti: false,
@@ -43,13 +18,31 @@ export default class Receipt extends Component {
 
   async componentDidMount() {
     this.getReceipts();
+    
+
+    
   }
 
-  async getReceipts() {
-    // var results = await Axios({
-    //  url: "https://amsbackend.azurewebsites.net/api/receipt"
-    // }).then(console.log(() => results));
+
+
+     getReceipts =  () => {
+     var results =   Axios({
+      url: "https://amsbackend.azurewebsites.net/api/receipt"
+     }).then( (results) => 
+     this.setState({
+      Receipts: results.data
+     }),
+      
+     );
+
+
   }
+
+  HandleChangeReceiptModal = newState => {
+    debugger;
+    this.setState({ ReceiptFilterd: newState });
+  };
+
 
   OpenModal = id => {
     debugger;
@@ -76,8 +69,9 @@ export default class Receipt extends Component {
 
     debugger;
 
-    this.CloseModal();
 
+    this.CloseModal();
+    this.getReceipts();
     this.setState({
       OpnSaveWarningBox: false,
       OpenItemSavedNoti: true
@@ -90,13 +84,17 @@ export default class Receipt extends Component {
 
   render() {
     return (
-      <div>
-        <Link to="/AddReceipt">
-          <Button className="ReceiptAddBtn" variant="outlined" color="primary">
-            ADD New Receipt
-          </Button>
-        </Link>
 
+      <div>
+        <Flip left>
+        <div className="ReceiptAddBtn">
+            <Link to="/AddReceipt">
+              <Button variant="outlined" color="primary">
+                Add New Receipt
+              </Button>
+            </Link>
+          </div>
+          <div className="SnackbarClass">
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           key={{ vertical: "bottom", horizontal: "center" }}
@@ -107,7 +105,8 @@ export default class Receipt extends Component {
           }}
           message={<span id="message-id">Item Updated</span>}
         />
-
+        </div>
+          <div className="SnackbarClass">
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           key={{ vertical: "bottom", horizontal: "center" }}
@@ -118,23 +117,33 @@ export default class Receipt extends Component {
           }}
           message={<span id="message-id">Item Removed</span>}
         />
-
+        </div>
         
-
+        {this.state.Receipts.length > 0 ? ( 
+        
+        <div>
         <ReceiptModal
           OpnModal={this.state.OpnModal}
           ReceiptFilterd={this.state.ReceiptFilterd}
           CloseModal={this.CloseModal}
           OpenItemSavedSnkBar={this.OpenItemSavedSnkBar}
+          HandleChangeReceiptModal={this.HandleChangeReceiptModal}
         />
 
         <ReceiptMainTable
           OpenModal={this.OpenModal}
           Receipts={this.state.Receipts}
           OpenItmRmvNoti={this.OpenItmRmvNoti}
+          getReceipts = {this.getReceipts}
         />
+        </div> ) : (
 
-        
+          <h1>***** ¯\_(ツ)_/¯ No Receipts Found. Please Add Some ¯\_(ツ)_/¯***** </h1>
+        )
+
+        }
+
+</Flip>
       </div>
     );
   }

@@ -36,7 +36,7 @@ export default class ReceiptForm extends Component {
                     ? "ShowRed"
                     : " "
                 }
-                type="text"
+                type="date"
                 value={this.state.Date}
                 onChange={event =>
                   this.handleChange({ Date: event.target.value })
@@ -78,7 +78,7 @@ export default class ReceiptForm extends Component {
                     ? "ShowRed"
                     : " "
                 }
-                type="text"
+                type="number"
                 value={this.state.tax}
                 onChange={event =>
                   this.handleChange({ Tax: event.target.value })
@@ -99,7 +99,7 @@ export default class ReceiptForm extends Component {
                     ? "ShowRed"
                     : " "
                 }
-                type="text"
+                type="number"
                 value={this.state.TotalAmount}
                 onChange={event =>
                   this.handleChange({ TotalAmount: event.target.value })
