@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 
-
+//contains the textfields for the add receipt form 
 export default class ReceiptForm extends Component {
     state = {
         Date: "",

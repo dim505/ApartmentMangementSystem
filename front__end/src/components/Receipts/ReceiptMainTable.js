@@ -13,16 +13,18 @@ import ReceiptRmvButton from "./ReceiptRmvButton";
 import Button from "@material-ui/core/Button";
 import ReceiptImageModal from "./ReceiptImageModal";
 
+
 export default class ReceiptMainTable extends Component {
   state = { OpenImageModal: false,ReceiptFilterdImg: [{imageUrl: "ee"}] };
 
-
+	//converts string from data bases to an array buffer 
   base64ToArrayBuffer(base64) {
     const binaryString = window.atob(base64); // Comment this if not using base64
     const bytes = new Uint8Array(binaryString.length);
     return bytes.map((byte, i) => binaryString.charCodeAt(i));
   }
 
+	//this function creates a URl to view the image 
   CreateImageUrl(ImageStr, ImageType) {
     
     const data = ImageStr;
@@ -33,6 +35,7 @@ export default class ReceiptMainTable extends Component {
   }
 
 
+	//this modal filters the receipts and generates the URL link for the image associated with the selected receipt 
   OpenImageModal(id) {
     debugger;
     let ReceiptFilterdImg = this.props.Receipts;
@@ -44,6 +47,7 @@ export default class ReceiptMainTable extends Component {
 
   }
 
+	//this function closes the image modal 
   CloseImageModal = () => {
     this.setState({
       OpenImageModal: false
@@ -75,6 +79,7 @@ export default class ReceiptMainTable extends Component {
           <TableBody>
             {this.props.Receipts.map((Receipt) => (
               <TableRow key={Receipt.id}>
+                 
                 <TableCell align="right">{Receipt.date}</TableCell>
                 <TableCell align="right">{Receipt.store}</TableCell>
                 <TableCell align="right">${Receipt.tax}</TableCell>
@@ -95,6 +100,15 @@ export default class ReceiptMainTable extends Component {
 
                 </TableCell>
                 <TableCell align="right">
+                <Button
+                    onClick={() => this.props.OpnReceiptViewModal(Receipt.id)}
+                    variant="outlined"
+                    color="primary"
+                  >
+                    View
+                  </Button>
+                </TableCell>
+                <TableCell align="right">
                   <Button
                     onClick={() => this.props.OpenModal(Receipt.id)}
                     variant="outlined"
@@ -111,6 +125,8 @@ export default class ReceiptMainTable extends Component {
 
                   />
                 </TableCell>
+
+
               </TableRow>
             ))}
           </TableBody>

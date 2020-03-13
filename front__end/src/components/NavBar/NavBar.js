@@ -9,6 +9,7 @@ import { NavLink } from "react-router-dom";
 import PeopleIcon from "@material-ui/icons/People";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
+import ApartmentIcon from '@material-ui/icons/Apartment';
 
 function HomeIcon(props) {
   return (
@@ -58,6 +59,20 @@ export default class NavBar extends Component {
                   <AttachMoneyIcon style={{ fontSize: 48 }} />
                 </Typography>
               </NavLink>
+
+
+              <NavLink
+                className="navbar__link"
+                activeClassName="navbar__link--active"
+                to="/Properties"
+              >
+                <Typography variant="h6" color="inherit">
+                  <ApartmentIcon style={{ fontSize: 48 }} />
+                </Typography>
+              </NavLink>
+
+
+
             </Toolbar>
           </AppBar>
         </Flip>

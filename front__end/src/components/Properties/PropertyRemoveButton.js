@@ -1,49 +1,56 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
+import Axios from 'axios';
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-//this function contains the receipt modal save button and warning dialog box 
-export default class ReceiptModalSave extends Component {
-  state = { OpnSaveWarningBox: false };
+export default class PropertyRemoveButton extends Component {
+  state = { OpnWarningBox: false };
 
-	//this function closes the save warning box
-  CloseSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: false });
+  OpenPropertyRmvNoti = async (id) => {
+    this.CloseWarnBox();
+  //makes the API call to delete selected receipt
+  await Axios.delete(`https://localhost:5001/api/property/delete/${id}`);
+    //refeshes main page again to get new list of receipts
+	this.props.GetProperties();
+	//opens "item removed" notification 
+   this.props.OpenPropertyRmvNoti();
+
   };
-	//this function opens the save warning box 
-  OpenSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: true });
+  //this closes are save warning dialog box
+  CloseWarnBox = () => {
+    this.setState({ OpnWarningBox: false });
   };
-	//this function invokes another function to trigger the action of updating of data to server 
-  Save = (e) => {
-    this.props.Update(e);
-  }
+
+  //opens the save warning dialog box 
+  OpenWarnBox = () => {
+    this.setState({ OpnWarningBox: true });
+  };
 
   render() {
     return (
       <div>
         <Dialog
-          open={this.state.OpnSaveWarningBox}
-          onClose={() => this.CloseSaveWarnBox()}
+          open={this.state.OpnWarningBox}
+          onClose={() => this.CloseWarnBox()}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">{"!!! WARNING !!!"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Are you sure you want to save edited Receipt??
+              Are you sure you want to remove Property??
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.CloseSaveWarnBox()} color="primary">
+            <Button onClick={() => this.CloseWarnBox()} color="primary">
               NO
             </Button>
             <Button
-              onClick={(e) => this.Save(e)}
+              onClick={() => this.OpenPropertyRmvNoti(this.props.guid)}
               color="primary"
               autoFocus
             >
@@ -53,11 +60,11 @@ export default class ReceiptModalSave extends Component {
         </Dialog>
 
         <Button
-          onClick={() => this.OpenSaveWarnBox()}
+          onClick={() => this.OpenWarnBox()}
           variant="outlined"
-          color="primary"
+          color="secondary"
         >
-          Save
+          Remove
         </Button>
       </div>
     );

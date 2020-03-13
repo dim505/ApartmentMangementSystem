@@ -3,21 +3,27 @@ import Button from "@material-ui/core/Button";
 import Bounce from "react-reveal/Bounce";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
-import UploadReceiptBtn from "./uploadReceiptBtn";
-import AddReceiptForm from './AddReceiptForm';
+import AddPropertyForm from './AddPropertyForm'
 import Snackbar from "@material-ui/core/Snackbar";
+import AddPropertySubmitButton from "./AddPropertySubmitButton"
 
 
-export default class Receipt extends Component {
-  state = {receipt: {Date: "",Store: "",Tax: "", TotalAmount: "" }, UploadBtnCkcOnce: false, FillFormsNoti: false}
 
+export default class AddProperty extends Component {
+  state = {property : {
+          Street: "",
+          City: "",
+          State: "",
+          Unit: "",
+          YearlyInsurance: "",
+          Tax: ""
+  }, UploadBtnCkcOnce: false, FillFormsNoti: false}
 
   handleChange = (NewState) => {
-    this.setState({receipt: NewState})
+    this.setState({property: NewState})
   }
 
-
-
+  
   isEmpty(str) {
     return (!str || /^\s*$/.test(str));
   }
@@ -26,10 +32,11 @@ export default class Receipt extends Component {
   UploadSubmitCheck = async () => {
 
 	//checks if forms are empty then reset state accordly 
-    if (!this.isEmpty(this.state.receipt.Date) && 
-    !this.isEmpty(this.state.receipt.Store) &&
-    !this.isEmpty(this.state.receipt.Tax) &&
-    !this.isEmpty(this.state.receipt.TotalAmount) 
+    if (!this.isEmpty(this.state.property.Street) && 
+    !this.isEmpty(this.state.property.City) && 
+    !this.isEmpty(this.state.property.State) && 
+    !this.isEmpty(this.state.property.YearlyInsurance) && 
+    !this.isEmpty(this.state.property.Tax)      
     
     ) {
 
@@ -51,14 +58,17 @@ export default class Receipt extends Component {
     }
 
 
-  }       
+  }      
+
 
   CloseFillFormsNoti() {
 
-     this.setState({
-      FillFormsNoti: false
-      })
-  }
+    this.setState({
+     FillFormsNoti: false
+     })
+ }
+  
+
 
   render() {
     return (
@@ -76,7 +86,7 @@ export default class Receipt extends Component {
         />
       </div>
 
-        <Link to="/Receipt">
+        <Link to="/Properties">
           <Button
             variant="contained"
             color="default"
@@ -88,17 +98,13 @@ export default class Receipt extends Component {
         <Bounce top>
 
 
-          <AddReceiptForm 
-                onChanged = {this.handleChange}
-                UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}
-                
+          <AddPropertyForm    
+            onChanged  = {this.handleChange}   
+            UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}        
                 />
-          <UploadReceiptBtn
-              receipt = {this.state.receipt}  
-              UploadSubmitCheck = {this.UploadSubmitCheck}  
-              UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}
-              FillFormsNoti = {this.state.FillFormsNoti}
-
+          <AddPropertySubmitButton 
+            property = {this.state.property}
+            UploadSubmitCheck = {this.UploadSubmitCheck}
           />
         </Bounce>
       </div>

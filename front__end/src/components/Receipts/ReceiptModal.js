@@ -28,13 +28,14 @@ export default class ReceiptModal extends Component {
      
     };
 
-
-
+	
+	//this sets the state for the filename to be display in the textbox
      setFile(e) {
       debugger;
       this.setState({ file: e.target.files[0], filepath: e.target.value });
     }
 
+	//OLD CODE 
     HandleChangeReceiptModal = newState => {
       debugger;
       var ReceiptFilterd =  this.props.ReceiptFilterd[0]
@@ -48,12 +49,14 @@ export default class ReceiptModal extends Component {
     };
 
     
-  
+	//function function handles the calling of the Update API to update the receipt 
      Update = async (e) => {
       e.preventDefault();
       var Mydata = {}; 
       var StoreVal 
-      if (document.getElementById("store").value === "") {
+     
+	//checks value of the store text field 
+	 if (document.getElementById("store").value === "") {
 
          StoreVal = document.getElementById("store").placeholder
 
@@ -63,6 +66,7 @@ export default class ReceiptModal extends Component {
 
       }
       
+	  //builds out receipt object 
       var receipt = {
         id : this.props.ReceiptFilterd[0].id, 
         date : document.getElementById("date").value,
@@ -77,16 +81,18 @@ export default class ReceiptModal extends Component {
         'Content-Type': 'application/json'
       }
   
-       
-      var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/UpdateReceipt",Mydata,headers)
+       //makes API call to update text portion of the reciept 
+      var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/UpdateReceipt",Mydata,headers)
       .then((AddRecResults) =>
       this.setState({ReceiptUploadedNoti: true}),
       console.log(AddRecResults)
       )
 
-      
+      //check to see if new file has been uploaded 
   if (this.state.file !== null) {
-    const url = `https://amsbackend.azurewebsites.net/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+	//makes API call to update the image 
+ const url = `https://localhost:5001/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+   
     const formData = new FormData();
     formData.append("body", this.state.file);
     const config = {
@@ -100,6 +106,7 @@ export default class ReceiptModal extends Component {
     )
  
   } else {
+		//invokes function to open the "item saved notification"
         this.props.OpenItemSavedSnkBar()
   }
 
@@ -134,7 +141,7 @@ export default class ReceiptModal extends Component {
               <TableHead>
                 <TableRow>
                   <Typography id="OrdSummTitle" variant="h4">
-                    All Receipts
+                    Edit Receipt
                   </Typography>
                 </TableRow>
                 <TableRow>

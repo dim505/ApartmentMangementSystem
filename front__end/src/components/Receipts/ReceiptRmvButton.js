@@ -12,16 +12,20 @@ export default class ReceiptRmvButton extends Component {
 
   OpenItmRmvNoti = async (id) => {
     this.CloseWarnBox();
-        //makes the API call 
-    await Axios.delete(`https://amsbackend.azurewebsites.net/api/receipt/delete/${id}`);
-    this.props.getReceipts();
-    this.props.OpenItmRmvNoti();
+        //makes the API call to delete selected receipt
+    await Axios.delete(`https://localhost:5001/api/receipt/delete/${id}`);
+    //refeshes main page again to get new list of receipts
+	this.props.getReceipts();
+	//opens "item removed" notification 
+   this.props.OpenItmRmvNoti();
 
   };
+  //this closes are save warning dialog box
   CloseWarnBox = () => {
     this.setState({ OpnWarningBox: false });
   };
 
+  //opens the save warning dialog box 
   OpenWarnBox = () => {
     this.setState({ OpnWarningBox: true });
   };

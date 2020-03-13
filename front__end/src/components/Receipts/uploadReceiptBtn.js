@@ -17,6 +17,7 @@ export default class UploadReceiptBtn extends Component {
     };
   }
 
+	//generates a GUID 
    uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
       var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -24,6 +25,7 @@ export default class UploadReceiptBtn extends Component {
     });
   }
 
+	//function to check if something is empty 
   isEmpty(str) {
     return (!str || /^\s*$/.test(str));
 }
@@ -33,14 +35,15 @@ export default class UploadReceiptBtn extends Component {
     e.preventDefault();
     this.props.UploadSubmitCheck()
     
-    
+		//checks if all the text fields are empty
       if (!this.isEmpty(this.props.receipt.Date) && 
       !this.isEmpty(this.props.receipt.Store) &&
       !this.isEmpty(this.props.receipt.Tax) &&
       !this.isEmpty(this.props.receipt.TotalAmount) 
       && !this.isEmpty(this.state.filepath) ) {
-
+		//generates new GUID 
         var ImageGuid = this.uuidv4()
+		//defines URL 
         const AddImageUrl = `https://amsbackend.azurewebsites.net/api/receipt/${ImageGuid}`;
         const formData = new FormData();
         formData.append("body", this.state.file);
@@ -50,22 +53,20 @@ export default class UploadReceiptBtn extends Component {
           }
         };
     
-    
+		//makes api call to insert image data into database
         var ImgResults = await post(AddImageUrl, formData, config);
         console.log(ImgResults)
     
-    
+		//builds out receipt text portion object  
         var Mydata = {};
-        
-     
         Mydata.receipt =  this.props.receipt
         Mydata.receipt.ImageGuid = ImageGuid
         console.log(Mydata)
         const headers = {
           'Content-Type': 'application/json'
         }
-    
-         
+		
+        //makes api call  
         var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/AddReceipt",Mydata,headers)
         .then((AddRecResults) =>
         this.setState({ReceiptUploadedNoti: true}),

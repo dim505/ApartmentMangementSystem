@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 
+//this component contains the image modal.  This displays when a user clicks on the image icon to view the image
 export default class ReceiptImageModal extends Component {
  
   render() {
