@@ -13,11 +13,12 @@ import Box from "@material-ui/core/Box";
 import Flip from "react-reveal/Flip";
 import PropertyRemoveButton from './PropertyRemoveButton';
 import Snackbar from "@material-ui/core/Snackbar";
+import PropertyUpdateModal from "./PropertyUpdateModal"
 
 
 export default class PropertyHomePage extends Component {
     state = {Properties:[], PropertiesFiltered: [], ShowPropertyDetails: false,
-       OpenPropertyRmvNoti: false,PropertyToShow: ""}
+       OpenPropertyRmvNoti: false,PropertyToShow: "", OpnModal: false}
   
   
   async componentDidMount() {
@@ -27,30 +28,32 @@ export default class PropertyHomePage extends Component {
     }
 
     GetProperties = () => {
-      
-      var results =   Axios({
-        url: "https://localhost:5001/api/property"
-       }).then( (results) => 
-       this.setState({
-        Properties: results.data
-       }),
-        
-       );
+      setTimeout( () => {
+        var results =   Axios({
+          url: "https://localhost:5001/api/property"
+         }).then( (results) => 
+           this.setState({
+          Properties: results.data
+         }),
+          
+         );
+
+
+      }, 500)
 
 
 
     }
 
-    ShowPropertyDetails (Guid) {
-      /*
-      debugger;
-      let ReceiptFilterd = this.state.Receipts;
-      ReceiptFilterd = ReceiptFilterd.filter(Receipt => Receipt.id === id);
-      this.setState({ OpnReceiptViewModal: true, ReceiptFilterd: ReceiptFilterd });
-      
-      let PropertiesFiltered = this.state.Properties
-      PropertiesFiltered = PropertiesFiltered.filter(Property => Property.Guid === Guid);*/
+    FilterProperty (Guid) {
 
+      let PropertiesFiltered = this.state.Properties
+      PropertiesFiltered = PropertiesFiltered.filter(Property => Property.guid === Guid);
+      this.setState({PropertiesFiltered: PropertiesFiltered})
+
+    }
+
+    ShowPropertyDetails (Guid) {
       this.setState({ShowPropertyDetails: !this.state.ShowPropertyDetails,
         PropertyToShow: Guid
       
@@ -65,6 +68,18 @@ export default class PropertyHomePage extends Component {
 
     ClosePropertyRmvNoti = () => {
       this.setState({ OpenPropertyRmvNoti: false })
+
+    }
+
+    OpnModal (guid) {
+      this.setState({ OpnModal: true })
+      this.FilterProperty(guid)
+
+    }
+
+
+    CloseModal =  () => {
+      this.setState({ OpnModal: false })
 
     }
  
@@ -95,7 +110,13 @@ export default class PropertyHomePage extends Component {
           }}
           message={<span id="message-id">Property Removed</span>}
         />
-
+        <PropertyUpdateModal  
+        PropertiesFiltered = {this.state.PropertiesFiltered} 
+        OpnModal = {this.state.OpnModal}
+        CloseModal = {this.CloseModal}
+        GetProperties = {this.GetProperties}
+        
+        />
         { this.state.Properties.length > 0 ? (
               <Grid container spacing={3}>
           
@@ -120,7 +141,7 @@ export default class PropertyHomePage extends Component {
 
                           <CardActions>
                             <Button color="primary" onClick= {() => this.ShowPropertyDetails(Property.guid)}>More Info. </Button>
-                            <Button color="primary"> Update </Button>
+                            <Button color="primary" onClick= {() => this.OpnModal(Property.guid)}> Update </Button>
                            <PropertyRemoveButton 
                            GetProperties = {this.GetProperties}
                            OpenPropertyRmvNoti = {this.OpenPropertyRmvNoti} 

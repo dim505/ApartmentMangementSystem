@@ -57,6 +57,38 @@ namespace AMSBackEnd.Controllers
 
         }
 
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult UpdateProperty([FromBody] JObject data) {
+            var connstr = _config["ConnectionStrings:DefaultConnection"];
+            PropertyModel propertyModel = data["property"].ToObject<PropertyModel>();
+
+            using (IDbConnection db = new SqlConnection(connstr))
+            {
+                var SqlStr = @"Update Properties
+                                        set Street = @Street,
+                                            City = @City,
+                                            State = @State,
+                                            Unit = @Unit,
+                                            YearlyInsurance = @YearlyInsurance,
+                                            Tax = @Tax
+                                        where Guid = @Guid";
+                var result = db.Execute(SqlStr, new
+                {
+                    Street = propertyModel.Street,
+                    City = propertyModel.City,
+                    State = propertyModel.State,
+                    Unit = propertyModel.Unit,
+                    YearlyInsurance = propertyModel.YearlyInsurance,
+                    Tax = propertyModel.Tax,
+                    Guid = propertyModel.Guid
+
+                });
+                return Ok();
+                }
+        }
+
         [HttpGet]
 
         //this gets all the receipts from the database

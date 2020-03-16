@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import NavBar from "./components/NavBar/NavBar";
 import Tenants from "./components/Tenants/Tenants";
+import AddTenants from "./components/Tenants/AddTenants";
 import HomeDashboard from "./components/Home/Home_Dashboard";
 import Receipt from "./components/Receipts/Receipt";
 import AddReceipt from "./components/Receipts/AddReceipt";
@@ -31,6 +32,11 @@ class App extends Component {
         <Route exact path="/Tenants">
           <Tenants />
         </Route>
+
+        <Route exact path="/AddTenants">
+          <AddTenants />
+        </Route>
+
 
         <Route exact path="/Receipt">
           <Receipt />

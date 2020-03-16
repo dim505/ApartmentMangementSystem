@@ -92,7 +92,7 @@ export default class AddPropertyForm extends Component {
                 onChange={event =>
                   this.handleChange({ State: event.target.value })
                 }
-                placeholder="Enter Street Here"
+                placeholder="Enter State Here"
               />
             </Col>
           </Form.Group>
