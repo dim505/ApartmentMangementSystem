@@ -13,7 +13,7 @@ export default class PropertyRemoveButton extends Component {
   OpenPropertyRmvNoti = async (id) => {
     this.CloseWarnBox();
   //makes the API call to delete selected receipt
-  await Axios.delete(`https://localhost:5001/api/property/delete/${id}`);
+  await Axios.delete(`https://amsbackend.azurewebsites.net/api/property/delete/${id}`);
     //refeshes main page again to get new list of receipts
 	this.props.GetProperties();
 	//opens "item removed" notification 

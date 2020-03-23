@@ -14,28 +14,71 @@ import { Link } from "react-router-dom";
 import TenantRemoveButton from "./TenantRemoveButton";
 import Snackbar from "@material-ui/core/Snackbar";
 import TenantModal from "./TenantModal";
+import Axios from 'axios';
+import EditIcon from '@material-ui/icons/Edit';
+
 export default class Tenants extends Component {
   state = {
     Tenants: [
-      { GUID: "111", name: "1", phone: "1", LeaseRenew: "2020-01-01" },
-      { GUID: "111", name: "1", phone: "1", LeaseRenew: "2020-01-01" },
-      { GUID: "111", name: "1", phone: "1", LeaseRenew: "2020-01-01" },
-      { GUID: "222", name: "2", phone: "2", LeaseRenew: "2020-01-01" },
-      { GUID: "222", name: "2", phone: "2", LeaseRenew: "2020-01-01" },
-      { GUID: "222", name: "2", phone: "2", LeaseRenew: "2020-01-01" }
+ 
     ],
     Properties: [
-      { GUID: "111", Street: "65 Devans Street Greenfield, MA" },
-      { GUID: "222", Street: "99 Blue Street Greenfield, MA" }
+
     ],
     TenantsFiltered: [],
     ShowTenantList: false,
     PropertyToShow: "",
     OpenTenantRmvNoti: false,
     OpnModal: false,
-    OpenTenantSaveNoti: false
+    OpenTenantSaveNoti: false,
+    ShowTenantToEdit: [
+        {
+          name: "Bob Smith",
+          email: "d.komerzan@gmail.com",
+          phone: "1111",
+          leaseDue: "2020-03-01",
+          guid: "ac3f370f-8dd2-47b9-8760-47a917786464",
+          tenGuid: "8cd32c85-bdce-4777-b914-11c82c6c07ca"
+        }
+    ],
+    TenantToSave: null
+
   };
 
+
+  componentDidMount () {
+    this.GetProperties();
+    this.GetTenants();
+  }
+
+  GetProperties = () => {
+    var results = Axios ({url: "https://amsbackend.azurewebsites.net/api/property"})
+    .then( results => 
+      this.setState({
+        Properties: results.data
+
+      })
+      )
+  }
+
+
+  GetTenants = () => {
+    var results 
+    setInterval( () => 
+     results = Axios ({url: "https://amsbackend.azurewebsites.net/api/tenant"})
+    .then(results => 
+      this.setState({
+        Tenants: results.data
+      })
+      
+      )
+    
+    , 500);
+
+
+
+
+  }
   uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
       var r = (Math.random() * 16) | 0,
@@ -50,7 +93,7 @@ export default class Tenants extends Component {
     var Row = [];
 
     let TenantsFiltered = this.state.Tenants;
-    TenantsFiltered = TenantsFiltered.filter(Tenant => Tenant.GUID === id);
+    TenantsFiltered = TenantsFiltered.filter(Tenant => Tenant.guid === id);
     this.setState({
       TenantsFiltered: TenantsFiltered,
       ShowTenantList: !this.state.ShowTenantList,
@@ -58,16 +101,40 @@ export default class Tenants extends Component {
     });
   };
 
+
+  ShowTenantToEdit = tenGuid => {
+    let ShowTenantToEdit = this.state.TenantsFiltered;
+    ShowTenantToEdit = ShowTenantToEdit.filter(Tenant => Tenant.tenGuid === tenGuid );
+    this.setState({
+      ShowTenantToEdit : ShowTenantToEdit,
+      TenantToSave: ShowTenantToEdit[0]
+
+    })
+
+
+  }
+
+  CloseTenantList = () =>{
+    this.setState({ 
+      ShowTenantList: false
+     });
+
+  }
+
   OpenTenantRmvNoti = () => {
-    this.setState({ OpenTenantRmvNoti: true });
+    this.setState({ OpenTenantRmvNoti: true,
+      ShowTenantList: false
+     });
   };
 
   CloseTenantRmvNoti = () => {
     this.setState({ OpenTenantRmvNoti: false });
   };
 
-  OpnModal = () => {
+  OpnModal = (tenGuid) => {
+    this.ShowTenantToEdit(tenGuid)
     this.setState({ OpnModal: true });
+
   };
 
   CloseModal = () => {
@@ -77,50 +144,63 @@ export default class Tenants extends Component {
   render() {
     var Row = [];
     if (this.state.ShowTenantList) {
-      Row.push(
-        <Grid container spacing={0}>
-          <Grid item xs={3} />
-          <Grid item xs={3} />
-          <Grid item xs={3} />
-          <Grid container item xs={3} justify="flex-end">
-            <Button onClick={this.OpnModal} variant="outlined" color="primary">
-              Edit
-            </Button>
-          </Grid>
-        </Grid>
-      );
-      this.state.TenantsFiltered.map(Tenant =>
-        Row.push(
-          <Box
-            bgcolor="error.main"
-            color="primary.contrastText"
-            display="flex"
-            flexDirection="row"
-          >
-            <Grid item xs={4}>
-              {Tenant.name}
-            </Grid>
-            <Grid item xs={4}>
-              {Tenant.phone}
-            </Grid>
-            <Grid item xs={3}>
-              {Tenant.LeaseRenew}
-            </Grid>
+        if (this.state.TenantsFiltered.length > 0 ) {
 
-            <Grid item xs={1}>
-              <TenantRemoveButton
-                OpenTenantRmvNoti={this.OpenTenantRmvNoti}
-                CloseTenantRmvNoti={this.CloseTenantRmvNoti}
-              />
-            </Grid>
-          </Box>
-        )
-      );
+
+                this.state.TenantsFiltered.map(Tenant =>
+                  Row.push(
+                    <Box
+                      bgcolor="error.main"
+                      color="primary.contrastText"
+                      display="flex"
+                      flexDirection="row"
+                      Key = {Tenant.tenGuid}
+                    >
+                      <Grid item xs={3}>
+                        {Tenant.name}
+                      </Grid>
+                      <Grid item xs={3}>
+                        {Tenant.phone}
+                      </Grid>
+
+                      <Grid item xs={3}>
+                        {Tenant.email}
+                      </Grid>
+
+                      <Grid item xs={2}>
+                        {Tenant.leaseDue}
+                      </Grid>
+
+
+    
+                        
+                       <Grid item  >
+                       <EditIcon  onClick={ () => this.OpnModal(Tenant.tenGuid)} />
+                      </Grid>
+
+                      <Grid item >
+                        <TenantRemoveButton
+                          OpenTenantRmvNoti={this.OpenTenantRmvNoti}
+                          CloseTenantRmvNoti={this.CloseTenantRmvNoti}
+                          guid = {Tenant.tenGuid}
+                          GetProperties = {this.GetProperties}
+                          GetTenants = {this.GetTenants}
+
+                        />
+                       </Grid>
+
+                       
+
+
+                    </Box>
+                  )
+                );
+
+              } else {
+                Row.push(<h2>Sorry No Tenants found... Please Add some </h2>)
+              }
     }
 
-    if (this.state.ShowTenantList === false) {
-      Row = [];
-    }
 
     return (
       <div>
@@ -138,8 +218,13 @@ export default class Tenants extends Component {
         <TenantModal
           OpnModal={this.state.OpnModal}
           CloseModal={this.CloseModal}
-          TenantsFiltered={this.state.TenantsFiltered}
+          TenantsFiltered={this.state.ShowTenantToEdit}
           OpenTenantSaveNoti={this.OpenTenantSaveNoti}
+          CloseTenantList = {this.CloseTenantList}
+          GetProperties = {this.GetProperties}
+          GetTenants = {this.GetTenants}
+
+          
         />
         <Zoom left>
           <Grid container spacing={0}>
@@ -158,7 +243,7 @@ export default class Tenants extends Component {
           <Grid container spacing={3}>
             {this.state.Properties.map(Property => (
               <Grid item xs={6}>
-                <Card Key={Property.GUID}>
+                <Card Key={Property.guid}>
                   <CardMedia
                     component="img"
                     alt="house"
@@ -168,7 +253,7 @@ export default class Tenants extends Component {
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {Property.Street}
+                      {Property.street} {Property.city}, {Property.state}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -179,7 +264,7 @@ export default class Tenants extends Component {
 
                   <CardActions>
                     <Button
-                      onClick={() => this.ShowTenants(Property.GUID)}
+                      onClick={() => this.ShowTenants(Property.guid)}
                       color="primary"
                     >
                       {" "}
@@ -191,7 +276,7 @@ export default class Tenants extends Component {
                   left
                   when={
                     this.state.ShowTenantList &&
-                    this.state.PropertyToShow === Property.GUID
+                    this.state.PropertyToShow === Property.guid
                   }
                 >
                   <React.Fragment>{Row}</React.Fragment>

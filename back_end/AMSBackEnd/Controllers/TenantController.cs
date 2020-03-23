@@ -30,14 +30,47 @@ namespace AMSBackEnd.Controllers
         [HttpGet]
         public IActionResult GetTenants() {
             var connStr = _config["ConnectionStrings:DefaultConnection"];
-            List<TenantModel> tenants = new List<TenantModel>();
+            List<TenantMainPageModel> tenants = new List<TenantMainPageModel>();
             using (IDbConnection db = new SqlConnection(connStr)) {
 
-                tenants = db.Query<TenantModel>("select * from tenants").ToList();
-                
+                var SqlStr = @"select * from tenants";
+                tenants = db.Query<TenantMainPageModel>(SqlStr).ToList();
+
+                /*
+                select prop.street, prop.city, prop.state, prop.guid,
+                                    ten.Name, ten.Phone, ten.Email, ten.LeaseDue
+                                    from Properties prop
+                                    inner join tenants ten
+                                    on prop.Guid = ten.guid*/
             }
             return Ok(tenants);
         
+        }
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult UpdateTenant([FromBody] JObject data) {
+            var connStr = _config["ConnectionStrings:DefaultConnection"];
+            UpdateTenantModel updateTenant = data["tenant"].ToObject<UpdateTenantModel>();
+            using (IDbConnection db = new SqlConnection(connStr)) {
+                var SqlStr = @"update tenants 
+	                                set Name = @Name,
+		                                Email = @Email,
+		                                Phone = @Phone,
+		                                LeaseDue = @LeaseDue
+	                          where tenGuid = @tenGuid ";
+                var result = db.Execute(SqlStr, new
+                {
+                    Name = updateTenant.name,
+                    Email = updateTenant.email,
+                    Phone = updateTenant.phone,
+                    LeaseDue = updateTenant.leaseDue,
+                    tenGuid = updateTenant.tenGuid
+                 });
+
+                return Ok();
+            }        
         }
 
 
@@ -47,18 +80,42 @@ namespace AMSBackEnd.Controllers
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             TenantModel tenant = data["tenant"].ToObject<TenantModel>();
             using (IDbConnection db = new SqlConnection(connStr)) {
-                var SqlStr = @"insert into tenants (Name, Email, Phone, LeaseDue, guid) values (@Name, @Email, @Phone,@LeaseDue,@guid)";
+                var SqlStr = @"insert into tenants (Name, Email, Phone, LeaseDue, guid, tenGuid) values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid)";
                 var result = db.Execute(SqlStr, new {
                     Name = tenant.Name,
                     Email = tenant.Email,
                     Phone = tenant.Phone,
                     LeaseDue = tenant.LeaseDue,
-                    guid = tenant.PropertyGuid
+                    guid = tenant.PropertyGuid,
+                    tenGuid = tenant.tenGuid
                 });
 
                 return Ok();
             }
            
+        }
+
+
+
+        [HttpDelete]
+        [Route("delete/{guid}")]
+        public IActionResult DeleteTenant(string guid) {
+            var connStr = _config["ConnectionStrings:DefaultConnection"];
+            using (IDbConnection db = new SqlConnection(connStr)) {
+                var SqlStr = "delete from tenants where tenGuid=@guid";
+                var result = db.Execute(SqlStr, new
+                {
+
+                    guid = guid
+                });
+
+                return Ok();
+
+            
+            
+            }
+        
+        
         }
 
     }

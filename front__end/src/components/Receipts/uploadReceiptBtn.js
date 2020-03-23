@@ -6,6 +6,8 @@ import { post } from 'axios';
 import WebIcon from "@material-ui/icons/Web";
 import { Form, Col, Row } from "react-bootstrap";
 import Snackbar from "@material-ui/core/Snackbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Grid from "@material-ui/core/Grid";
 
 export default class UploadReceiptBtn extends Component {
   constructor(props) {
@@ -13,7 +15,8 @@ export default class UploadReceiptBtn extends Component {
     this.state = {
       ReceiptUploadedNoti: false,
       file: null,
-      filepath: ""
+      filepath: "",
+      ProgessCircle: false
     };
   }
 
@@ -41,6 +44,7 @@ export default class UploadReceiptBtn extends Component {
       !this.isEmpty(this.props.receipt.Tax) &&
       !this.isEmpty(this.props.receipt.TotalAmount) 
       && !this.isEmpty(this.state.filepath) ) {
+        this.setState({ ProgessCircle: true });
 		//generates new GUID 
         var ImageGuid = this.uuidv4()
 		//defines URL 
@@ -72,6 +76,8 @@ export default class UploadReceiptBtn extends Component {
         this.setState({ReceiptUploadedNoti: true}),
         console.log(AddRecResults)
         )
+
+        this.setState({ ProgessCircle: false });
       }
 
 
@@ -122,29 +128,43 @@ export default class UploadReceiptBtn extends Component {
           </Col>
         </Form.Group>
         <h4>File Upload</h4>
-        <Button
-          component="label"
-          variant="contained"
-          color="default"
-          startIcon={<WebIcon />}
-        >
-          Browse
-          <input
-            type="file"
-            style={{ display: "none" }}
-            onChange={e => this.setFile(e)}
-          />
-        </Button>
+          <Grid container spacing={0}>
+            <Grid item>
+              <Button
+                component="label"
+                variant="contained"
+                color="default"
+                startIcon={<WebIcon />}
+              >
+                Browse
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  style={{ display: "none" }}
+                  onChange={e => this.setFile(e)}
+                />
+              </Button>
+            </Grid>
 
-        <Button
-          onClick={this.submit}
-          type="submit"
-          variant="contained"
-          color="default"
-          startIcon={<CloudUploadIcon />}
-        >
-          Submit Receipt
-        </Button>
+            <Grid item>
+              <Button
+                onClick={this.submit}
+                type="submit"
+                variant="contained"
+                color="default"
+                startIcon={<CloudUploadIcon />}
+              >
+                Submit Receipt
+              </Button>
+            </Grid>
+            <Grid item>
+              {this.state.ProgessCircle && (
+                <div className="ProgessCircle">
+                  <CircularProgress />
+                </div>
+              )}
+            </Grid>
+          </Grid>
       </form>
 
       </div>

@@ -71,7 +71,6 @@ export default class ReceiptViewOnlyModal extends Component {
                       <TextField
                         
                         id="date"
-                        label="Receipt Date"
                         type="date"
                         value={Receipt.date}
                         InputLabelProps={{
@@ -81,16 +80,16 @@ export default class ReceiptViewOnlyModal extends Component {
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <input id="store"  type="text" value={Receipt.store} />
+                     <TextField id="store"  type="text" value={Receipt.store} />
                     </TableCell>
                     <TableCell align="right">
 
-                    <input id="tax"  type="text"  value={Receipt.tax} />
+                    <TextField id="tax"  type="text"  value={Receipt.tax} />
 
                     </TableCell>
                     <TableCell align="right">
 
-                    <input id="tax"  type="text"  value={Receipt.totalAmount} />
+                    <TextField id="tax"  type="text"  value={Receipt.totalAmount} />
                     </TableCell>
                     <TableCell align="right">
                     

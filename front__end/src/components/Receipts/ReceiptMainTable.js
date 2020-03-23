@@ -90,9 +90,12 @@ export default class ReceiptMainTable extends Component {
                       trigger="hover"
                       tooltip="Click to View Picture"
                     >
-                      <a onClick={() => this.OpenImageModal(Receipt.id)}>
+                      <Button
+                        onClick={() => this.OpenImageModal(Receipt.id)}
+                        variant="outlined"
+                      >
                         <ImageIcon />
-                      </a>
+                      </Button>
                     </Tooltip>
 
                   

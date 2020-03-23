@@ -13,7 +13,10 @@ import TenantModalSave from "./TenantModalSave";
 import Fade from "@material-ui/core/Fade";
 import Snackbar from "@material-ui/core/Snackbar";
 export default class TenantModal extends Component {
-  state = { OpenTenantSaveNoti: false };
+  state = { OpenTenantSaveNoti: false
+   
+  };
+
 
   OpenTenantSaveNoti = () => {
     debugger;
@@ -23,6 +26,8 @@ export default class TenantModal extends Component {
   CloseTenantSaveNoti = () => {
     this.setState({ OpenTenantSaveNoti: false });
   };
+
+
 
   render() {
     return (
@@ -55,31 +60,32 @@ export default class TenantModal extends Component {
                       </Typography>
                     </TableRow>
                     <TableRow>
-                      <TableCell>name </TableCell>
-                      <TableCell>phone </TableCell>
-                      <TableCell>Lease Renew </TableCell>
+                      <TableCell> </TableCell>
+                      <TableCell> </TableCell>
+                      <TableCell> </TableCell>
+                      <TableCell> </TableCell>
                       <TableCell>
                         {" "}
                         <TenantModalSave
                           OpenTenantSaveNoti={this.OpenTenantSaveNoti}
                           CloseModal={this.props.CloseModal}
+                          TenantsFiltered = {this.props.TenantsFiltered}
+                          CloseTenantList = {this.props.CloseTenantList}
+                          GetProperties = {this.props.GetProperties}
+                          GetTenants = {this.props.GetTenants}
+                          
                         />{" "}
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {this.props.TenantsFiltered.map(Tenant => (
-                      <TableRow key={Tenant.GUID}>
+                      <TableRow key={Tenant.guid}>
                         <TableCell align="right">
                           <TextField
                             id="name"
                             label="Name"
                             type="text"
-                            onChange={event =>
-                              this.HandleChange({
-                                Name: event.target.value
-                              })
-                            }
                             defaultValue={Tenant.name}
                             InputLabelProps={{
                               shrink: true
@@ -91,11 +97,6 @@ export default class TenantModal extends Component {
                             id="phone"
                             label="phone"
                             type="text"
-                            onChange={event =>
-                              this.HandleChange({
-                                phone: event.target.value
-                              })
-                            }
                             defaultValue={Tenant.phone}
                             InputLabelProps={{
                               shrink: true
@@ -104,15 +105,22 @@ export default class TenantModal extends Component {
                         </TableCell>
                         <TableCell align="right">
                           <TextField
-                            id="LeaseRenew"
-                            label="Lease Renew"
+                            id="email"
+                            label="email"
+                            type="text"
+                            defaultValue={Tenant.email}
+                            InputLabelProps={{
+                              shrink: true
+                            }}
+                          />
+                        </TableCell>
+
+                        <TableCell align="right">
+                          <TextField
+                            id="leaseDue"
+                            label="lease Due"
                             type="date"
-                            onChange={event =>
-                              this.HandleChange({
-                                LeaseRenew: event.target.value
-                              })
-                            }
-                            defaultValue={Tenant.LeaseRenew}
+                            defaultValue={Tenant.leaseDue}
                             InputLabelProps={{
                               shrink: true
                             }}

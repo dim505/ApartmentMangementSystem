@@ -30,7 +30,7 @@ export default class PropertyHomePage extends Component {
     GetProperties = () => {
       setTimeout( () => {
         var results =   Axios({
-          url: "https://localhost:5001/api/property"
+          url: "https://amsbackend.azurewebsites.net/api/property"
          }).then( (results) => 
            this.setState({
           Properties: results.data

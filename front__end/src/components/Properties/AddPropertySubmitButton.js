@@ -40,7 +40,7 @@ export default class AddPropertySubmitButton extends Component {
                     }
                 
                     //makes api call  
-                    var Results = await Axios.post("https://localhost:5001/api/Property/AddProperty",Mydata,headers)
+                    var Results = await Axios.post("https://amsbackend.azurewebsites.net/api/Property/AddProperty",Mydata,headers)
                     .then((Results) =>
                     console.log(Results),
                     this.setState({SubmitSuccessNoti: true})

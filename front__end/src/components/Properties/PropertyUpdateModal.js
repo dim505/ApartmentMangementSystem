@@ -27,7 +27,7 @@ export default class PropertyUpdateModal extends Component {
       e.preventDefault();
       var Mydata = {}; 
       
-	  //builds out receipt object 
+	  //builds out property object 
       var property = {
         guid : this.props.PropertiesFiltered[0].guid, 
         street : document.getElementById("street").value,
@@ -44,7 +44,7 @@ export default class PropertyUpdateModal extends Component {
       }
   
        //makes API call to update text portion of the reciept 
-      var Results = await Axios.post("https://localhost:5001/api/property/UpdateProperty",Mydata,headers)
+      var Results = await Axios.post("https://amsbackend.azurewebsites.net/api/property/UpdateProperty",Mydata,headers)
       .then((Results) =>
       this.props.CloseModal(),
       this.setState({OpenPropertySavedNoti: true}),
@@ -153,7 +153,7 @@ export default class PropertyUpdateModal extends Component {
                     <TextField
                         id="yearlyInsurance"
                         label="Yearly Insurance"
-                        type="text"
+                        type="number"
                         defaultValue={Property.yearlyInsurance}
                         InputLabelProps={{
                           shrink: true
@@ -166,7 +166,7 @@ export default class PropertyUpdateModal extends Component {
                     <TextField
                         id="tax"
                         label="Yearly tax"
-                        type="text"
+                        type="number"
                         defaultValue={Property.tax}
                         InputLabelProps={{
                           shrink: true

@@ -33,7 +33,7 @@ export default class Receipt extends Component {
 	//makes api call and sets state
      getReceipts =  () => {
      var results =   Axios({
-      url: "https://localhost:5001/api/receipt"
+      url: "https://amsbackend.azurewebsites.net/api/receipt"
      }).then( (results) => 
      this.setState({
       Receipts: results.data

@@ -6,13 +6,25 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import Axios from 'axios';
 
 export default class TenantRemoveButton extends Component {
   state = { OpnWarningBox: false };
 
-  OpenItmRmvNoti = () => {
+  RemoveTenant (guid) {
+    
+     Axios.delete(`https://amsbackend.azurewebsites.net/api/tenant/delete/${guid}`);
+
+
+  }
+
+
+  OpenItmRmvNoti = (guid) => {
+    this.RemoveTenant(guid)
     this.CloseWarnBox();
     this.props.OpenTenantRmvNoti();
+    this.props.GetProperties();
+    this.props.GetTenants();
   };
   CloseWarnBox = () => {
     this.setState({ OpnWarningBox: false });
@@ -42,7 +54,7 @@ export default class TenantRemoveButton extends Component {
               NO
             </Button>
             <Button
-              onClick={() => this.OpenItmRmvNoti()}
+              onClick={() => this.OpenItmRmvNoti(this.props.guid)}
               color="primary"
               autoFocus
             >

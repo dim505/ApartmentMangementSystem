@@ -10,13 +10,15 @@ import Typography from "@material-ui/core/Typography";
 import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
 import ImageIcon from "@material-ui/icons/Image";
-import NumericInput from "react-numeric-input";
 import ReceiptModalSave from "./ReceiptModalSave";
 import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
 import { Col, Form} from "react-bootstrap";
 import { post } from 'axios';
 import Axios from "axios";
+import Container from 'react-bootstrap/Container'
+
+
 
 
 export default class ReceiptModal extends Component {
@@ -82,7 +84,7 @@ export default class ReceiptModal extends Component {
       }
   
        //makes API call to update text portion of the reciept 
-      var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/UpdateReceipt",Mydata,headers)
+      var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/UpdateReceipt",Mydata,headers)
       .then((AddRecResults) =>
       this.setState({ReceiptUploadedNoti: true}),
       console.log(AddRecResults)
@@ -91,7 +93,7 @@ export default class ReceiptModal extends Component {
       //check to see if new file has been uploaded 
   if (this.state.file !== null) {
 	//makes API call to update the image 
- const url = `https://localhost:5001/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+ const url = `https://amsbackend.azurewebsites.net/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
    
     const formData = new FormData();
     formData.append("body", this.state.file);
@@ -144,13 +146,7 @@ export default class ReceiptModal extends Component {
                     Edit Receipt
                   </Typography>
                 </TableRow>
-                <TableRow>
-                  <TableCell>Date </TableCell>
-                  <TableCell>Store </TableCell>
-                  <TableCell>Tax </TableCell>
-                  <TableCell>Total Amount </TableCell>
-                  <TableCell>Image </TableCell>
-                </TableRow>
+
               </TableHead>
               <TableBody>
                 {this.props.ReceiptFilterd.map((Receipt => (
@@ -158,7 +154,7 @@ export default class ReceiptModal extends Component {
                     <TableCell align="right">
                       <TextField
                         id="date"
-                        label="Receipt Date"
+                        label="Date"                          
                         type="date"
                         defaultValue={Receipt.date}
                         InputLabelProps={{
@@ -168,48 +164,32 @@ export default class ReceiptModal extends Component {
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <input id="store" type="text" placeholder={Receipt.store} />
+                      <TextField 
+                      label="Store"
+                      id="store"
+                      type="text" 
+                      defaultValue={Receipt.store} />
                     </TableCell>
                     <TableCell align="right">
-                      <NumericInput
-                        className="NumInputstyle"
+                      <TextField
+                        label="Tax"
+                        type="number"
                         id="tax"
-                        precision={2}
-                        strict={true}
-                        min={0}
-                        max={999999}
-                        value={Receipt.tax}
+                        defaultValue={Receipt.tax}
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <NumericInput
-                        className="NumInputstyle"
+                      <TextField
+                        label="Total Amount"
+                        type="number"
                         id="totalAmount"
-                        precision={2}
-                        strict={true}
-                        min={0}
-                        max={999999}
-                        value={Receipt.totalAmount}
+                        defaultValue={Receipt.totalAmount}
                       />
                     </TableCell>
                     <TableCell align="right">
                     <form onSubmit={e => this.Update(e)}>
 
-                            <Col>
-                            <Button
-                              component="label"
-                              variant="contained"
-                              color="default"
-                              startIcon={<ImageIcon />}
-                            >
-                              Click To Update Image
-                              <input
-                                type="file"
-                                style={{ display: "none" }}
-                                onChange={e => this.setFile(e)}
-                              />
-                            </Button>
-                            </Col>
+                   
                             <Col>
                                 <Form.Control
                                 disabled
@@ -218,7 +198,25 @@ export default class ReceiptModal extends Component {
                                 placeholder="Image Path"
                                 />
                               </Col>
-                          
+
+                              <Col>
+                            <Button
+                              fullWidth= {true}
+                              component="label"
+                              variant="contained"
+                              color="default"
+                              startIcon={<ImageIcon />}
+                            >
+                              Click To Update Image     
+                              <input
+                                type="file"
+                                accept="image/png, image/jpeg"
+                                style={{ display: "none" }}
+                                onChange={e => this.setFile(e)}
+                              />
+                            </Button>
+                            </Col>
+                           
                         </form>
                     </TableCell>
                     
