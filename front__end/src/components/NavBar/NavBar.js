@@ -10,6 +10,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
 import ApartmentIcon from '@material-ui/icons/Apartment';
+import Button from '@material-ui/core/Button';
 
 function HomeIcon(props) {
   return (
@@ -19,7 +20,23 @@ function HomeIcon(props) {
   );
 }
 
+
+
+
+
 export default class NavBar extends Component {
+
+  Login = () => {
+    this.props.auth.loginWithRedirect();
+  }
+  
+  Logout = () => {
+      this.props.auth.logout({
+          returnTo: "http://localhost:3000/LogOutcallback"
+  
+      })
+  }
+
   render() {
     return (
       <div className="NavBar"      >
@@ -70,6 +87,19 @@ export default class NavBar extends Component {
                   <ApartmentIcon style={{ fontSize: 48 }} />
                 </Typography>
               </NavLink>
+
+
+
+              {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                          <Button onClick={this.Logout} variant="contained" color="secondary">
+                        Log Out
+                        </Button> 
+                  :   <Button onClick={this.Login} variant="contained" color="secondary">
+               Log In
+           </Button>          
+          }    
+
+
+
 
 
 

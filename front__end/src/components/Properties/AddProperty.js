@@ -6,9 +6,24 @@ import { Link } from "react-router-dom";
 import AddPropertyForm from './AddPropertyForm'
 import Snackbar from "@material-ui/core/Snackbar";
 import AddPropertySubmitButton from "./AddPropertySubmitButton"
+import Grid from '@material-ui/core/Grid';
+import AddPropertyAddressSuggest from './AddPropertyAddressSuggest'
+import Axios from "axios";
+
+/*APP ID
+ X3DNOax14C45YOpU9GoF 
+
+API Key
+9d8ZRC1pU-evNyqlQKlVSFrcQ9HnsaGLGU8OTEdsWwc
 
 
 
+https://autocomplete.geocoder.api.here.com/6.2/suggest.json?app_id=X3DNOax14C45YOpU9GoF&app_code=9d8ZRC1pU-evNyqlQKlVSFrcQ9HnsaGLGU8OTEdsWwc&query=1
+
+https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json
+?apiKey=9d8ZRC1pU-evNyqlQKlVSFrcQ9HnsaGLGU8OTEdsWwc
+&query=12+verde+drive+greenfield+ma
+*/
 export default class AddProperty extends Component {
   state = {property : {
           Street: "",
@@ -21,8 +36,28 @@ export default class AddProperty extends Component {
 
   handleChange = (NewState) => {
     this.setState({property: NewState})
+    this.GetSuggestedAddresses()
+  
   }
 
+//'app_id': 'X3DNOax14C45YOpU9GoF',
+  GetSuggestedAddresses = () => {
+      var query =  this.state.property.Street
+      console.log(query)
+      var result = Axios.get('https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json', {
+      'params': {
+            
+            'apiKey': `rFWVaP56x9m5GN_mD-1ai8S2uBFl73CJrsPLS38OwZ8`,
+            'query': query
+      }})
+        .then( (result) => 
+              console.log(result.data.suggestions)
+
+         )
+
+
+
+  }
   
   isEmpty(str) {
     return (!str || /^\s*$/.test(str));
@@ -97,7 +132,8 @@ export default class AddProperty extends Component {
         </Link>
         <Bounce top>
 
-
+        <Grid container spacing={1}>
+          <Grid xs={6}>  
           <AddPropertyForm    
             onChanged  = {this.handleChange}   
             UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}        
@@ -106,6 +142,13 @@ export default class AddProperty extends Component {
             property = {this.state.property}
             UploadSubmitCheck = {this.UploadSubmitCheck}
           />
+          </Grid >
+          <Grid xs={6}>  
+          <AddPropertyAddressSuggest />            
+            </Grid> 
+
+
+        </Grid>
         </Bounce>
       </div>
     );
