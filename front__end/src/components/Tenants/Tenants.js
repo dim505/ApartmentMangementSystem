@@ -17,6 +17,8 @@ import TenantModal from "./TenantModal";
 import Axios from 'axios';
 import EditIcon from '@material-ui/icons/Edit';
 
+
+//parent component that houses the tenant page 
 export default class Tenants extends Component {
   state = {
     Tenants: [
@@ -51,8 +53,17 @@ export default class Tenants extends Component {
     this.GetTenants();
   }
 
-  GetProperties = () => {
-    var results = Axios ({url: "https://amsbackend.azurewebsites.net/api/property"})
+	//function to get properties related to account 
+  GetProperties = async () => {
+	const BearerToken = await this.props.auth.getTokenSilently();
+    var results = Axios.get("https://localhost:5001/api/property",
+	     {
+      headers: {'Authorization': `bearer ${BearerToken}`}
+
+    }
+	
+	
+	)
     .then( results => 
       this.setState({
         Properties: results.data
@@ -61,11 +72,17 @@ export default class Tenants extends Component {
       )
   }
 
-
-  GetTenants = () => {
+	//function to get tenants related to account 
+  GetTenants = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
     var results 
     setInterval( () => 
-     results = Axios ({url: "https://amsbackend.azurewebsites.net/api/tenant"})
+     
+	 results = Axios.get("https://localhost:5001/api/tenant",
+	      {
+      headers: {'Authorization': `bearer ${BearerToken}`}
+
+    })
     .then(results => 
       this.setState({
         Tenants: results.data
@@ -79,6 +96,7 @@ export default class Tenants extends Component {
 
 
   }
+   //generates ID 
   uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
       var r = (Math.random() * 16) | 0,
@@ -86,9 +104,9 @@ export default class Tenants extends Component {
       return v.toString(16);
     });
   }
-
+	//used to filter tenants to show only tenants for one property when the more information button is clicked 
   ShowTenants = id => {
-    debugger;
+     ;
     console.log(id);
     var Row = [];
 
@@ -101,7 +119,7 @@ export default class Tenants extends Component {
     });
   };
 
-
+	//filters list of tenants to one tenant to edit in modal 
   ShowTenantToEdit = tenGuid => {
     let ShowTenantToEdit = this.state.TenantsFiltered;
     ShowTenantToEdit = ShowTenantToEdit.filter(Tenant => Tenant.tenGuid === tenGuid );
@@ -113,30 +131,30 @@ export default class Tenants extends Component {
 
 
   }
-
+	//hides tenant list for property 
   CloseTenantList = () =>{
     this.setState({ 
       ShowTenantList: false
      });
 
   }
-
+	//function opens  the tenant was removed notification 
   OpenTenantRmvNoti = () => {
     this.setState({ OpenTenantRmvNoti: true,
       ShowTenantList: false
      });
   };
-
+	//function opens  the tenant was removed notification 
   CloseTenantRmvNoti = () => {
     this.setState({ OpenTenantRmvNoti: false });
   };
-
+	//function opens the update tenant modal
   OpnModal = (tenGuid) => {
     this.ShowTenantToEdit(tenGuid)
     this.setState({ OpnModal: true });
 
   };
-
+	//function closes the update tenant modal
   CloseModal = () => {
     this.setState({ OpnModal: false });
   };
@@ -185,6 +203,7 @@ export default class Tenants extends Component {
                           guid = {Tenant.tenGuid}
                           GetProperties = {this.GetProperties}
                           GetTenants = {this.GetTenants}
+						  auth = {this.props.auth}
 
                         />
                        </Grid>
@@ -223,6 +242,7 @@ export default class Tenants extends Component {
           CloseTenantList = {this.CloseTenantList}
           GetProperties = {this.GetProperties}
           GetTenants = {this.GetTenants}
+		  auth = {this.props.auth}
 
           
         />
@@ -241,7 +261,10 @@ export default class Tenants extends Component {
           </Grid>
 
           <Grid container spacing={3}>
-            {this.state.Properties.map(Property => (
+            {
+            
+            this.state.Properties.length > 0 ?           
+            this.state.Properties.map(Property => (
               <Grid item xs={6}>
                 <Card Key={Property.guid}>
                   <CardMedia
@@ -253,7 +276,7 @@ export default class Tenants extends Component {
                   />
                   <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {Property.street} {Property.city}, {Property.state}
+                      {Property.street} {Property.city}, {Property.state} {Property.zipCode}
                     </Typography>
                     <Typography
                       variant="body2"
@@ -281,8 +304,13 @@ export default class Tenants extends Component {
                 >
                   <React.Fragment>{Row}</React.Fragment>
                 </Flip>
-              </Grid>
-            ))}
+              </Grid> 
+
+            ))
+          
+            : <div><h3>****Please add some properties***</h3></div>
+          
+          }
           </Grid>
         </Zoom>
       </div>

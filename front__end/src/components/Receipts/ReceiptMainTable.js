@@ -13,7 +13,7 @@ import ReceiptRmvButton from "./ReceiptRmvButton";
 import Button from "@material-ui/core/Button";
 import ReceiptImageModal from "./ReceiptImageModal";
 
-
+//contains all the receipts that have been uploaded 
 export default class ReceiptMainTable extends Component {
   state = { OpenImageModal: false,ReceiptFilterdImg: [{imageUrl: "ee"}] };
 
@@ -37,7 +37,7 @@ export default class ReceiptMainTable extends Component {
 
 	//this modal filters the receipts and generates the URL link for the image associated with the selected receipt 
   OpenImageModal(id) {
-    debugger;
+     ;
     let ReceiptFilterdImg = this.props.Receipts;
     ReceiptFilterdImg = ReceiptFilterdImg.filter(Receipt => Receipt.id === id);
     var objectURL = this.CreateImageUrl(ReceiptFilterdImg[0].image,ReceiptFilterdImg[0].contentType )
@@ -125,6 +125,7 @@ export default class ReceiptMainTable extends Component {
                     OpenItmRmvNoti={this.props.OpenItmRmvNoti}
                     id = {Receipt.id}
                     getReceipts = {this.props.getReceipts}
+                    auth = {this.props.auth}
 
                   />
                 </TableCell>

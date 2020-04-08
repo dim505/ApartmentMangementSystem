@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+//this model is used to prepopulate the main property page with all the necessary information 
 namespace AMSBackEnd.Model
 {
     public class PropertyModel
@@ -14,5 +14,6 @@ namespace AMSBackEnd.Model
         public string YearlyInsurance { get; set; }
         public string Tax { get; set; }
         public string Guid { get; set; }
+        public string ZipCode { get; set; }
     }
 }

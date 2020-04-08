@@ -20,7 +20,7 @@ import Container from 'react-bootstrap/Container'
 
 
 
-
+//component contains modal in case if someone wants to update a receipt 
 export default class ReceiptModal extends Component {
   state = { 
      OpnModal: false, 
@@ -33,13 +33,13 @@ export default class ReceiptModal extends Component {
 	
 	//this sets the state for the filename to be display in the textbox
      setFile(e) {
-      debugger;
+       ;
       this.setState({ file: e.target.files[0], filepath: e.target.value });
     }
 
 	//OLD CODE 
     HandleChangeReceiptModal = newState => {
-      debugger;
+       ;
       var ReceiptFilterd =  this.props.ReceiptFilterd[0]
       var Key = Object.keys(newState)
       var Property = Key[0]
@@ -78,13 +78,21 @@ export default class ReceiptModal extends Component {
 
       }
       Mydata.receipt = receipt
+      const BearerToken = await this.props.auth.getTokenSilently();
       console.log(Mydata)
-      const headers = {
-        'Content-Type': 'application/json'
-      }
+
   
        //makes API call to update text portion of the reciept 
-      var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/UpdateReceipt",Mydata,headers)
+      var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/UpdateReceipt",
+      
+      
+    Mydata,      
+    
+    {
+        headers: {'Authorization': `bearer ${BearerToken}`}
+
+      })
+      
       .then((AddRecResults) =>
       this.setState({ReceiptUploadedNoti: true}),
       console.log(AddRecResults)
@@ -93,16 +101,21 @@ export default class ReceiptModal extends Component {
       //check to see if new file has been uploaded 
   if (this.state.file !== null) {
 	//makes API call to update the image 
- const url = `https://amsbackend.azurewebsites.net/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+ const url = `https://localhost:5001/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
    
     const formData = new FormData();
     formData.append("body", this.state.file);
-    const config = {
-      headers: {
-        "content-type": "multipart/form-data"
+
+	//makes api call to update image 
+    return post(url, formData, 
+      {
+        headers: {
+          
+          'Authorization': `bearer ${BearerToken}`}
+
       }
-    };
-    return post(url, formData, config)
+      
+      )
     .then( () => 
           this.props.OpenItemSavedSnkBar()
     )

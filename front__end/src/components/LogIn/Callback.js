@@ -13,7 +13,7 @@ export default class Callback extends React.Component {
             
 			//handles success and error responses from Auth0 after a user logs in (required per Auth0 API documentation to have this )
 			await this.props.auth.handleRedirectCallback();
-            //redirects to the home poage
+            //redirects to the home page
             setTimeout(() => {  this.props.history.push('/');  }, 4000);
           }
 

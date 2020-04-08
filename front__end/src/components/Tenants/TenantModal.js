@@ -12,17 +12,19 @@ import TextField from "@material-ui/core/TextField";
 import TenantModalSave from "./TenantModalSave";
 import Fade from "@material-ui/core/Fade";
 import Snackbar from "@material-ui/core/Snackbar";
+
+//component contains update modal
 export default class TenantModal extends Component {
   state = { OpenTenantSaveNoti: false
    
   };
 
-
+	//opens Tenant was Saved Notification 
   OpenTenantSaveNoti = () => {
-    debugger;
+     ;
     this.setState({ OpenTenantSaveNoti: true });
   };
-
+	//closes Tenant was Saved Notification 
   CloseTenantSaveNoti = () => {
     this.setState({ OpenTenantSaveNoti: false });
   };
@@ -73,6 +75,7 @@ export default class TenantModal extends Component {
                           CloseTenantList = {this.props.CloseTenantList}
                           GetProperties = {this.props.GetProperties}
                           GetTenants = {this.props.GetTenants}
+						  auth = {this.props.auth}
                           
                         />{" "}
                       </TableCell>

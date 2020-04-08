@@ -7,22 +7,26 @@ import Button from "@material-ui/core/Button";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import Bounce from "react-reveal/Bounce";
 
+
+//main parent that houses the add tenants page 
 export default class AddTenants extends Component {
   state = {
     UploadBtnCkcOnce: false,
     Tenants: [{ Name: "", Email: "", Phone: "", LeaseDue: "", PropertyGuid: "" }]
   };
-
+//takes state from child component and update its accordly 
   handleChange = NewState => {
-    debugger;
+     ;
     this.setState({ Tenants: NewState });
   };
 
+	//function to test of function is Empty
   isEmpty(str) {
     return !str || /^\s*$/.test(str);
   }
 
   UploadSubmitCheck = async () => {
+	  //checks if forms are empty then reset state accordantly 
     if (
       !this.isEmpty(this.state.Tenants.Name) &&
       !this.isEmpty(this.state.Tenants.Email) &&
@@ -40,7 +44,8 @@ export default class AddTenants extends Component {
       });
     }
   };
-
+  
+//closes Fill empty forms notification 
   CloseFillFormsNoti() {
     this.setState({
       FillFormsNoti: false
@@ -78,10 +83,12 @@ export default class AddTenants extends Component {
           <AddTenantsForm
             UploadBtnCkcOnce={this.state.UploadBtnCkcOnce}
             onChanged={this.handleChange}
+			auth = {this.props.auth}
           />
           <AddTenantsSubmitButton
             Tenants={this.state.Tenants}
             UploadSubmitCheck={this.UploadSubmitCheck}
+			auth = {this.props.auth}
           />
         </Bounce>
       </div>

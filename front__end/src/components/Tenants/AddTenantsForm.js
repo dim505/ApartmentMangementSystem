@@ -2,17 +2,27 @@ import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 import Axios from 'axios';
 
+//contains text fields needed to added tenants 
 export default class AddTenantsForm extends Component {
   state = { Name: "", Email: "", Phone: "", LeaseDue: "", PropertyGuid: "",Properties: []};
 
   componentDidMount () {
-    this.GetProperties() 
+    //gets list of properties on component mount 
+	this.GetProperties() 
 
   }
-  GetProperties = () => {
-      var results =   Axios({
-        url: "https://amsbackend.azurewebsites.net/api/property"
-       }).then( (results) => 
+  //gets properties to prepopulate tenants house location drop-down 
+  GetProperties = async () => {
+	  //gets auth0 token 
+	  const BearerToken = await this.props.auth.getTokenSilently();
+	  //makes api call 
+      var results =   Axios.get("https://localhost:5001/api/property",
+	  {
+		  headers: {'Authorization': `bearer ${BearerToken}`}
+		  
+	  }
+	  
+       ).then( (results) => 
          this.setState({
         Properties: results.data,
         PropertyGuid: results.data[0].guid
@@ -25,16 +35,17 @@ export default class AddTenantsForm extends Component {
 
   
   
-  
+  //function  used to check for empty fields 
   isEmpty(str) {
     return !str || /^\s*$/.test(str);
   }
-
+	//updates state on which property was selected from dropdown / triggers parent component to update too 
   handleChangeDropdown = (event) => {
     this.setState({PropertyGuid: event.target.value}, () => this.props.onChanged(this.state) );
   }
+  //updates state on all other text forms / triggers parent component to update too 
   handleChange = NewState => {
-    debugger;
+     ;
     this.setState(NewState, () => this.props.onChanged(this.state));
   };
   render() {

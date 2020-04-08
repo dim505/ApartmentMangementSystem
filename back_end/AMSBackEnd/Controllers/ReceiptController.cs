@@ -5,19 +5,26 @@ using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AMSBackEnd.Model;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 
 
+//ReceiptController is responsible for all action methods related to the receipt page 
+
 namespace AMSBackEnd.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
+    
     public class ReceiptController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -32,11 +39,27 @@ namespace AMSBackEnd.Controllers
 
 		//this gets all the receipts from the database
         public IActionResult GetReceipts() {
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             List<ReceiptModel> Receipts = new List<ReceiptModel>();
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                Receipts = db.Query<ReceiptModel>("select *,'' as [ImageUrl] from Receipts inner join Images on Images.Guid = Receipts.ImageGuid").ToList();
+                Receipts = db.Query<ReceiptModel>("select *,'' " +
+                    "as [ImageUrl] from Receipts " +
+                    "inner join Images on Images.Guid = " +
+                    "Receipts.ImageGuid where Receipts.Auth0ID = @LoginUserIdentifier",
+                    new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }).ToList();
             }
                 return Ok(Receipts);
         }
@@ -44,7 +67,20 @@ namespace AMSBackEnd.Controllers
 		//this action method is responsible for deleting the requested receipt 
         [HttpDelete]
         [Route("delete/{id}")]
-        public IActionResult RemoveItem( int id) { 
+        public IActionResult RemoveItem( int id) {
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
+
             var connStr = _config["ConnectionStrings:DefaultConnection"];
 
             using (IDbConnection db = new SqlConnection(connStr)) {
@@ -56,11 +92,12 @@ namespace AMSBackEnd.Controllers
                     ID = id
                 });
                  SqlStr = @"delete from Receipts
-                            where id = @ID";
+                            where id = @ID and Auth0ID = @LoginUserIdentifier";
                  result = db.Execute(SqlStr, new
                 {
-                    ID = id
-                });
+                    ID = id,
+                    LoginUserIdentifier = LoginUserIdentifier
+                 });
             }
             return Ok();
            }
@@ -69,6 +106,19 @@ namespace AMSBackEnd.Controllers
         [HttpPost]
         [Route("UpdateReceipt")]
         public IActionResult UpdateReceipt([FromBody] JObject data) {
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
+
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             UpdateReceipt updatereceipt = data["receipt"].ToObject<UpdateReceipt>();
 
@@ -81,7 +131,7 @@ namespace AMSBackEnd.Controllers
                                     Store = @Store,
                                     Tax = @Tax,
                                     TotalAmount = @TotalAmount
-                                 where id = @ID";
+                                 where id = @ID and Auth0ID = @LoginUserIdentifier";
 
                 var result = db.Execute(SqlStr, new
                 {
@@ -89,7 +139,8 @@ namespace AMSBackEnd.Controllers
                     Store = updatereceipt.store,
                     Tax = updatereceipt.tax,
                     TotalAmount = updatereceipt.totalAmount,
-                    ID = updatereceipt.id
+                    ID = updatereceipt.id,
+                    LoginUserIdentifier = LoginUserIdentifier
 
                 }
 
@@ -112,7 +163,20 @@ namespace AMSBackEnd.Controllers
         [Route("UpdateImage/{id}")]
         public async Task<IActionResult> UpdateImage([FromRoute]String id, [FromForm]IFormFile body)
         {
-            
+
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
+
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             byte[] fileBytes;
             using (var memoryStream = new MemoryStream()) {
@@ -156,6 +220,19 @@ namespace AMSBackEnd.Controllers
         [Route("{id}")]
         public async Task<IActionResult> AddImage([FromRoute]String id, [FromForm]IFormFile body) {
 
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
+
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             byte[] fileBytes;
             using (var memoryStream = new MemoryStream()) {
@@ -192,18 +269,33 @@ namespace AMSBackEnd.Controllers
         [HttpPost]
         [Route("[action]")]
         public IActionResult AddReceipt([FromBody]JObject data) {
+            var LoginUserIdentifier = "";
+
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+
+            }
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             ReceiptModel receiptModel = data["receipt"].ToObject<ReceiptModel>();
 
             using (IDbConnection db = new SqlConnection(connStr)) {
-                var SqlStr = @"insert into Receipts(Date,Store,Tax,TotalAmount,ImageGuid) values (@Date,@Store,@Tax,@TotalAmount,@ImageGuid)";
+                var SqlStr = @"insert into Receipts(Date,Store,Tax,TotalAmount,ImageGuid,Auth0ID) values 
+                            (@Date,@Store,@Tax,@TotalAmount,@ImageGuid,@LoginUserIdentifier )";
                 var result = db.Execute(SqlStr, new {
 
                     Date = receiptModel.Date,
                     Store = receiptModel.Store,
                     Tax = receiptModel.Tax,
                     TotalAmount = receiptModel.TotalAmount,
-                    ImageGuid = receiptModel.ImageGuid
+                    ImageGuid = receiptModel.ImageGuid,
+                    LoginUserIdentifier = LoginUserIdentifier
                 }
 
 

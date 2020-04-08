@@ -22,5 +22,9 @@ namespace AMSBackEnd.Model
         public string filename { get; set; }
         public string contentType { get; set; }
         public string ImageUrl { get; set; }
+        public string Auth0ID { get; set; }
+
+        
+
     }
 }

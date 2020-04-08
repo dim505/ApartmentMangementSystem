@@ -9,6 +9,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
+
+//contains upload file and submit receipt icon/action to upload receipt  
 export default class UploadReceiptBtn extends Component {
   constructor(props) {
     super(props);
@@ -33,9 +35,10 @@ export default class UploadReceiptBtn extends Component {
     return (!str || /^\s*$/.test(str));
 }
 
-
+	//handles the submitting of data 
    submit = async (e) =>  {
     e.preventDefault();
+	//makes additional checks in the parent 
     this.props.UploadSubmitCheck()
     
 		//checks if all the text fields are empty
@@ -47,12 +50,15 @@ export default class UploadReceiptBtn extends Component {
         this.setState({ ProgessCircle: true });
 		//generates new GUID 
         var ImageGuid = this.uuidv4()
+		//gets Auth0 token 
+		const BearerToken = await this.props.auth.getTokenSilently();
 		//defines URL 
-        const AddImageUrl = `https://amsbackend.azurewebsites.net/api/receipt/${ImageGuid}`;
+        const AddImageUrl = `https://localhost:5001/api/receipt/${ImageGuid}`;
         const formData = new FormData();
         formData.append("body", this.state.file);
         const config = {
           headers: {
+		    'Authorization': `bearer ${BearerToken}`,
             "content-type": "multipart/form-data"
           }
         };
@@ -66,12 +72,17 @@ export default class UploadReceiptBtn extends Component {
         Mydata.receipt =  this.props.receipt
         Mydata.receipt.ImageGuid = ImageGuid
         console.log(Mydata)
-        const headers = {
-          'Content-Type': 'application/json'
-        }
+
 		
         //makes api call  
-        var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/AddReceipt",Mydata,headers)
+        var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/AddReceipt",Mydata,
+        {
+          headers: {'Authorization': `bearer ${BearerToken}`}
+  
+        }
+        
+        
+        )
         .then((AddRecResults) =>
         this.setState({ReceiptUploadedNoti: true}),
         console.log(AddRecResults)
@@ -87,7 +98,7 @@ export default class UploadReceiptBtn extends Component {
   setFile(e) {
     this.setState({ file: e.target.files[0], filepath: e.target.value });
   }
-
+  //closes Receipt Uploaded successfully Notification 
   CloseReceiptUploadedNoti () {
 
     this.setState({ReceiptUploadedNoti: false})

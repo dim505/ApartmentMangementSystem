@@ -10,19 +10,23 @@ import AddProperty from './components/Properties/AddProperty'
 import { Route } from "react-router-dom";
 import Callback from './components/LogIn/Callback'
 import LogOutcallback from './components/LogIn/LogOutcallback'
+import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css"
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {  
-      authenticated: false
+      authenticated: false,
+      ShowBrowserNoti: false ,
+      AppLoadedOnce: false
     };
   }
 
   componentDidMount(){
     document.title = "AMS"
     this.isUserAuthenticated();
+    
   }
 
 
@@ -30,41 +34,68 @@ class App extends Component {
     const isLoggedIn =  await this.props.auth.isAuthenticated();
      this.setState({ authenticated: isLoggedIn})
 }
+CloseShowBrowserNoti = () => {
+  this.setState({ ShowBrowserNoti: false })
+}
 
 
   render() {
+
+    if (!this.state.AppLoadedOnce && window.handleRedirectCallbackAlreadyCalled !== 1) {
+        this.setState({
+          AppLoadedOnce : true,
+          ShowBrowserNoti: true 
+
+        })
+
+
+
+    }
     return (
       <div>
+          <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          key={{ vertical: "bottom", horizontal: "center" }}
+          open={this.state.ShowBrowserNoti}
+          onClose={() => this.CloseShowBrowserNoti()}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers.</span>}
+        />
+
         <NavBar auth = {this.props.auth}
                 authenticated = {this.state.authenticated}
         />
         <Route exact path="/">
-          <HomeDashboard auth = {this.props.auth} />
+          <HomeDashboard auth = {this.props.auth} 
+          authenticated = {this.state.authenticated}/>
         </Route>
 
         <Route exact path="/Tenants">
-          <Tenants />
+          <Tenants auth = {this.props.auth}/>
         </Route>
 
         <Route exact path="/AddTenants">
-          <AddTenants />
+          <AddTenants auth = {this.props.auth}/>
         </Route>
 
 
         <Route exact path="/Receipt">
-          <Receipt />
+          <Receipt auth = {this.props.auth}/>
         </Route>
 
         <Route exact path="/AddReceipt">
-          <AddReceipt />
+          <AddReceipt auth = {this.props.auth}/>
         </Route>
 
         <Route exact path="/Properties">
-          <PropertyHomePage />
+          <PropertyHomePage 
+          auth = {this.props.auth} />
         </Route>
 
         <Route exact path="/AddProperty">
-          <AddProperty />
+          <AddProperty  auth = {this.props.auth}/>
         </Route>
 
         <Route  path="/callback" component={({...others}) =>

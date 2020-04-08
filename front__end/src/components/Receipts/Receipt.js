@@ -9,6 +9,7 @@ import Flip from "react-reveal/Flip";
 import Axios from 'axios';
 import Grid from "@material-ui/core/Grid";
 
+//this component displays the main receipt page 
 export default class Receipt extends Component {
   state = {
     Receipts: [],
@@ -31,10 +32,14 @@ export default class Receipt extends Component {
 
 
 	//makes api call and sets state
-     getReceipts =  () => {
-     var results =   Axios({
-      url: "https://amsbackend.azurewebsites.net/api/receipt"
-     }).then( (results) => 
+     getReceipts = async () => {
+     const BearerToken = await this.props.auth.getTokenSilently();
+     var results =   Axios.get("https://localhost:5001/api/receipt",
+     {
+      headers: {'Authorization': `bearer ${BearerToken}`}
+
+    }
+     ).then( (results) => 
      this.setState({
       Receipts: results.data
      }),
@@ -46,13 +51,13 @@ export default class Receipt extends Component {
 
 	
   HandleChangeReceiptModal = newState => {
-    debugger;
+     ;
     this.setState({ ReceiptFilterd: newState });
   };
 
 	//when the update modal is clicked, this filters out the receipts list to the select receipt 
   OpenModal = id => {
-    debugger;
+     ;
     let ReceiptFilterd = this.state.Receipts;
     ReceiptFilterd = ReceiptFilterd.filter(Receipt => Receipt.id === id);
 
@@ -66,7 +71,7 @@ export default class Receipt extends Component {
 
   	//when the update modal is clicked, this filters out the receipts list to the select receipt 
     OpnReceiptViewModal = id => {
-      debugger;
+       ;
       let ReceiptFilterd = this.state.Receipts;
       ReceiptFilterd = ReceiptFilterd.filter(Receipt => Receipt.id === id);
   
@@ -91,7 +96,7 @@ export default class Receipt extends Component {
   OpenItemSavedSnkBar = () => {
     //make api call to update the record, seperate to own function
 
-    debugger;
+     ;
 
 	//closes the update receipt modal
     this.CloseModal();
@@ -163,6 +168,7 @@ export default class Receipt extends Component {
           CloseModal={this.CloseModal}
           OpenItemSavedSnkBar={this.OpenItemSavedSnkBar}
           HandleChangeReceiptModal={this.HandleChangeReceiptModal}
+          auth = {this.props.auth}
         />
 
 
@@ -179,6 +185,7 @@ export default class Receipt extends Component {
           Receipts={this.state.Receipts}
           OpenItmRmvNoti={this.OpenItmRmvNoti}
           getReceipts = {this.getReceipts}
+          auth = {this.props.auth}
         />
         </div> ) : (
 

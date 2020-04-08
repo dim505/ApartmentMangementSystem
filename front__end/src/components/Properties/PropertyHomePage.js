@@ -16,6 +16,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import PropertyUpdateModal from "./PropertyUpdateModal"
 
 
+//this is the property home page 
 export default class PropertyHomePage extends Component {
     state = {Properties:[], PropertiesFiltered: [], ShowPropertyDetails: false,
        OpenPropertyRmvNoti: false,PropertyToShow: "", OpnModal: false}
@@ -27,11 +28,21 @@ export default class PropertyHomePage extends Component {
     this.GetProperties();      
     }
 
-    GetProperties = () => {
+    GetProperties = async () => {
+      		 //gets logged in user ID 
+           const BearerToken = await this.props.auth.getTokenSilently();
+	  //waits 1/2 second because when property gets updated then immediately get properties again, it will not always
+	  //show the updated records 
       setTimeout( () => {
-        var results =   Axios({
-          url: "https://amsbackend.azurewebsites.net/api/property"
-         }).then( (results) => 
+
+		//makes api call to get all properties 
+        var results =   Axios.get ("https://localhost:5001/api/property",
+        {
+          headers: {'Authorization': `bearer ${BearerToken}`}
+  
+        }
+        )
+        .then( (results) => 
            this.setState({
           Properties: results.data
          }),
@@ -45,14 +56,17 @@ export default class PropertyHomePage extends Component {
 
     }
 
+	//filters properties to show only 1 when modal is called 
     FilterProperty (Guid) {
 
       let PropertiesFiltered = this.state.Properties
+	  //returns only one property based on GUID
       PropertiesFiltered = PropertiesFiltered.filter(Property => Property.guid === Guid);
       this.setState({PropertiesFiltered: PropertiesFiltered})
 
     }
-
+	
+	//function to show the addition information component and for whitch property 
     ShowPropertyDetails (Guid) {
       this.setState({ShowPropertyDetails: !this.state.ShowPropertyDetails,
         PropertyToShow: Guid
@@ -60,24 +74,26 @@ export default class PropertyHomePage extends Component {
       })
     }
 
-
+	//opens "property was removed" notification 
     OpenPropertyRmvNoti = () => {
       this.setState({ OpenPropertyRmvNoti: true })
       
     }
-
+	
+	//closes "property was removed" notification 
     ClosePropertyRmvNoti = () => {
       this.setState({ OpenPropertyRmvNoti: false })
 
     }
 
+	//opens modal used to update property info
     OpnModal (guid) {
       this.setState({ OpnModal: true })
       this.FilterProperty(guid)
 
     }
 
-
+	//closes modal used to update property info
     CloseModal =  () => {
       this.setState({ OpnModal: false })
 
@@ -115,7 +131,7 @@ export default class PropertyHomePage extends Component {
         OpnModal = {this.state.OpnModal}
         CloseModal = {this.CloseModal}
         GetProperties = {this.GetProperties}
-        
+        auth = {this.props.auth}
         />
         { this.state.Properties.length > 0 ? (
               <Grid container spacing={3}>
@@ -132,7 +148,7 @@ export default class PropertyHomePage extends Component {
                           />
                           <CardContent>
                             <Typography gutterBottom variant="h5" component="h2">
-                                   {Property.street} {Property.city}, {Property.state}
+                                   {Property.street} {Property.city}, {Property.state} {Property.zipCode}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p">
                               
@@ -146,6 +162,7 @@ export default class PropertyHomePage extends Component {
                            GetProperties = {this.GetProperties}
                            OpenPropertyRmvNoti = {this.OpenPropertyRmvNoti} 
                            guid = {Property.guid}
+                           auth = {this.props.auth}
                            />
                           </CardActions>
                         </Card>

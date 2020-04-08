@@ -1,3 +1,5 @@
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
@@ -10,8 +12,8 @@ const auth0 = async () => createAuth0Client ({
   domain: "dev-5wttvoce.auth0.com",
   client_id: "xJ48BWaU5z5q31hoKaBgv7Izq7UIJAXA",
   //Redirect URL when authenication suceeds
-  redirect_uri: "http://localhost:3000/callback"
-
+  redirect_uri: "http://localhost:3000/callback",
+  audience: 'https://ReactAmsApi.com'
 
 })
 
@@ -27,3 +29,6 @@ auth0().then( auth => {
       document.getElementById("root"))
 
 });
+
+
+//https://stackoverflow.com/questions/51391051/call-child-component-function-from-parent

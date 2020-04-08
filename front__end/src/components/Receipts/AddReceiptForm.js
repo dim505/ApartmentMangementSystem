@@ -11,7 +11,7 @@ export default class ReceiptForm extends Component {
   }
 
 
-
+	//function tests fields for emptiness 
   isEmpty(str) {
     return (!str || /^\s*$/.test(str));
   }

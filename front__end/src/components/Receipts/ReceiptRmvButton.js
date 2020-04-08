@@ -7,13 +7,20 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+//component used to removed receipt (contains remove button and API call to remove )
 export default class ReceiptRmvButton extends Component {
   state = { OpnWarningBox: false };
 
   OpenItmRmvNoti = async (id) => {
     this.CloseWarnBox();
-        //makes the API call to delete selected receipt
-    await Axios.delete(`https://amsbackend.azurewebsites.net/api/receipt/delete/${id}`);
+    //makes the API call to delete selected receipt
+    const BearerToken = await this.props.auth.getTokenSilently();
+    await Axios.delete(`https://localhost:5001/api/receipt/delete/${id}`,
+    {
+      headers: {'Authorization': `bearer ${BearerToken}`}
+  
+    }
+    );
     //refeshes main page again to get new list of receipts
 	this.props.getReceipts();
 	//opens "item removed" notification 

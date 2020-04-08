@@ -14,7 +14,7 @@ import Fade from "@material-ui/core/Fade";
 import Axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 
-
+//contains modal used to update a single property 
 export default class PropertyUpdateModal extends Component {
   state = { 
      OpnModal: false,
@@ -33,18 +33,26 @@ export default class PropertyUpdateModal extends Component {
         street : document.getElementById("street").value,
         city : document.getElementById("city").value,
         state : document.getElementById("state").value, 
+        zipcode : document.getElementById("zipcode").value, 
         unit : document.getElementById("unit").value, 
         yearlyInsurance : document.getElementById("yearlyInsurance").value, 
         tax : document.getElementById("tax").value, 
       }
       Mydata.property = property
       console.log(Mydata)
-      const headers = {
-        'Content-Type': 'application/json'
-      }
+      const BearerToken = await this.props.auth.getTokenSilently();
+      //defines headers
+
   
        //makes API call to update text portion of the reciept 
-      var Results = await Axios.post("https://amsbackend.azurewebsites.net/api/property/UpdateProperty",Mydata,headers)
+      var Results = await Axios.post("https://localhost:5001/api/property/UpdateProperty",
+      Mydata,
+      {
+        headers: {'Authorization': `bearer ${BearerToken}`}
+
+      }
+      
+      )
       .then((Results) =>
       this.props.CloseModal(),
       this.setState({OpenPropertySavedNoti: true}),
@@ -54,11 +62,12 @@ export default class PropertyUpdateModal extends Component {
 
 
     }
-
+	
+	//opens property saved notification 
     OpenPropertySavedNoti= () => {
       this.setState({OpenPropertySavedNoti: true})
     }
-
+	//closes property saved notification 
     ClosePropertySavedNoti = () => {
       this.setState({OpenPropertySavedNoti: false})
       }
@@ -136,7 +145,26 @@ export default class PropertyUpdateModal extends Component {
                         }}
 
                       />
+
+
                     </TableCell>
+
+                    <TableCell align="right">
+                    <TextField
+                        id="zipcode"
+                        label="Zip Code"
+                        type="text"
+                        defaultValue={Property.zipCode}
+                        InputLabelProps={{
+                          shrink: true
+                        }}
+
+                      />
+
+
+                    </TableCell>
+
+
                     <TableCell align="right">
                     <TextField
                         id="unit"

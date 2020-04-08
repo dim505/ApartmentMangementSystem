@@ -17,7 +17,7 @@ import Button from "@material-ui/core/Button";
 import Tooltip from "../Tooltip";
 
 
-
+//this component contains the view only modal 
 export default class ReceiptViewOnlyModal extends Component {
   state = { 
      OpnModal: false, 

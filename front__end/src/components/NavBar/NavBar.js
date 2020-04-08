@@ -26,10 +26,11 @@ function HomeIcon(props) {
 
 export default class NavBar extends Component {
 
+//redirects user to log in page
   Login = () => {
     this.props.auth.loginWithRedirect();
   }
-  
+  //logs user out of application 
   Logout = () => {
       this.props.auth.logout({
           returnTo: "http://localhost:3000/LogOutcallback"
@@ -57,7 +58,8 @@ export default class NavBar extends Component {
                 </Typography>
               </NavLink>
 
-              <NavLink
+          {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
+			       <NavLink
                 className="navbar__link"
                 activeClassName="navbar__link--active"
                 to="/Tenants"
@@ -65,8 +67,12 @@ export default class NavBar extends Component {
                 <Typography variant="h6" color="inherit">
                   <PeopleIcon style={{ fontSize: 48 }} />
                 </Typography>
-              </NavLink>
+              </NavLink> 
+                  :   <div></div>      
+          }   
 
+
+      {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
               <NavLink
                 className="navbar__link"
                 activeClassName="navbar__link--active"
@@ -75,9 +81,11 @@ export default class NavBar extends Component {
                 <Typography variant="h6" color="inherit">
                   <AttachMoneyIcon style={{ fontSize: 48 }} />
                 </Typography>
-              </NavLink>
-
-
+              </NavLink> 
+                  :   <div></div>      
+          }    
+		  
+		    {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
               <NavLink
                 className="navbar__link"
                 activeClassName="navbar__link--active"
@@ -86,9 +94,9 @@ export default class NavBar extends Component {
                 <Typography variant="h6" color="inherit">
                   <ApartmentIcon style={{ fontSize: 48 }} />
                 </Typography>
-              </NavLink>
-
-
+              </NavLink> 
+                  :   <div></div>      
+          }   
 
               {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                          <Button onClick={this.Logout} variant="contained" color="secondary">
                         Log Out

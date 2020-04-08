@@ -8,21 +8,25 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Axios from "axios";
 
+//contains save button for modal 
 export default class TenantModalSave extends Component {
   state = { OpnSaveWarningBox: false };
-
+	//closes warning save YES/no box 
   CloseSaveWarnBox = () => {
     this.setState({ OpnSaveWarningBox: false });
   };
-
+	//opens warning save YES/no box
   OpenSaveWarnBox = () => {
     this.setState({ OpnSaveWarningBox: true });
   };
 
-  update = (e) => {
+//function handles the updating of a tenant 
+  update = async (e) => {
       e.preventDefault();
-      var Mydata = {}
-      var tenant = {
+	//builds out object
+	 var Mydata = {}
+      
+	  var tenant = {
         
         name : document.getElementById("name").value, 
         email : document.getElementById("email").value, 
@@ -33,19 +37,23 @@ export default class TenantModalSave extends Component {
         
         
       }
-
-
+	  //gets auth0 token 
+	  const BearerToken = await this.props.auth.getTokenSilently();
       Mydata.tenant = tenant
-      const headers = {
-        'Content-Type' : 'application/json'
-      }
+
       console.log(Mydata)
-      var results = Axios.post("https://amsbackend.azurewebsites.net/api/tenant/UpdateTenant",Mydata,headers)
+	  //makes API call 
+      var results = Axios.post("https://localhost:5001/api/tenant/UpdateTenant",Mydata,
+      {
+        headers: {'Authorization': `bearer ${BearerToken}`}
+    
+      }
+      )
       .then(results => console.log(results))
 
 
         }
-
+	//opens Tenant was saved notification and closes modal/warning box 
   OpenTenantSaveNoti = (e) => {
     this.CloseSaveWarnBox();
     this.props.CloseModal();

@@ -7,11 +7,11 @@ import UploadReceiptBtn from "./uploadReceiptBtn";
 import AddReceiptForm from './AddReceiptForm';
 import Snackbar from "@material-ui/core/Snackbar";
 
-
+//parent component contains forms and submit button for add receipt page 
 export default class Receipt extends Component {
   state = {receipt: {Date: "",Store: "",Tax: "", TotalAmount: "" }, UploadBtnCkcOnce: false, FillFormsNoti: false}
 
-
+	//takes state from child component and update its accordingly 
   handleChange = (NewState) => {
     this.setState({receipt: NewState})
   }
@@ -25,14 +25,14 @@ export default class Receipt extends Component {
 
   UploadSubmitCheck = async () => {
 
-	//checks if forms are empty then reset state accordly 
+	//checks if forms are empty then reset state accordingly 
     if (!this.isEmpty(this.state.receipt.Date) && 
     !this.isEmpty(this.state.receipt.Store) &&
     !this.isEmpty(this.state.receipt.Tax) &&
     !this.isEmpty(this.state.receipt.TotalAmount) 
     
     ) {
-
+		//
       await this.setState({
         UploadBtnCkcOnce: false,
         FillFormsNoti: false
@@ -42,6 +42,7 @@ export default class Receipt extends Component {
 
 
     } else {
+		//opens the appropriate notifications 
        await this.setState({
         UploadBtnCkcOnce: true,
         FillFormsNoti: true
@@ -52,7 +53,7 @@ export default class Receipt extends Component {
 
 
   }       
-
+	//closes Fill empty forms notification 
   CloseFillFormsNoti() {
 
      this.setState({
@@ -98,6 +99,7 @@ export default class Receipt extends Component {
               UploadSubmitCheck = {this.UploadSubmitCheck}  
               UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}
               FillFormsNoti = {this.state.FillFormsNoti}
+			  auth = {this.props.auth}
 
           />
         </Bounce>

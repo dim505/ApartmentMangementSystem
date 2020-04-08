@@ -8,17 +8,23 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Axios from 'axios';
 
+//contains remove  button to delete a tenant  
 export default class TenantRemoveButton extends Component {
   state = { OpnWarningBox: false };
 
-  RemoveTenant (guid) {
-    
-     Axios.delete(`https://amsbackend.azurewebsites.net/api/tenant/delete/${guid}`);
-
+  async RemoveTenant (guid) {
+		const BearerToken = await this.props.auth.getTokenSilently();
+     Axios.delete(`https://localhost:5001/api/tenant/delete/${guid}`,
+	     {
+      headers: {'Authorization': `bearer ${BearerToken}`}
+  
+    }
+	 );
+	
 
   }
 
-
+//opens Tenant was saved notification and closes modal/warning box 
   OpenItmRmvNoti = (guid) => {
     this.RemoveTenant(guid)
     this.CloseWarnBox();
@@ -26,10 +32,12 @@ export default class TenantRemoveButton extends Component {
     this.props.GetProperties();
     this.props.GetTenants();
   };
+  
+  //closes warning save YES/no box 
   CloseWarnBox = () => {
     this.setState({ OpnWarningBox: false });
   };
-
+	//opens warning save YES/no box
   OpenWarnBox = () => {
     this.setState({ OpnWarningBox: true });
   };

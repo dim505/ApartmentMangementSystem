@@ -7,13 +7,22 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
+
+//contains button and action used to remove a property from database 
 export default class PropertyRemoveButton extends Component {
   state = { OpnWarningBox: false };
 
+//opens the property was successfully removed notification 
   OpenPropertyRmvNoti = async (id) => {
     this.CloseWarnBox();
+    const BearerToken = await this.props.auth.getTokenSilently();
   //makes the API call to delete selected receipt
-  await Axios.delete(`https://amsbackend.azurewebsites.net/api/property/delete/${id}`);
+  await Axios.delete(`https://localhost:5001/api/property/delete/${id}`,
+  {
+    headers: {'Authorization': `bearer ${BearerToken}`}
+
+  }
+  );
     //refeshes main page again to get new list of receipts
 	this.props.GetProperties();
 	//opens "item removed" notification 
