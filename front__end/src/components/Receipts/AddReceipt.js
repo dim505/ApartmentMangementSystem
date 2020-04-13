@@ -9,8 +9,18 @@ import Snackbar from "@material-ui/core/Snackbar";
 
 //parent component contains forms and submit button for add receipt page 
 export default class Receipt extends Component {
+  constructor(props) {
+      super(props);
+      this.AddReceiptForm = React.createRef();
+  }
+  
   state = {receipt: {Date: "",Store: "",Tax: "", TotalAmount: "" }, UploadBtnCkcOnce: false, FillFormsNoti: false}
 
+  ClearAddReceiptFormState = () => {
+    this.AddReceiptForm.current.ClearAddReceiptFormState();
+
+
+  }
 	//takes state from child component and update its accordingly 
   handleChange = (NewState) => {
     this.setState({receipt: NewState})
@@ -92,6 +102,7 @@ export default class Receipt extends Component {
           <AddReceiptForm 
                 onChanged = {this.handleChange}
                 UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}
+                ref = {this.AddReceiptForm}
                 
                 />
           <UploadReceiptBtn
@@ -99,7 +110,9 @@ export default class Receipt extends Component {
               UploadSubmitCheck = {this.UploadSubmitCheck}  
               UploadBtnCkcOnce = {this.state.UploadBtnCkcOnce}
               FillFormsNoti = {this.state.FillFormsNoti}
-			  auth = {this.props.auth}
+              auth = {this.props.auth}
+              ClearAddReceiptFormState = {this.ClearAddReceiptFormState}
+              
 
           />
         </Bounce>

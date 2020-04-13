@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 
 //contains the textfields for the add receipt form 
-export default class ReceiptForm extends Component {
+export default class AddReceiptForm extends Component {
     state = {
         Date: "",
         Store: "",
@@ -10,6 +10,17 @@ export default class ReceiptForm extends Component {
         TotalAmount: ""
   }
 
+
+  ClearAddReceiptFormState = () => {
+    this.setState({
+      Date: "",
+      Store: "",
+      Tax: "",
+      TotalAmount: ""
+    })
+
+
+  }
 
 	//function tests fields for emptiness 
   isEmpty(str) {
@@ -79,7 +90,7 @@ export default class ReceiptForm extends Component {
                     : " "
                 }
                 type="number"
-                value={this.state.tax}
+                value={this.state.Tax}
                 onChange={event =>
                   this.handleChange({ Tax: event.target.value })
                 }

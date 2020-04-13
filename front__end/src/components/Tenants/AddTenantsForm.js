@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 import Axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 //contains text fields needed to added tenants 
 export default class AddTenantsForm extends Component {
@@ -11,6 +12,20 @@ export default class AddTenantsForm extends Component {
 	this.GetProperties() 
 
   }
+
+
+  ClearAddTenantsFormState = () => {
+      this.setState({
+        Name: "", 
+        Email: "",
+        Phone: "", 
+        LeaseDue: ""
+        
+
+      })
+
+  }
+
   //gets properties to prepopulate tenants house location drop-down 
   GetProperties = async () => {
 	  //gets auth0 token 
@@ -58,7 +73,7 @@ export default class AddTenantsForm extends Component {
     <Form.Control as="select" value={this.state.PropertyGuid} onChange={this.handleChangeDropdown} >
     
       {this.state.Properties.map(property => 
-     <option key={property.guid} value={property.guid}> {property.street} {property.city}, {property.state} </option>
+     <option key={property.guid} value={property.guid}> {property.street} {property.city}, {property.state} {property.zipCode}</option>
       )
       
       }

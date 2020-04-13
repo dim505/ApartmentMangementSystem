@@ -36,10 +36,15 @@ namespace AMSBackEnd.Jobs
             job => job.Run(JobCancellationToken.Null),
             Cron.Daily(5, 00), TimeZoneInfo.Local);
 
-
             RecurringJob.RemoveIfExists(nameof(LeaseDateSendText));
             RecurringJob.AddOrUpdate<Inter_LeaseDateSendText>(
                  LeaseDateSendText => LeaseDateSendText.SendText(), Cron.Daily);
+          
+            RecurringJob.RemoveIfExists(nameof(SendEmail));
+            RecurringJob.AddOrUpdate<ISendEmail>(
+                             SendEmail => SendEmail.SendEmailAction(), Cron.Daily);
+
+
 
         }
 

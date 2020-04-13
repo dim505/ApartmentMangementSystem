@@ -11,6 +11,8 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import Button from '@material-ui/core/Button';
+import Tooltip from "../Tooltip";  
+import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
 
 function HomeIcon(props) {
   return (
@@ -39,6 +41,16 @@ export default class NavBar extends Component {
   }
 
   render() {
+
+    const QuestIconStyle = {
+      marginTop: "7px",
+      fontSize: "24px",
+      color:"red"
+
+
+    }
+
+
     return (
       <div className="NavBar"      >
         <Flip left>
@@ -101,9 +113,31 @@ export default class NavBar extends Component {
               {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                          <Button onClick={this.Logout} variant="contained" color="secondary">
                         Log Out
                         </Button> 
-                  :   <Button onClick={this.Login} variant="contained" color="secondary">
-               Log In
-           </Button>          
+                  :   
+                  
+                  
+                  <div>    
+                  <Button onClick={this.Login} variant="contained" color="secondary">
+                       Log In
+                   </Button>    
+        
+                          <Tooltip
+                        placement="bottom"
+                        tooltip="Would you like to Log in without creating an account?
+                        Please use these credentials:
+                        **** Username: test@mailinator.com ****
+                        **** Password: Abcd@1234 *****       
+                        "
+                                              >
+                                                
+                        <LiveHelpOutlinedIcon 
+                        fontSize="large"
+                        />
+                        
+                        </Tooltip>
+        
+        
+                  </div>          
           }    
 
 

@@ -15,14 +15,16 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Cors;
+using System.Net.Http;
+using System.Net;
 
 //PropertyController is responsible for all action methods related to the property page 
 namespace AMSBackEnd.Controllers
 {
-    [Authorize]   
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class PropertyController : ControllerBase
     {
 
@@ -32,8 +34,8 @@ namespace AMSBackEnd.Controllers
         {
             _config = config;
         }
-	
-		//adds property to database
+
+        //adds property to database
         [HttpPost]
         [Route("[action]")]
         public IActionResult AddProperty([FromBody]JObject data)
@@ -61,15 +63,15 @@ namespace AMSBackEnd.Controllers
                 (@Street,@City,@State,@ZipCode,@Unit,@YearlyInsurance,@Tax,@Guid, @LoginUserIdentifier)";
                 var result = db.Execute(SqlStr, new
                 {
-                           Street = propertyModel.Street,
-                            City = propertyModel.City,
-                            State = propertyModel.State,
-                            ZipCode = propertyModel.ZipCode,
-                            Unit = propertyModel.Unit,
-                            YearlyInsurance = propertyModel.YearlyInsurance,
-                            Tax = propertyModel.Tax,
-                            Guid = propertyModel.Guid,
-                            LoginUserIdentifier = LoginUserIdentifier
+                    Street = propertyModel.Street,
+                    City = propertyModel.City,
+                    State = propertyModel.State,
+                    ZipCode = propertyModel.ZipCode,
+                    Unit = propertyModel.Unit,
+                    YearlyInsurance = propertyModel.YearlyInsurance,
+                    Tax = propertyModel.Tax,
+                    Guid = propertyModel.Guid,
+                    LoginUserIdentifier = LoginUserIdentifier
                 }
 
                     );
@@ -79,10 +81,11 @@ namespace AMSBackEnd.Controllers
 
         }
 
-		//updates property settings in the database 
+        //updates property settings in the database 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult UpdateProperty([FromBody] JObject data) {
+        public IActionResult UpdateProperty([FromBody] JObject data)
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -124,7 +127,7 @@ namespace AMSBackEnd.Controllers
 
                 });
                 return Ok();
-                }
+            }
         }
 
         [HttpGet]
@@ -150,16 +153,16 @@ namespace AMSBackEnd.Controllers
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 Properties = db.Query<PropertyModel>("select * from Properties where Auth0ID = @LoginUserIdentifier",
-                    new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true} }
+                    new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }
                     ).ToList();
             }
             return Ok(Properties);
         }
 
-		//deletes a property from the database
+        //deletes a property from the database
         [HttpDelete]
         [Route("delete/{id}")]
-        public IActionResult DeleteProperty(string id) 
+        public IActionResult DeleteProperty(string id)
         {
             var LoginUserIdentifier = "";
 
@@ -175,22 +178,66 @@ namespace AMSBackEnd.Controllers
 
             }
             var connstr = _config["ConnectionStrings:DefaultConnection"];
-            using (IDbConnection db = new SqlConnection(connstr)) {
+            using (IDbConnection db = new SqlConnection(connstr))
+            {
 
                 var SqlStr = @"Delete from Properties
                                     where Guid = @Guid and Auth0ID = @LoginUserIdentifier";
-                db.Execute(SqlStr, new { Guid = id,
-                                            LoginUserIdentifier = LoginUserIdentifier
+                db.Execute(SqlStr, new
+                {
+                    Guid = id,
+                    LoginUserIdentifier = LoginUserIdentifier
                 });
 
             }
             return Ok();
-        
-        
+
+
+        }
+
+
+        [HttpGet]
+        [Route("[action]")]
+        public String GetSuggestedPropertiesAddress(string query)
+        {
+
+            var BaseUrl = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json";
+
+
+            var apiKey = _config["SuggAddrApiKey"];
+            var country = "USA";
+            var query2 = query.Replace(" ", "+");
+            var maxresults = "20";
+            var urlParameters = "?apiKey=" + apiKey + "&query=" + query2 + "&maxresults=" + maxresults + "&country=" + country;
+            var url = BaseUrl + urlParameters;
+            using (var client = new HttpClient())
+            {
+                var request = (HttpWebRequest)WebRequest.Create(url);
+                //  request.KeepAlive = false;
+
+                //here check for the authentication headers if any
+                request.PreAuthenticate = true;
+
+                //For JSON Response .....
+                request.Method = "GET";
+                request.ContentType = "application/json";
+
+                var response = (HttpWebResponse)request.GetResponse();
+
+                string s = response.ToString();
+                StreamReader reader = new StreamReader(response.GetResponseStream());
+
+                var result = reader.ReadToEnd().Trim();
+                return (result);
+
+            }
+
+
+
         }
 
 
 
-
     }
+
 }

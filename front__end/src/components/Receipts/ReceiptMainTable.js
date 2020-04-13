@@ -13,9 +13,10 @@ import ReceiptRmvButton from "./ReceiptRmvButton";
 import Button from "@material-ui/core/Button";
 import ReceiptImageModal from "./ReceiptImageModal";
 
+
 //contains all the receipts that have been uploaded 
 export default class ReceiptMainTable extends Component {
-  state = { OpenImageModal: false,ReceiptFilterdImg: [{imageUrl: "ee"}] };
+  state = { OpenImageModal: false,ReceiptFilterdImg: [{imageUrl: "ee"}],ProgessCircle : false };
 
 	//converts string from data bases to an array buffer 
   base64ToArrayBuffer(base64) {
@@ -121,13 +122,14 @@ export default class ReceiptMainTable extends Component {
                   </Button>
                 </TableCell>
                 <TableCell align="right">
-                  <ReceiptRmvButton
-                    OpenItmRmvNoti={this.props.OpenItmRmvNoti}
-                    id = {Receipt.id}
-                    getReceipts = {this.props.getReceipts}
-                    auth = {this.props.auth}
+                        <ReceiptRmvButton
+                          OpenItmRmvNoti={this.props.OpenItmRmvNoti}
+                          id = {Receipt.id}
+                          getReceipts = {this.props.getReceipts}
+                          auth = {this.props.auth}
 
-                  />
+                        />
+
                 </TableCell>
 
 

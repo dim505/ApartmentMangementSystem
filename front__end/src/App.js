@@ -18,8 +18,7 @@ class App extends Component {
 
     this.state = {  
       authenticated: false,
-      ShowBrowserNoti: false ,
-      AppLoadedOnce: false
+      ShowBrowserNoti: false
     };
   }
 
@@ -34,20 +33,22 @@ class App extends Component {
     const isLoggedIn =  await this.props.auth.isAuthenticated();
      this.setState({ authenticated: isLoggedIn})
 }
+
+OpenShowBrowserNoti = () => {
+  this.setState({ ShowBrowserNoti: true })
+}
+
 CloseShowBrowserNoti = () => {
   this.setState({ ShowBrowserNoti: false })
 }
 
 
-  render() {
+  render  () {
 
-    if (!this.state.AppLoadedOnce && window.handleRedirectCallbackAlreadyCalled !== 1) {
-        this.setState({
-          AppLoadedOnce : true,
-          ShowBrowserNoti: true 
-
-        })
-
+    if (sessionStorage.getItem('AppLoadedOnce') !== true && this.state.ShowBrowserNoti === false) {
+        
+        sessionStorage.setItem('AppLoadedOnce', true)
+        
 
 
     }

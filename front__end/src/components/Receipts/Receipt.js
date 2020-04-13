@@ -8,6 +8,8 @@ import ReceiptViewOnlyModal from './ReceiptViewOnlyModal'
 import Flip from "react-reveal/Flip";
 import Axios from 'axios';
 import Grid from "@material-ui/core/Grid";
+import LinearProgress  from '@material-ui/core/LinearProgress';
+import Fade from 'react-reveal/Fade';
 
 //this component displays the main receipt page 
 export default class Receipt extends Component {
@@ -17,7 +19,9 @@ export default class Receipt extends Component {
     OpenItmRmvNoti: false,
     OpenItemSavedNoti: false,
     OpnSaveWarningBox: false,
-    OpnReceiptViewModal: false 
+    OpnReceiptViewModal: false,
+    ShowLoader: true,
+    ShowBody: false
   };
 
 	
@@ -41,7 +45,9 @@ export default class Receipt extends Component {
     }
      ).then( (results) => 
      this.setState({
-      Receipts: results.data
+      Receipts: results.data,
+      ShowBody: true,
+      ShowLoader: false
      }),
       
      );
@@ -158,6 +164,17 @@ export default class Receipt extends Component {
           message={<span id="message-id">Item Removed</span>}
         />
         </div>
+        </Flip>
+
+        
+
+        <Fade top when={this.state.ShowLoader}>
+
+        <LinearProgress  />
+        </Fade>
+
+        <Fade top when={this.state.ShowBody}>
+
         
         {this.state.Receipts.length > 0 ? ( 
         
@@ -194,7 +211,9 @@ export default class Receipt extends Component {
 
         }
 
-</Flip>
+        </Fade>
+
+
       </div>
     );
   }

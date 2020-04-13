@@ -246,7 +246,7 @@ export default class Tenants extends Component {
 
           
         />
-        <Zoom left>
+        <Zoom  left>
           <Grid container spacing={0}>
             <Grid item xs={3} />
             <Grid item xs={3} />
@@ -296,7 +296,7 @@ export default class Tenants extends Component {
                   </CardActions>
                 </Card>
                 <Flip
-                  left
+                  left  
                   when={
                     this.state.ShowTenantList &&
                     this.state.PropertyToShow === Property.guid

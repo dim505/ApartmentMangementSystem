@@ -40,6 +40,7 @@ namespace AMSBackEnd
 
             services.AddScoped<IMyJob, MyJob>();
             services.AddScoped<Inter_LeaseDateSendText, LeaseDateSendText>();
+            services.AddScoped<ISendEmail, SendEmail>();
 
             services.AddCors(options =>
             {
@@ -104,9 +105,16 @@ namespace AMSBackEnd
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IWebHostEnvironment env)
         {
+            var builder = new ConfigurationBuilder()
+                 .SetBasePath(env.ContentRootPath)
+                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                 .AddEnvironmentVariables();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                builder.AddUserSecrets<Startup>();
             }
 
 

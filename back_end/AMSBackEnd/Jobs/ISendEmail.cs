@@ -1,41 +1,31 @@
-﻿using Dapper;
+﻿using AMSBackEnd.Model;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using Twilio;
-using Twilio.Rest.Api.V2010.Account;
-using Twilio.Types;
-
-
 using System.Data.SqlClient;
-using AMSBackEnd.Model;
+using System.Linq;
+using System.Net.Mail;
+using System.Threading.Tasks;
 
 namespace AMSBackEnd.Jobs
 {
-    interface Inter_LeaseDateSendText
+    interface ISendEmail
     {
-        void SendText();
-
+        void SendEmailAction();
     }
 
-
-
-
-    public class LeaseDateSendText : Inter_LeaseDateSendText
+    public class SendEmail : ISendEmail 
     {
 
         private readonly IConfiguration _config;
 
-        public LeaseDateSendText(IConfiguration config)
-        {
-
+        public SendEmail(IConfiguration config) {
             _config = config;
         }
 
-        public void SendText()
-        {
+        public void SendEmailAction() {
 
             var connstr = _config["ConnectionStrings:DefaultConnection"];
             var list = new List<KeyValuePair<string, string>>();
@@ -59,26 +49,30 @@ namespace AMSBackEnd.Jobs
 
                 }
 
-                string TwilloAccountSid = _config["TwilloAccountSid"];
+                string GmailPassword = _config["GmailPassword"];
 
-                //Environment.GetEnvironmentVariable("ENTER_ACCOUNT_SID_HERE");
-                string TwilloAuthToken = _config["TwilloAuthToken"];
-                TwilioClient.Init(TwilloAccountSid, TwilloAuthToken);
-                var to = new PhoneNumber("14134754431");
+
 
                 string StrList = "Peoples Lease who is about to Expire: " + string.Join("^", list);
 
-                var from = new PhoneNumber("14695072106");
-                var message = MessageResource.Create(
-                        to: to,
-                        from: from,
-                        body: StrList
-                    );
+                MailMessage mail = new MailMessage();
+                SmtpClient SmtpSever = new SmtpClient("smtp.gmail.com");
+                mail.From = new MailAddress("sendemailams@gmail.com");
+                mail.To.Add("d.komerzan@gmail.com");
+                mail.Subject = "Tenants Whos Lease Are About To Expire";
+                mail.Body = StrList;
+                SmtpSever.Port = 587;
+                SmtpSever.Credentials = new System.Net.NetworkCredential("sendemailams@gmail.com", GmailPassword);
+                SmtpSever.EnableSsl = true;
+                SmtpSever.Send(mail);
 
-              
+
             }
 
+
         }
+
+
 
     }
 }

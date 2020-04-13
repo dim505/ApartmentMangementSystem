@@ -6,12 +6,19 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from "@material-ui/core/Grid";
 
 //component used to removed receipt (contains remove button and API call to remove )
 export default class ReceiptRmvButton extends Component {
-  state = { OpnWarningBox: false };
+  state = { OpnWarningBox: false,ProgessCircle: false };
 
   OpenItmRmvNoti = async (id) => {
+    this.setState({
+
+      ProgessCircle: true
+
+    })
     this.CloseWarnBox();
     //makes the API call to delete selected receipt
     const BearerToken = await this.props.auth.getTokenSilently();
@@ -25,6 +32,12 @@ export default class ReceiptRmvButton extends Component {
 	this.props.getReceipts();
 	//opens "item removed" notification 
    this.props.OpenItmRmvNoti();
+
+   this.setState({
+
+    ProgessCircle: false
+
+  })
 
   };
   //this closes are save warning dialog box
@@ -66,13 +79,31 @@ export default class ReceiptRmvButton extends Component {
           </DialogActions>
         </Dialog>
 
-        <Button
-          onClick={() => this.OpenWarnBox()}
-          variant="outlined"
-          color="secondary"
-        >
-          Remove
-        </Button>
+
+
+        <Grid container>
+
+                    <Grid item>
+                    <Button
+                      onClick={() => this.OpenWarnBox()}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      Remove
+                    </Button>
+
+                    </Grid>
+
+                    <Grid item>
+                  {this.state.ProgessCircle && (
+                  <div className="ProgessCircle">
+                  <CircularProgress />
+                </div>
+                )}
+                    </Grid>
+                  </Grid>
+
+
       </div>
     );
   }

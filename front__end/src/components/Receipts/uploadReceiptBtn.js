@@ -18,7 +18,8 @@ export default class UploadReceiptBtn extends Component {
       ReceiptUploadedNoti: false,
       file: null,
       filepath: "",
-      ProgessCircle: false
+      ProgessCircle: false,
+      ReceiptFileTooBigNoti: false
     };
   }
 
@@ -85,10 +86,17 @@ export default class UploadReceiptBtn extends Component {
         )
         .then((AddRecResults) =>
         this.setState({ReceiptUploadedNoti: true}),
-        console.log(AddRecResults)
+        console.log(AddRecResults),
+        this.props.ClearAddReceiptFormState()
         )
 
-        this.setState({ ProgessCircle: false });
+        this.setState({ 
+          ProgessCircle: false,
+          file: null,
+          filepath: "",
+          
+
+        });
       }
 
 
@@ -96,7 +104,16 @@ export default class UploadReceiptBtn extends Component {
   }
 
   setFile(e) {
+
+    if (e.target.files[0].size < 1000000) { 
     this.setState({ file: e.target.files[0], filepath: e.target.value });
+
+    } else {
+
+      this.setState({ReceiptFileTooBigNoti: true})
+    }
+
+
   }
   //closes Receipt Uploaded successfully Notification 
   CloseReceiptUploadedNoti () {
@@ -104,6 +121,14 @@ export default class UploadReceiptBtn extends Component {
     this.setState({ReceiptUploadedNoti: false})
 
   }
+
+     
+    CloseReceiptFileTooBigNoti () {
+
+      this.setState({ReceiptFileTooBigNoti: false})
+  
+    }
+
   render() {
     return (
       <div> 
@@ -118,6 +143,18 @@ export default class UploadReceiptBtn extends Component {
           }}
           message={<span id="message-id">Receipt Uploaded</span>}
         />
+
+<Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+          key={{ vertical: "bottom", horizontal: "center" }}
+          open={this.state.ReceiptFileTooBigNoti}
+          onClose={() => this.CloseReceiptFileTooBigNoti()}
+          ContentProps={{
+            "aria-describedby": "message-id"
+          }}
+          message={<span id="message-id">Please Upload an Image smaller than 1 MB</span>}
+        />
+
       </div>
       <form onSubmit={e => this.submit(e)}>
         <Form.Group as={Row}>

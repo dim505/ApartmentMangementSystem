@@ -101,15 +101,18 @@ export default class AddProperty extends Component {
     query = query.join("");
 
     console.log(query);
-	//makes the API call to gets the suggestions 
+    //gets logged in user ID 
+    const BearerToken = await this.props.auth.getTokenSilently();
+  	//makes the API call to gets the suggestions 
     var result = await Axios.get(
-      "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json",
+      "https://localhost:5001/api/property/GetSuggestedPropertiesAddress",
+
       {
+        headers: {'Authorization': `bearer ${BearerToken}`},
         params: {
-          apiKey: `rFWVaP56x9m5GN_mD-1ai8S2uBFl73CJrsPLS38OwZ8`,
-          country: "USA",
+
           query: query,
-          maxresults: 20
+
         }
       }
 

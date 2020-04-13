@@ -10,9 +10,18 @@ import Bounce from "react-reveal/Bounce";
 
 //main parent that houses the add tenants page 
 export default class AddTenants extends Component {
+  constructor (props) {
+      super(props);
+      this.AddTenantsForm = React.createRef();
+  }
+  
   state = {
     UploadBtnCkcOnce: false,
     Tenants: [{ Name: "", Email: "", Phone: "", LeaseDue: "", PropertyGuid: "" }]
+  };
+
+  ClearAddTenantsFormState = () => {
+      this.AddTenantsForm.current.ClearAddTenantsFormState();
   };
 //takes state from child component and update its accordly 
   handleChange = NewState => {
@@ -83,12 +92,15 @@ export default class AddTenants extends Component {
           <AddTenantsForm
             UploadBtnCkcOnce={this.state.UploadBtnCkcOnce}
             onChanged={this.handleChange}
-			auth = {this.props.auth}
+            auth = {this.props.auth}
+            ref = {this.AddTenantsForm}
           />
           <AddTenantsSubmitButton
             Tenants={this.state.Tenants}
             UploadSubmitCheck={this.UploadSubmitCheck}
-			auth = {this.props.auth}
+            auth = {this.props.auth}
+            ClearAddTenantsFormState = {this.ClearAddTenantsFormState}
+            
           />
         </Bounce>
       </div>

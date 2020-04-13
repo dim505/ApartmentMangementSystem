@@ -55,7 +55,8 @@ export default class AddTenantsSubmitButton extends Component {
         AddRecResults => this.setState({ ReceiptUploadedNoti: true }),
         console.log(AddRecResults),
 		//opens Tenant was Uploaded successfully Notification 
-        this.setState({ TenantUploadedNoti: true })
+        this.setState({ TenantUploadedNoti: true }),
+        this.props.ClearAddTenantsFormState()
       );
     }
   };
