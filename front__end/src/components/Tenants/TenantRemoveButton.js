@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Axios from 'axios';
+import Tooltip from '@material-ui/core/Tooltip';
 
 //contains remove  button to delete a tenant  
 export default class TenantRemoveButton extends Component {
@@ -70,8 +71,9 @@ export default class TenantRemoveButton extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-
+        <Tooltip title="Delete" placement="top">
         <DeleteIcon onClick={() => this.OpenWarnBox()} />
+        </Tooltip>
       </div>
     );
   }

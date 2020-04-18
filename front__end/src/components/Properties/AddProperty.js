@@ -101,12 +101,13 @@ export default class AddProperty extends Component {
     query = query.join("");
 
     console.log(query);
-    //gets logged in user ID 
-    const BearerToken = await this.props.auth.getTokenSilently();
-  	//makes the API call to gets the suggestions 
+  //makes the API call to gets the suggestions 
+      //gets logged in user ID 
+      const BearerToken = await this.props.auth.getTokenSilently();
+      //makes the API call to gets the suggestions 
+      
     var result = await Axios.get(
-      "https://localhost:5001/api/property/GetSuggestedPropertiesAddress",
-
+      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
       {
         headers: {'Authorization': `bearer ${BearerToken}`},
         params: {
@@ -115,7 +116,8 @@ export default class AddProperty extends Component {
 
         }
       }
-
+//
+//
       
     ).then( (result) =>
 

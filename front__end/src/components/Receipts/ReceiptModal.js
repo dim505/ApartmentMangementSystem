@@ -16,7 +16,7 @@ import Button from "@material-ui/core/Button";
 import { Col, Form} from "react-bootstrap";
 import { post } from 'axios';
 import Axios from "axios";
-import Container from 'react-bootstrap/Container'
+
 
 
 
@@ -37,18 +37,7 @@ export default class ReceiptModal extends Component {
       this.setState({ file: e.target.files[0], filepath: e.target.value });
     }
 
-	//OLD CODE 
-    HandleChangeReceiptModal = newState => {
-       ;
-      var ReceiptFilterd =  this.props.ReceiptFilterd[0]
-      var Key = Object.keys(newState)
-      var Property = Key[0]
-      var value = newState.Property
 
-      ReceiptFilterd.Property = value
-      console.log(ReceiptFilterd)
-     // this.setState(newState, this.props.HandleChangeReceiptModal(this.state));
-    };
 
     
 	//function function handles the calling of the Update API to update the receipt 

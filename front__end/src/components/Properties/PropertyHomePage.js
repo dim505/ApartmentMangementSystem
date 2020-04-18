@@ -18,7 +18,16 @@ import PropertyUpdateModal from "./PropertyUpdateModal"
 
 //this is the property home page 
 export default class PropertyHomePage extends Component {
-    state = {Properties:[], PropertiesFiltered: [], ShowPropertyDetails: false,
+    state = {Properties:[], PropertiesFiltered: [      {
+      city: "Peralta",
+      guid: "25959f33-2f52-4610-b811-832c278b63a8",
+      state: "NM",
+      street: "12 Verde Dr",
+      tax: "1",
+      unit: "11",
+      yearlyInsurance: "1",
+      zipCode: "87042"
+    }], ShowPropertyDetails: false,
        OpenPropertyRmvNoti: false,PropertyToShow: "", OpnModal: false}
   
   

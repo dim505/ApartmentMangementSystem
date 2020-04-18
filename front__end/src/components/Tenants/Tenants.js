@@ -16,6 +16,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import TenantModal from "./TenantModal";
 import Axios from 'axios';
 import EditIcon from '@material-ui/icons/Edit';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 //parent component that houses the tenant page 
@@ -193,10 +194,15 @@ export default class Tenants extends Component {
     
                         
                        <Grid item  >
+                       <Tooltip title="Edit" placement="bottom">
+
                        <EditIcon  onClick={ () => this.OpnModal(Tenant.tenGuid)} />
+                       </Tooltip>                     
                       </Grid>
 
                       <Grid item >
+                      
+
                         <TenantRemoveButton
                           OpenTenantRmvNoti={this.OpenTenantRmvNoti}
                           CloseTenantRmvNoti={this.CloseTenantRmvNoti}
@@ -206,6 +212,8 @@ export default class Tenants extends Component {
 						  auth = {this.props.auth}
 
                         />
+
+                       
                        </Grid>
 
                        

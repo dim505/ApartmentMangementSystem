@@ -64,3 +64,15 @@
 	text-align: center;
 }
 
+
+.PropUpdateModal {
+  position: absolute;
+  padding: 3px;
+  border: 1px solid;
+  background-color: white;
+  width: 95%;
+  top: 25%;
+  left: 2.5%;
+  height: 70%;
+}
+

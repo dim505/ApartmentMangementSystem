@@ -75,7 +75,7 @@ export default class TenantModal extends Component {
                           CloseTenantList = {this.props.CloseTenantList}
                           GetProperties = {this.props.GetProperties}
                           GetTenants = {this.props.GetTenants}
-						  auth = {this.props.auth}
+						              auth = {this.props.auth}
                           
                         />{" "}
                       </TableCell>
