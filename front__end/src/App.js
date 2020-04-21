@@ -18,7 +18,7 @@ class App extends Component {
 
     this.state = {  
       authenticated: false,
-      ShowBrowserNoti: false
+      ShowBrowserNoti: true
     };
   }
 

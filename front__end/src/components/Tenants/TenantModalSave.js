@@ -48,7 +48,7 @@ export default class TenantModalSave extends Component {
 
       console.log(Mydata)
 	  //makes API call 
-      var results = Axios.post("https://localhost:5001/api/tenant/UpdateTenant",Mydata,
+      var results = Axios.post("https://amsbackend.azurewebsites.net/api/tenant/UpdateTenant",Mydata,
       {
         headers: {'Authorization': `bearer ${BearerToken}`}
     

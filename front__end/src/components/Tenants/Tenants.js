@@ -57,7 +57,7 @@ export default class Tenants extends Component {
 	//function to get properties related to account 
   GetProperties = async () => {
 	const BearerToken = await this.props.auth.getTokenSilently();
-    var results = Axios.get("https://localhost:5001/api/property",
+    var results = Axios.get("https://amsbackend.azurewebsites.net/api/property",
 	     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -79,7 +79,7 @@ export default class Tenants extends Component {
     var results 
     setInterval( () => 
      
-	 results = Axios.get("https://localhost:5001/api/tenant",
+	 results = Axios.get("https://amsbackend.azurewebsites.net/api/tenant",
 	      {
       headers: {'Authorization': `bearer ${BearerToken}`}
 

@@ -15,5 +15,8 @@ namespace AMSBackEnd.Model
         public string Tax { get; set; }
         public string Guid { get; set; }
         public string ZipCode { get; set; }
+
+        public float Lat { get; set; }
+        public float Lng { get; set; }
     }
 }

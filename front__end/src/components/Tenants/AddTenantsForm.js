@@ -31,7 +31,7 @@ export default class AddTenantsForm extends Component {
 	  //gets auth0 token 
 	  const BearerToken = await this.props.auth.getTokenSilently();
 	  //makes api call 
-      var results =   Axios.get("https://localhost:5001/api/property",
+      var results =   Axios.get("https://amsbackend.azurewebsites.net/api/property",
 	  {
 		  headers: {'Authorization': `bearer ${BearerToken}`}
 		  

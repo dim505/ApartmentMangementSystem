@@ -97,7 +97,7 @@ export default class PropertyUpdateModal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     var result = await Axios.get(
-      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
+      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
       {
         headers: {'Authorization': `bearer ${BearerToken}`},
         params: {
@@ -138,9 +138,25 @@ export default class PropertyUpdateModal extends Component {
                 this.state.SuggAddrChecked
               ) {
                 e.preventDefault();
-
+                const BearerToken = await this.props.auth.getTokenSilently();
                 var Mydata = {};
 
+                var query = document.getElementById("street").value + " " + document.getElementById("city").value + " " + document.getElementById("state").value + " " + document.getElementById("zipcode").value;
+                //makes api call to get all properties 
+                var results =  await Axios.get ("https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
+                {
+                  headers: {'Authorization': `bearer ${BearerToken}`},
+                  params: {
+                   query:query
+                  }
+                }
+                )
+                .then( (results) => 
+       
+                 window.AddressPosition = results.data.items[0].position
+                
+                  
+                 );        
                 //builds out property object
                 var property = {
                   guid: this.props.PropertiesFiltered[0].guid,
@@ -150,16 +166,18 @@ export default class PropertyUpdateModal extends Component {
                   zipcode: document.getElementById("zipcode").value,
                   unit: document.getElementById("unit").value,
                   yearlyInsurance: document.getElementById("yearlyInsurance").value,
-                  tax: document.getElementById("tax").value
+                  tax: document.getElementById("tax").value,
+                  Lat : window.AddressPosition.lat,
+                  Lng : window.AddressPosition.lng
                 };
                 Mydata.property = property;
                 console.log(Mydata);
-                const BearerToken = await this.props.auth.getTokenSilently();
+                
                 //defines headers
                 
                 //makes API call to update text portion of the reciept
                 var Results = await Axios.post(
-                  "https://localhost:5001/api/property/UpdateProperty",
+                  "https://amsbackend.azurewebsites.net/api/property/UpdateProperty",
                   Mydata,
                   {
                     headers: { Authorization: `bearer ${BearerToken}` }

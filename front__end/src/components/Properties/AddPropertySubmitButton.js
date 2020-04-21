@@ -33,6 +33,14 @@ export default class AddPropertySubmitButton extends Component {
       !this.isEmpty(this.props.property.YearlyInsurance) &&
       !this.isEmpty(this.props.property.Tax)
     ) {
+
+
+
+      const BearerToken = await this.props.auth.getTokenSilently();
+          
+          
+
+
 	  //generates ID for property
       var Guid = this.uuidv4();
 	  //creates JSON Object 
@@ -40,7 +48,25 @@ export default class AddPropertySubmitButton extends Component {
 
         
       };
-      
+        var query = this.props.SuggestedAddr.Street + " " + this.props.SuggestedAddr.City + " " + this.props.SuggestedAddr.State + " " + this.props.SuggestedAddr.ZipCode;
+
+     		//makes api call to get all properties 
+         var results =  await Axios.get ("https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
+         {
+           headers: {'Authorization': `bearer ${BearerToken}`},
+           params: {
+            query:query
+           }
+         }
+         )
+         .then( (results) => 
+
+          window.AddressPosition = results.data.items[0].position
+         
+           
+          );     
+          
+          
        Mydata.property = {
         City : this.props.SuggestedAddr.City,
         State : this.props.SuggestedAddr.State,
@@ -49,17 +75,20 @@ export default class AddPropertySubmitButton extends Component {
         Tax : this.props.property.Tax,
         Unit : this.props.property.Unit,
         YearlyInsurance: this.props.property.YearlyInsurance,
-        Guid: Guid
+        Guid: Guid,
+        Lat : window.AddressPosition.lat,
+        Lng : window.AddressPosition.lng
+
       };
 
       console.log(Mydata);
-      const BearerToken = await this.props.auth.getTokenSilently();
+      
 
 
       
       //makes api call
       var Results = await Axios.post(
-        "https://localhost:5001/api/Property/AddProperty",
+        "https://amsbackend.azurewebsites.net/api/Property/AddProperty",
         Mydata,
         {
           headers: {'Authorization': `bearer ${BearerToken}`}
