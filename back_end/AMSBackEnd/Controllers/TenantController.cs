@@ -121,12 +121,13 @@ namespace AMSBackEnd.Controllers
                 LoginUserIdentifier = "";
 
             }
+            string DateAdded = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             TenantModel tenant = data["tenant"].ToObject<TenantModel>();
             using (IDbConnection db = new SqlConnection(connStr)) {
                 var SqlStr = @"insert into tenants (Name, Email, 
-                Phone, LeaseDue, guid, tenGuid,Auth0ID) 
-                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier)";
+                Phone, LeaseDue, guid, tenGuid,Auth0ID,DateAdded) 
+                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded)";
                 var result = db.Execute(SqlStr, new {
                     Name = tenant.Name,
                     Email = tenant.Email,
@@ -134,7 +135,8 @@ namespace AMSBackEnd.Controllers
                     LeaseDue = tenant.LeaseDue,
                     guid = tenant.PropertyGuid,
                     tenGuid = tenant.tenGuid,
-                    LoginUserIdentifier = LoginUserIdentifier
+                    LoginUserIdentifier = LoginUserIdentifier,
+                    DateAdded = DateAdded
                 });
 
                 return Ok();

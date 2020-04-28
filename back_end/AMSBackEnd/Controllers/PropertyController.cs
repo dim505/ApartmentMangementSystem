@@ -52,16 +52,16 @@ namespace AMSBackEnd.Controllers
                 LoginUserIdentifier = "";
 
             }
-
+            string DateAdded = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             PropertyModel propertyModel = data["property"].ToObject<PropertyModel>();
 
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 var SqlStr = @"insert into Properties
-        (Street,City,State,ZipCode,Unit,YearlyInsurance,Tax,Guid,Auth0ID, lat, lng) values
+        (Street,City,State,ZipCode,Unit,YearlyInsurance,Tax,Guid,Auth0ID, lat, lng,DateAdded) values
         (@Street,@City,@State,@ZipCode,@Unit,@YearlyInsurance,@Tax,@Guid,
-        @LoginUserIdentifier,@lat,@lng)";
+        @LoginUserIdentifier,@lat,@lng,@DateAdded)";
         var result = db.Execute(SqlStr, new
                 {
                     Street = propertyModel.Street,
@@ -74,8 +74,9 @@ namespace AMSBackEnd.Controllers
                     Guid = propertyModel.Guid,
                     LoginUserIdentifier = LoginUserIdentifier,
                     lat = propertyModel.Lat,
-                    lng = propertyModel.Lng
-                }
+                    lng = propertyModel.Lng,
+                    DateAdded = DateAdded
+        }
 
                     );
 
@@ -188,7 +189,17 @@ namespace AMSBackEnd.Controllers
             using (IDbConnection db = new SqlConnection(connstr))
             {
 
-                var SqlStr = @"Delete from Properties
+                var SqlStr = @"Delete from tenants
+                                    where guid = @Guid and Auth0ID = @LoginUserIdentifier";
+                db.Execute(SqlStr, new
+                {
+                    Guid = id,
+                    LoginUserIdentifier = LoginUserIdentifier
+                });
+
+
+
+                 SqlStr = @"Delete from Properties
                                     where Guid = @Guid and Auth0ID = @LoginUserIdentifier";
                 db.Execute(SqlStr, new
                 {
@@ -203,6 +214,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
+	    //end used to return auto suggested addresses to the client / hide API key in the backend 
         [HttpGet]
         [Route("[action]")]
         public String GetSuggestedPropertiesAddress(string query)
@@ -244,8 +256,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
-        //https://developer.here.com/c/geocoding
-        //https://geocode.search.hereapi.com/v1/geocode?apiKey=rFWVaP56x9m5GN_mD-1ai8S2uBFl73CJrsPLS38OwZ8&q=5+Rue+Daunou%2C+75000+Paris%2C+France
+		// used to get a Lat and Lng of a selected suggested property
         [HttpGet]
         [Route("[action]")]
         public String GetSuggestedPropertiesLatLng(string query)

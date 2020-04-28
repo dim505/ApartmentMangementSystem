@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
+//controller is used to keep the to keep the the backend/database from going to sleep. Improving response times
 namespace AMSBackEnd.Controllers
 {
     [Route("api/[controller]")]
@@ -29,7 +30,7 @@ namespace AMSBackEnd.Controllers
 
         [HttpGet]
 
-        //this gets all the properties from the database
+        //end used by ping service to return dummy data
         public IActionResult RespondPing()
         {
 
