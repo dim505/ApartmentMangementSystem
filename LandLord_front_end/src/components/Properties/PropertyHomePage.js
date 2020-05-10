@@ -45,7 +45,7 @@ export default class PropertyHomePage extends Component {
       setTimeout( () => {
 
 		//makes api call to get all properties 
-        var results =   Axios.get ("https://localhost:5001/api/property",
+        var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/property",
         {
           headers: {'Authorization': `bearer ${BearerToken}`}
   
@@ -77,10 +77,28 @@ export default class PropertyHomePage extends Component {
 	
 	//function to show the addition information component and for whitch property 
     ShowPropertyDetails (Guid) {
-      this.setState({ShowPropertyDetails: !this.state.ShowPropertyDetails,
-        PropertyToShow: Guid
-      
-      })
+
+      if (this.state.ShowPropertyDetails === true && this.state.PropertyToShow === Guid) {
+        this.setState({
+          ShowPropertyDetails : false,
+          PropertyToShow : ""
+        })
+
+      }
+
+      else {
+
+        this.setState({
+          
+          ShowPropertyDetails: true,
+          PropertyToShow: Guid
+        
+        })
+
+
+      }
+
+
     }
 
 	//opens "property was removed" notification 

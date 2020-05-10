@@ -49,7 +49,7 @@ export default class Home_Dashboard extends Component {
   	//makes api call and sets state
     getReceipts = async () => {
       const BearerToken = await this.props.auth.getTokenSilently();
-      var results =   Axios.get("https://localhost:5001/api/Home/GetReceiptTotals",
+      var results =   Axios.get("https://amsbackend.azurewebsites.net/api/Home/GetReceiptTotals",
       {
        headers: {'Authorization': `bearer ${BearerToken}`}
  
@@ -71,7 +71,7 @@ export default class Home_Dashboard extends Component {
  
 
     //makes api call  and sets state 
-    var results =   Axios.get ("https://localhost:5001/api/property",
+    var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/property",
     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -135,9 +135,9 @@ export default class Home_Dashboard extends Component {
                 Here are some bouncing balls while you wait <Loader size={10} />
               </h1>
               <Stage
-                className="App"
-                width={window.innerWidth}
-                height={window.innerHeight}
+                className="canvas"
+                width={400}
+                height={400}
               >
                 <Game />
               </Stage>

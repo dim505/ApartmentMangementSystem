@@ -11,8 +11,7 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
 import ApartmentIcon from '@material-ui/icons/Apartment';
 import Button from '@material-ui/core/Button';
-import Tooltip from "../Tooltip";  
-import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
+
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 function HomeIcon(props) {
@@ -36,7 +35,7 @@ export default class NavBar extends Component {
   //logs user out of application 
   Logout = () => {
       this.props.auth.logout({
-          returnTo: "http://localhost:3000/LogOutcallback"
+          returnTo: "https://amstenantfrontend.azurewebsites.net"
   
       })
   }
@@ -51,11 +50,13 @@ export default class NavBar extends Component {
 
     }
 
+    
+
 
     return (
       <div className="NavBar"      >
         <Flip left>
-          <AppBar position="static">
+          <AppBar color="transparent" position="static">
             <Toolbar variant="dense">
 
               <NavLink
@@ -69,71 +70,32 @@ export default class NavBar extends Component {
                 </Typography>
               </NavLink>
 
-          {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
-			       <NavLink
-                className="navbar__link"
-                activeClassName="navbar__link--active"
-                to="/Tenants"
-              >
-                <Typography variant="h6" color="inherit">
-                  <PeopleIcon style={{ fontSize: 48 }} />
-                </Typography>
-              </NavLink> 
-                  :   <div></div>      
-          }   
+ 
 
-
-      {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
-              <NavLink
-                className="navbar__link"
-                activeClassName="navbar__link--active"
-                to="/Receipt"
-              >
-                <Typography variant="h6" color="inherit">
-                  <AttachMoneyIcon style={{ fontSize: 48 }} />
-                </Typography>
-              </NavLink> 
-                  :   <div></div>      
-          }    
+ 
 		  
-		    {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
-              <NavLink
-                className="navbar__link"
-                activeClassName="navbar__link--active"
-                to="/Properties"
-              >
-                <Typography variant="h6" color="inherit">
-                  <ApartmentIcon style={{ fontSize: 48 }} />
-                </Typography>
-              </NavLink> 
-                  :   <div></div>      
-          }   
+   
 
-              {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                          <Button onClick={this.Logout} variant="contained" color="secondary">
-                        Log Out
-                        </Button> 
+              {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                  
+              
+              <Button
+              variant="outlined"
+              onClick={this.Logout}
+            >
+                                      Log Out
+
+            </Button>  
+ 
                   :   
                   
                   
                   <div>    
-                  <Button onClick={this.Login} variant="contained" color="secondary">
+                  <Button onClick={this.Login} 
+                      variant="outlined"              >
                        Log In
                    </Button>    
         
-                          <Tooltip
-                        placement="bottom"
-                        tooltip="Would you like to Log in without creating an account?
-                        Please use these credentials:
-                        **** Username: test@mailinator.com ****
-                        **** Password: Abcd@1234 *****       
-                        "
-                                              >
-                                                
-                        <LiveHelpOutlinedIcon 
-                        fontSize="large"
-                        />
-                        
-                        </Tooltip>
+
         
         
                   </div>          

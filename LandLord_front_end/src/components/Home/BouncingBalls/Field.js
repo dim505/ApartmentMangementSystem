@@ -1,8 +1,8 @@
 import React, { PureComponent } from "react";
 import { Group, Rect } from "react-konva";
 
-export const WIDTH = 800;
-export const HEIGHT = 600;
+export const WIDTH = 400;
+export const HEIGHT = 400;
 
 export default class Field extends PureComponent {
   render() {

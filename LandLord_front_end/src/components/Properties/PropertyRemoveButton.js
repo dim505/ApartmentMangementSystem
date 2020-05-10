@@ -17,7 +17,7 @@ export default class PropertyRemoveButton extends Component {
     this.CloseWarnBox();
     const BearerToken = await this.props.auth.getTokenSilently();
   //makes the API call to delete selected receipt
-  await Axios.delete(`https://localhost:5001/api/property/delete/${id}`,
+  await Axios.delete(`https://amsbackend.azurewebsites.net/api/property/delete/${id}`,
   {
     headers: {'Authorization': `bearer ${BearerToken}`}
 

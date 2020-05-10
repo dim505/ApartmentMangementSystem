@@ -1,38 +1,45 @@
 import React, { Component } from "react";
 import NavBar from "./components/NavBar/NavBar";
-import Tenants from "./components/Tenants/Tenants";
-import AddTenants from "./components/Tenants/AddTenants";
-import HomeDashboard from "./components/Home/Home_Dashboard";
-import Receipt from "./components/Receipts/Receipt";
-import AddReceipt from "./components/Receipts/AddReceipt";
-import PropertyHomePage from './components/Properties/PropertyHomePage'
-import AddProperty from './components/Properties/AddProperty'
+import Bounce from 'react-reveal/Bounce';
+import Fade from 'react-reveal/Fade';
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
+import "react-dots-loader/index.css";
+import Axios from 'axios';
+import Welcome from "./components/Home/Welcome";
+import HomePage from "./components/Home/HomePage";
+import Tooltip from "./components/Tooltip";  
+import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
+ 
 import { Route } from "react-router-dom";
-import Callback from './components/LogIn/Callback'
-import LogOutcallback from './components/LogIn/LogOutcallback'
+ 
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css"
+
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {  
       authenticated: false,
-      ShowBrowserNoti: true
+      ShowBrowserNoti: true,
+      ShowBody: false
     };
   }
 
   componentDidMount(){
     document.title = "AMS"
     this.isUserAuthenticated();
-    
   }
 
 //checks to see if user is authenticated 
   async isUserAuthenticated () {
     const isLoggedIn =  await this.props.auth.isAuthenticated();
      this.setState({ authenticated: isLoggedIn})
+    setTimeout( () => this.setState({ShowBody: true}), 3000)
 }
+
 
 //opens browser support notitication 
 OpenShowBrowserNoti = () => {
@@ -44,16 +51,29 @@ CloseShowBrowserNoti = () => {
   this.setState({ ShowBrowserNoti: false })
 }
 
+  //redirects user to log in page
+  Login = () => {
+    this.props.auth.loginWithRedirect();
+  };
+
 
   render  () {
 
     if (sessionStorage.getItem('AppLoadedOnce') !== true && this.state.ShowBrowserNoti === false) {
         
         sessionStorage.setItem('AppLoadedOnce', true)
-        
-
 
     }
+
+    if (window.location.search.includes("code=") && window.handleRedirectCallbackAlreadyCalled !== 1) {
+             
+			window.handleRedirectCallbackAlreadyCalled = 1
+            
+			//handles success and error responses from Auth0 after a user logs in (required per Auth0 API documentation to have this )
+		//	await this.props.auth.handleRedirectCallback();
+    }
+
+
     return (
       <div>
           <Snackbar
@@ -67,58 +87,71 @@ CloseShowBrowserNoti = () => {
           message={<span id="message-id">Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers.</span>}
         />
 
-        <NavBar auth = {this.props.auth}
+{this.props.authenticated ||
+        window.handleRedirectCallbackAlreadyCalled === 1 ? (
+          
+            <div className="CenterAlignText">
+
+
+              <Fade bottom     opposite collapse  unmountOnExit when={!this.state.ShowBody}>
+
+        
+              <Fade bottom>
+              <Welcome />
+              </Fade>
+              </Fade>
+
+              <Fade bottom    opposite when={this.state.ShowBody}>
+              <NavBar auth = {this.props.auth}
                 authenticated = {this.state.authenticated}
-        />
-        <Route exact path="/">
-          <HomeDashboard auth = {this.props.auth} 
-          authenticated = {this.state.authenticated}/>
-        </Route>
+                />
+              <Route exact path="/">
+                  <HomePage auth = {this.props.auth} 
+                       authenticated = {this.state.authenticated}/>
+               </Route>
+               </Fade>
 
-        <Route exact path="/Tenants">
-          <Tenants auth = {this.props.auth}/>
-        </Route>
+            </div>
+          
+        ) : (
+          <Bounce top>
+            <div className="Center CenterText">
+              <p>
+                Looks Like you are not logged in... If you would like to see the
+                rest of the application, Please Log in Here{" "}
+              </p>
+              <Button
+                 
+                onClick={this.Login}
+                variant="outlined"
+              >
+                Log In
+              </Button>
+              <Tooltip
+                        placement="bottom"
+                        tooltip="Would you like to Log in without creating an account?
+                        Please use these credentials:
+                        **** Username: test@mailinator.com ****
+                        **** Password: Abcd@1234 *****       
+                        "
+                                              >
+                                                
+                        <LiveHelpOutlinedIcon 
+                        fontSize="large"
+                        />
+                        
+                        </Tooltip>
+               
 
-        <Route exact path="/AddTenants">
-          <AddTenants auth = {this.props.auth}/>
-        </Route>
-
-
-        <Route exact path="/Receipt">
-          <Receipt auth = {this.props.auth}/>
-        </Route>
-
-        <Route exact path="/AddReceipt">
-          <AddReceipt auth = {this.props.auth}/>
-        </Route>
-
-        <Route exact path="/Properties">
-          <PropertyHomePage 
-          auth = {this.props.auth} />
-        </Route>
-
-        <Route exact path="/AddProperty">
-          <AddProperty  auth = {this.props.auth}/>
-        </Route>
-
-        <Route  path="/callback" component={({...others}) =>
-                      <Callback auth = {this.props.auth}
-                      history={this.props.history} {...others} />
-      
-      
-      
-      }/>
-
-     
+            </div>
+          </Bounce>
+        )}
 
 
 
-        <Route exact path="/LogOutcallback" component={({...others}) =>
-          <LogOutcallback auth = {this.props.auth} 
-            history = {this.props.history} {...others}
-          />
-        }/>
 
+
+ 
 
       </div>
     );

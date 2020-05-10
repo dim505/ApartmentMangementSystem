@@ -45,7 +45,7 @@ export default class AddTenantsSubmitButton extends Component {
 
 	//makes api call 
       var AddRecResults = await Axios.post(
-        "https://localhost:5001/api/Tenant/AddTenant",
+        "https://amsbackend.azurewebsites.net/api/Tenant/AddTenant",
         Mydata,
         {
           headers: {'Authorization': `bearer ${BearerToken}`}

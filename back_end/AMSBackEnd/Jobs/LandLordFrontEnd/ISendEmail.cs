@@ -8,6 +8,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace AMSBackEnd.Jobs
 {
@@ -49,25 +51,41 @@ namespace AMSBackEnd.Jobs
 
                 }
 
-                string GmailPassword = _config["GmailPassword"];
-
+           
+                 
 
 
                 string StrList = "Peoples Lease who is about to Expire: " + string.Join("^", list);
 
+
+
+                var apiKey = _config["SendMailApiKey"];
+                var client = new SendGridClient(apiKey);
+                var msg = new SendGridMessage()
+                {
+                    From = new EmailAddress("sendemailams@gmail.com", "Email Service"),
+                    Subject = "Expiring Tenants",
+                    PlainTextContent = StrList,
+                    HtmlContent = "<strong> " + StrList  + " </strong>"
+                };
+                msg.AddTo(new EmailAddress("d.komerzan@gmail.com", "Dmitriy Komerzan"));
+                var response =  client.SendEmailAsync(msg);
+                /*
+
                 MailMessage mail = new MailMessage();
-                SmtpClient SmtpSever = new SmtpClient("smtp.gmail.com");
-                mail.From = new MailAddress("sendemailams@gmail.com");
+                SmtpClient SmtpSever = new SmtpClient("smtp.sendgrid.net");
+                mail.From = new MailAddress("apikey");
                 mail.To.Add("d.komerzan@gmail.com");
                 mail.Subject = "Tenants Whos Lease Are About To Expire";
                 mail.Body = StrList;
-                SmtpSever.Port = 587;
-                SmtpSever.Credentials = new System.Net.NetworkCredential("sendemailams@gmail.com", GmailPassword);
+                SmtpSever.Port = 465;
+                SmtpSever.UseDefaultCredentials = false;
+                SmtpSever.Credentials = new System.Net.NetworkCredential("apikey", GmailPassword);
                 SmtpSever.EnableSsl = true;
                 SmtpSever.Send(mail);
+                */
 
-
-            }
+                }
 
 
         }

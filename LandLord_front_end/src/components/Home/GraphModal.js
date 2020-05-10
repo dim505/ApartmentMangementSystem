@@ -25,7 +25,9 @@ export default class GraphModal extends Component {
           onClose={this.props.CloseGraphModal}
         >
               <Fade in={this.props.OpnGraphModal} timeout={500}>
+      <div>
       <div className="CenterChart">
+      
 
       {
         this.props.GraphClicked === "ReceiptExpensesChart" ? 
@@ -35,6 +37,9 @@ export default class GraphModal extends Component {
         Receipts={this.props.Receipts} /> : <div></div>
 
       }
+
+         
+     
 
       {
         this.props.GraphClicked === "NumberOfTenantsAdded" ? 
@@ -53,7 +58,8 @@ export default class GraphModal extends Component {
 
       }
 
-      </div>
+        </div>
+        </div>
              </Fade>
         </Modal>
 

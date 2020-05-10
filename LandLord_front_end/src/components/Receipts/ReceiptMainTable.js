@@ -81,11 +81,11 @@ export default class ReceiptMainTable extends Component {
             {this.props.Receipts.map((Receipt) => (
               <TableRow key={Receipt.id}>
                  
-                <TableCell align="right">{Receipt.date}</TableCell>
-                <TableCell align="right">{Receipt.store}</TableCell>
-                <TableCell align="right">${Receipt.tax}</TableCell>
-                <TableCell align="right">${Receipt.totalAmount}</TableCell>
-                <TableCell align="right">
+                <TableCell >{Receipt.date}</TableCell>
+                <TableCell >{Receipt.store}</TableCell>
+                <TableCell >${Receipt.tax}</TableCell>
+                <TableCell >${Receipt.totalAmount}</TableCell>
+                <TableCell >
                 <Tooltip
                       placement="top"
                       trigger="hover"
@@ -103,7 +103,7 @@ export default class ReceiptMainTable extends Component {
 
 
                 </TableCell>
-                <TableCell align="right">
+                <TableCell>
                 <Button
                     onClick={() => this.props.OpnReceiptViewModal(Receipt.id)}
                     variant="outlined"
@@ -112,7 +112,7 @@ export default class ReceiptMainTable extends Component {
                     View
                   </Button>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell>
                   <Button
                     onClick={() => this.props.OpenModal(Receipt.id)}
                     variant="outlined"
@@ -121,7 +121,7 @@ export default class ReceiptMainTable extends Component {
                     Update
                   </Button>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell >
                         <ReceiptRmvButton
                           OpenItmRmvNoti={this.props.OpenItmRmvNoti}
                           id = {Receipt.id}

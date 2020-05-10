@@ -57,7 +57,7 @@ export default class Tenants extends Component {
 	//function to get properties related to account 
   GetProperties = async () => {
 	const BearerToken = await this.props.auth.getTokenSilently();
-    var results = Axios.get("https://localhost:5001/api/property",
+    var results = Axios.get("https://amsbackend.azurewebsites.net/api/property",
 	     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -79,7 +79,7 @@ export default class Tenants extends Component {
     var results 
     setInterval( () => 
      
-	 results = Axios.get("https://localhost:5001/api/tenant",
+	 results = Axios.get("https://amsbackend.azurewebsites.net/api/tenant",
 	      {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -110,14 +110,27 @@ export default class Tenants extends Component {
      ;
     console.log(id);
     var Row = [];
+    if (this.state.ShowTenantList === true && this.state.PropertyToShow === id ) {
+      this.setState({
+        TenantsFiltered: [],
+        ShowTenantList: false,
+        PropertyToShow: ""
+      });
 
-    let TenantsFiltered = this.state.Tenants;
-    TenantsFiltered = TenantsFiltered.filter(Tenant => Tenant.guid === id);
-    this.setState({
-      TenantsFiltered: TenantsFiltered,
-      ShowTenantList: !this.state.ShowTenantList,
-      PropertyToShow: id
-    });
+
+    } else {
+
+      let TenantsFiltered = this.state.Tenants;
+      TenantsFiltered = TenantsFiltered.filter(Tenant => Tenant.guid === id);
+      this.setState({
+        TenantsFiltered: TenantsFiltered,
+        ShowTenantList: true,
+        PropertyToShow: id
+      });
+
+
+    }
+
   };
 
 	//filters list of tenants to one tenant to edit in modal 

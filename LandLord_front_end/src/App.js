@@ -18,7 +18,7 @@ class App extends Component {
 
     this.state = {  
       authenticated: false,
-      ShowBrowserNoti: true
+      ShowBrowserNoti: false
     };
   }
 
@@ -47,9 +47,10 @@ CloseShowBrowserNoti = () => {
 
   render  () {
 
-    if (sessionStorage.getItem('AppLoadedOnce') !== true && this.state.ShowBrowserNoti === false) {
+    if (sessionStorage.getItem('AppLoadedOnce') !== "true" && this.state.ShowBrowserNoti === false) {
         
         sessionStorage.setItem('AppLoadedOnce', true)
+        this.setState({ShowBrowserNoti: true})
         
 
 
@@ -64,7 +65,7 @@ CloseShowBrowserNoti = () => {
           ContentProps={{
             "aria-describedby": "message-id"
           }}
-          message={<span id="message-id">Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers.</span>}
+          message={<span id="message-id">Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers. ***not mobile optimized**</span>}
         />
 
         <NavBar auth = {this.props.auth}

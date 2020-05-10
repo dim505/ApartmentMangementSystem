@@ -22,6 +22,12 @@
   right: 0;
 }
 
+.ProgessCircle {
+    display: inline;
+    float: right;
+    position: absolute;
+}
+
 
 .ModalStyle {
   position: absolute;
@@ -126,6 +132,22 @@
 }
 
 .CenterChart {
-  margin: auto;
+  position: absolute;
+  top: 30%;
   color:white;
+  left: 0;
+  right: 0;
+  text-align: center;
 }
+
+.canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 400px;
+  height: 400px;
+}
+
+
+

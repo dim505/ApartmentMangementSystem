@@ -24,7 +24,7 @@ export default class ReceiptRmvButton extends Component {
     this.CloseWarnBox();
     //makes the API call to delete selected receipt
     const BearerToken = await this.props.auth.getTokenSilently();
-    await Axios.delete(`https://localhost:5001/api/receipt/delete/${id}`,
+    await Axios.delete(`https://amsbackend.azurewebsites.net/api/receipt/delete/${id}`,
     {
       headers: {'Authorization': `bearer ${BearerToken}`}
   
@@ -83,9 +83,9 @@ export default class ReceiptRmvButton extends Component {
 
 
 
-        <Grid container>
+        
 
-                    <Grid item>
+                    
                     <Button
                       onClick={() => this.OpenWarnBox()}
                       variant="outlined"
@@ -94,19 +94,18 @@ export default class ReceiptRmvButton extends Component {
                       Remove
                     </Button>
 
-                    </Grid>
+                  
 
-                    <Grid item>
+                 
                   {this.state.ProgessCircle && (
                   <div className="ProgessCircle">
                   <CircularProgress />
                 </div>
                 )}
-                    </Grid>
-                  </Grid>
+            
 
-
-      </div>
+            </div>
+     
     );
   }
 }

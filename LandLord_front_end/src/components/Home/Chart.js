@@ -54,7 +54,7 @@ export default class Chart extends Component {
         
           <Grid item xs={4} onClick = { () => this.OpenGraphModal("ReceiptExpensesChart")}>
           <Tooltip
-                        placement="auto"
+                        placement="top"
                         tooltip="Click ME!!!" >
                 <ReceiptExpensesChart 
 
@@ -65,8 +65,8 @@ export default class Chart extends Component {
 
           <Grid item xs={4} onClick = {() => this.OpenGraphModal("NumberOfTenantsAdded")} >
           <Tooltip
-                        placement="auto"
-                        tooltip="Click ME!!!" >   
+                        placement="top"
+                        tooltip="Click ME!!" >   
                
                 <NumberOfTenantsAdded
                 
@@ -77,8 +77,8 @@ export default class Chart extends Component {
 
           <Grid item xs={4} onClick = {() => this.OpenGraphModal("NumberOfPropertiesAdded")} >
           <Tooltip
-                        placement="auto"
-                        tooltip="Click ME!!!" >    
+                        placement="top"
+                        tooltip="Click ME!" >    
                
                   <NumberOfPropertiesAdded
                   auth = {this.props.auth}

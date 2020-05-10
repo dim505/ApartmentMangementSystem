@@ -21,7 +21,7 @@ export default class NumberOfPropertiesAdded extends Component {
   	//makes api call and sets state
     GetData = async () => {
       const BearerToken = await this.props.auth.getTokenSilently();
-      var results =   Axios.get("https://localhost:5001/api/Home/NumOfPropPerYear",
+      var results =   Axios.get("https://amsbackend.azurewebsites.net/api/Home/NumOfPropPerYear",
       {
        headers: {'Authorization': `bearer ${BearerToken}`}
  
