@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-
+import { Link } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,30 +8,48 @@ import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import AnnouncementIcon from "@material-ui/icons/Announcement";
+import PersonalInfoCard from "../PersonalInfo/PersonalInfoCard"
+import LandLordInfoCard from "../ContactLandLord/LandLordInfoCard"
+import Axios from 'axios';
+import NewsCard from "../news/NewsCard"
 
 export default class HomePage extends Component {
   state = {
-    Home: {
-      street: "10 Black Lane",
-      City: "Boston",
-      State: "MA",
-      ZipCode: "11111"
-    },
+    results: [
+      
+    ],
     AmountOwned: "5000.00",
-    PaymentDueDate: "1/1/2020",
-    LandLordInformation: {
-      FirstName: "Slave",
-      LastName: "Bill",
-      Email: "slave@ill.com",
-      PhoneNumber: "413-3332222"
-    },
-    PersonalInfo: {
-      FirstName: "Billy",
-      LastName: "Gram",
-      Email: "bob@bob.com",
-      PhoneNumber: "911-4535353"
-    }
+    PaymentDueDate: "1/1/2020"
   };
+
+  componentDidMount() {
+    this.GetData()
+  }
+
+  GetData  = async () => {
+  	//makes api call and sets state
+    
+      const BearerToken = await this.props.auth.getTokenSilently();
+      var results =   Axios.get("https://localhost:5001/api/home/GetAccountDetails",
+      {
+       headers: {'Authorization': `bearer ${BearerToken}`}
+ 
+     }
+      ).then( (results) => 
+       this.setState({
+       results: results.data
+      }),
+       
+      );
+ 
+ 
+  
+
+
+
+  }
+
+
 
   render() {
     return (
@@ -59,8 +77,15 @@ export default class HomePage extends Component {
                       <p>
                         <i>
                           {" "}
-                          {this.state.Home.street} {this.state.Home.City},
-                          {this.state.Home.State} {this.state.Home.ZipCode}{" "}
+                          {this.state.results.length <= 0 ?             <p>No data found</p>                 :
+                         
+                          <p>
+                          {this.state.results[0].street} {this.state.results[0].city},
+                          {this.state.results[0].state} {this.state.results[0].zipCode}
+                          </p>
+
+                          }
+
                         </i>
                       </p>
                       <h1> ${this.state.AmountOwned} </h1>
@@ -97,90 +122,18 @@ export default class HomePage extends Component {
 
             <Grid container>
               <Grid item xs={6}>
-                <Card classes={{ root: "CardHeight" }}>
-                  <CardContent>
-                    <Typography
-                      classes={{ h5: "Header" }}
-                      variant="h5"
-                      component="h2"
-                    >
-                      Personal Information
-                    </Typography>
-
-                    <Typography variant="body2" component="p">
-                    <Avatar alt="Slave" src="/static/images/avatar/1.jpg" />
-                      <b>
-                        <p>
-                          {" "}
-                          {this.state.PersonalInfo.FirstName}{" "}
-                          {this.state.PersonalInfo.LastName}
-                        </p>
-                        <p>{this.state.PersonalInfo.Email} </p>
-                        <p>{this.state.PersonalInfo.PhoneNumber} </p>
-                      </b>
-                      <Button
-                       variant="outlined"s
-                      >
-                        Edit Information
-                      </Button>
-                    </Typography>
-                  </CardContent>
-                </Card>
+                    <PersonalInfoCard
+                    results = {this.state.results}
+                    />
               </Grid>
               <Grid item xs={6}>
-                <Card classes={{ root: "CardHeight" }}>
-                  <CardContent>
-                    <Typography variant="h5" component="h2">
-                      Contact Land lord
-                    </Typography>
-                    <Avatar alt="Slave" src="/static/images/avatar/1.jpg" />
-                    <b>
-                      <p>
-                        {" "}
-                        {this.state.LandLordInformation.FirstName}{" "}
-                        {this.state.LandLordInformation.LastName}{" "}
-                      </p>
-                      <p>{this.state.LandLordInformation.Email} </p>
-                      <p> (413) 475-2222</p>
-                    </b>
-                    <Button
-                     variant="outlined"
-                    >
-                      Contact Now{" "}
-                    </Button>
-                  </CardContent>
-                </Card>
+                    <LandLordInfoCard />
               </Grid>
             </Grid>
           </Grid>
 
           <Grid item xs={4}>
-            <Card classes={{ root: "CardHeight" }}>
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  News Feed
-                </Typography>
-                <Card classes={{ root: "CardBackground" }}>
-                  <CardContent>
-                    <Grid container>
-                      <Grid item xs={2}>
-                        <AnnouncementIcon />
-                      </Grid>
-
-                      <Grid item xs={10}>
-                        <b>
-                          {" "}
-                          <p>News Header </p>{" "}
-                        </b>
-                        <Card classes={{ root: "NewsContentStyle" }}>
-                          <CardContent>news body</CardContent>
-                        </Card>
-                      </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </CardContent>
-            </Card>
+                  <NewsCard />
           </Grid>
         </Grid>
       </div>

@@ -70,7 +70,7 @@ namespace AMSBackEnd.Controllers
 
 
 
-             client = new RestClient("https://dev-5wttvoce.auth0.com/api/v2/users-by-email?email=d.komerzan@gmail.com");
+             client = new RestClient("https://dev-5wttvoce.auth0.com/api/v2/users/USER_ID");
              request = new RestRequest(Method.GET);
             request.AddHeader("authorization", HeaderString);
             IRestResponse response2 = client.Execute(request);

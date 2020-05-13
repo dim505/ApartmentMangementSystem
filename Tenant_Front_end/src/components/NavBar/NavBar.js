@@ -35,7 +35,7 @@ export default class NavBar extends Component {
   //logs user out of application 
   Logout = () => {
       this.props.auth.logout({
-          returnTo: "https://amstenantfrontend.azurewebsites.net"
+          returnTo: "http://localhost:3000"
   
       })
   }

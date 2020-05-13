@@ -10,7 +10,7 @@ import Welcome from "./components/Home/Welcome";
 import HomePage from "./components/Home/HomePage";
 import Tooltip from "./components/Tooltip";  
 import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
- 
+import EditPersonalInfo from "./components/PersonalInfo/EditPersonalInfo";
 import { Route } from "react-router-dom";
  
 import Snackbar from "@material-ui/core/Snackbar";
@@ -108,6 +108,10 @@ CloseShowBrowserNoti = () => {
               <Route exact path="/">
                   <HomePage auth = {this.props.auth} 
                        authenticated = {this.state.authenticated}/>
+               </Route>
+
+               <Route path="/EditPersonalInfo">
+                      <EditPersonalInfo auth = {this.props.auth} />
                </Route>
                </Fade>
 

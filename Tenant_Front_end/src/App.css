@@ -31,18 +31,6 @@
   text-align: center;
 }
 
-.CardHeight .ButtonStyle {
-  background-color: green;
-  color: white;
-  margin: 2px;
-}
-
-.MuiButton-contained {
-  background-color: green;
-  color: white;
-  margin: 2px;
-}
-
 .CardHeight p {
   margin-top: 0px;
   margin-bottom: 0px;
@@ -64,4 +52,16 @@
 .CardHeight .NewsContentStyle {
   margin-left: 5px;
   margin-top: 5px;
+}
+
+.CenterModal {
+  position: absolute;
+  top: 35%;
+  width: 100%;
+}
+
+.NewsCardTimeStamp {
+    text-align: left;
+    font-size: 12px;
+    margin-left: 5px;
 }
