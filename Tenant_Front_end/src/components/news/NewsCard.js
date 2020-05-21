@@ -38,7 +38,7 @@ export default class NewsCard extends Component {
 		return (
 				            <Card classes={{ root: "CardHeight" }}>
               <CardContent>
-                <Typography variant="h5" component="h2">
+                <Typography  classes={{ root: "CardTitle" }} variant="h5" component="h2">
                   News Feed
                 </Typography>
                 <Card classes={{ root: "CardBackground" }}>

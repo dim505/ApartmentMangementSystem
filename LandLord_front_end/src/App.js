@@ -12,6 +12,8 @@ import Callback from './components/LogIn/Callback'
 import LogOutcallback from './components/LogIn/LogOutcallback'
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css"
+import EditLandLordInfo from "./components/EditLandLordInfo/EditLandLordInfo"
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -102,6 +104,10 @@ CloseShowBrowserNoti = () => {
           <AddProperty  auth = {this.props.auth}/>
         </Route>
 
+
+       <Route exact path="/AccountDetails" > 
+        <EditLandLordInfo />
+        </Route>   
         <Route  path="/callback" component={({...others}) =>
                       <Callback auth = {this.props.auth}
                       history={this.props.history} {...others} />

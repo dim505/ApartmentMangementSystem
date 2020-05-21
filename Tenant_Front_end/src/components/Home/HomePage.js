@@ -15,39 +15,12 @@ import NewsCard from "../news/NewsCard"
 
 export default class HomePage extends Component {
   state = {
-    results: [
-      
-    ],
+
     AmountOwned: "5000.00",
     PaymentDueDate: "1/1/2020"
   };
 
-  componentDidMount() {
-    this.GetData()
-  }
 
-  GetData  = async () => {
-  	//makes api call and sets state
-    
-      const BearerToken = await this.props.auth.getTokenSilently();
-      var results =   Axios.get("https://localhost:5001/api/home/GetAccountDetails",
-      {
-       headers: {'Authorization': `bearer ${BearerToken}`}
- 
-     }
-      ).then( (results) => 
-       this.setState({
-       results: results.data
-      }),
-       
-      );
- 
- 
-  
-
-
-
-  }
 
 
 
@@ -77,11 +50,11 @@ export default class HomePage extends Component {
                       <p>
                         <i>
                           {" "}
-                          {this.state.results.length <= 0 ?             <p>No data found</p>                 :
+                          {this.props.results.length <= 0 ?             <p>No data found</p>                 :
                          
                           <p>
-                          {this.state.results[0].street} {this.state.results[0].city},
-                          {this.state.results[0].state} {this.state.results[0].zipCode}
+                          {this.props.results[0].street} {this.props.results[0].city},
+                          {this.props.results[0].state} {this.props.results[0].zipCode}
                           </p>
 
                           }
@@ -123,7 +96,8 @@ export default class HomePage extends Component {
             <Grid container>
               <Grid item xs={6}>
                     <PersonalInfoCard
-                    results = {this.state.results}
+                    results = {this.props.results}
+                    ProfilePictures = {this.props.ProfilePictures}
                     />
               </Grid>
               <Grid item xs={6}>

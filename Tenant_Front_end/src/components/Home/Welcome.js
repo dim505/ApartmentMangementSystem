@@ -34,8 +34,7 @@ export default class App extends Component {
     NumberOFTenants: 20,
     NumOfProp: 0,
     TotalTax: 0,
-    TotalInsurance: 0,
-    Name: "Dmitriy K"
+    TotalInsurance: 0
   };
 
   render() {
@@ -49,7 +48,7 @@ export default class App extends Component {
         </Paper>
 
         <Alert style={styles.root} variant="outlined" severity="success">
-          <AlertTitle>Welcome Back {this.state.Name} </AlertTitle>
+          <AlertTitle>Welcome Back!  </AlertTitle>
         </Alert>
       </div>
     );

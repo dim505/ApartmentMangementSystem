@@ -45,7 +45,7 @@ export default class PropertyHomePage extends Component {
       setTimeout( () => {
 
 		//makes api call to get all properties 
-        var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/property",
+        var results =   Axios.get ("https://localhost:5001/api/property",
         {
           headers: {'Authorization': `bearer ${BearerToken}`}
   

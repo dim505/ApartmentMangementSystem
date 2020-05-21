@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AMSBackEnd.Model;
+using AMSBackEnd.Model.LandLordFrontEnd.Tenant;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -131,23 +132,54 @@ namespace AMSBackEnd.Controllers
             string DateAdded = DateTime.UtcNow.ToString("yyyy-MM-dd");
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             TenantModel tenant = data["tenant"].ToObject<TenantModel>();
-            using (IDbConnection db = new SqlConnection(connStr)) {
-                var SqlStr = @"insert into tenants (Name, Email, 
+
+            List<TenantCheckEmail> tenantCheckEmails = new List<TenantCheckEmail>();
+
+
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
+                var SqlStr = @"select distinct Email, count(email) as EmailCount  from tenants
+                            where Email = '@Email'
+                            group by email";
+                tenantCheckEmails = db.Query<TenantCheckEmail>(SqlStr,
+                    new { Email = new DbString { Value = tenant.Email, IsFixedLength = false, IsAnsi = true }
+                    }
+                    ).ToList();
+            }
+
+
+            if (tenantCheckEmails.Count > 1)
+            {
+
+                return NotFound("duplicate email");
+
+            }
+            else
+            {
+                using (IDbConnection db2 = new SqlConnection(connStr))
+                {
+                   var SqlStr = @"insert into tenants (Name, Email, 
                 Phone, LeaseDue, guid, tenGuid,Auth0ID,DateAdded) 
                 values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded)";
-                var result = db.Execute(SqlStr, new {
-                    Name = tenant.Name,
-                    Email = tenant.Email,
-                    Phone = tenant.Phone,
-                    LeaseDue = tenant.LeaseDue,
-                    guid = tenant.PropertyGuid,
-                    tenGuid = tenant.tenGuid,
-                    LoginUserIdentifier = LoginUserIdentifier,
-                    DateAdded = DateAdded
-                });
+                    var result = db2.Execute(SqlStr, new
+                    {
+                        Name = tenant.Name,
+                        Email = tenant.Email,
+                        Phone = tenant.Phone,
+                        LeaseDue = tenant.LeaseDue,
+                        guid = tenant.PropertyGuid,
+                        tenGuid = tenant.tenGuid,
+                        LoginUserIdentifier = LoginUserIdentifier,
+                        DateAdded = DateAdded
+                    });
 
-                return Ok();
+                    return Ok();
+
+                }
+
+
             }
+          
            
         }
 

@@ -107,7 +107,7 @@ export default class AddProperty extends Component {
       //makes the API call to gets the suggestions 
       
     var result = await Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
+      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
       {
         headers: {'Authorization': `bearer ${BearerToken}`},
         params: {

@@ -8,7 +8,7 @@ import WebIcon from "@material-ui/icons/Web";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
-export const EditPersonalInfoForm = props => {
+export const EditLandLordInfoForm = props => {
   const {
     values: { Name, Email, PhoneNumber, file },
     errors,
@@ -44,7 +44,6 @@ export const EditPersonalInfoForm = props => {
         value={Email}
         name="Email"
         label="Email"
-        disabled
         fullWidth
         onChange={change.bind(null, "Email")}
         helperText={touched.Email ? errors.Email : ""}
@@ -66,7 +65,7 @@ export const EditPersonalInfoForm = props => {
         disabled
         id="file"
         name="file"
-        label="Image"
+        label="Profile Image"
         fullWidth
         value={file}
       />
@@ -76,8 +75,8 @@ export const EditPersonalInfoForm = props => {
           <Button
             variant="raised"
             color="primary"
-            fullWidth
             component="label"
+            fullWidth
             startIcon={<WebIcon />}
           >
             Browse
@@ -86,13 +85,25 @@ export const EditPersonalInfoForm = props => {
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
               onChange={event => {
-                if (
-                  event.currentTarget.files[0] !== "undefined" &&
-                  event.currentTarget.files.length > 0
-                ) {
+                debugger
+                if (event.currentTarget.files.length > 0 && event.currentTarget.files[0].size < 500000 && event.currentTarget.files[0] !== "undefined") {
+                  
+                
+                  
+                       
                   setFieldValue("file", event.currentTarget.files[0].name);
                   window.TenantPicture = event.target.files[0];
-                }
+                         
+
+                 } else if (event.currentTarget.files.length > 0 && event.currentTarget.files[0] !== "undefined") {
+                    console.log(props)
+                   props.SetMessage("Please Upload a thumbnail file under 512 kb")
+                   props.OpenNoti()
+                   setFieldValue("file", "");
+                   
+                 } 
+
+                 
               }}
             />
           </Button>

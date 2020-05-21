@@ -8,11 +8,10 @@ import "react-dots-loader/index.css";
 import Axios from 'axios';
 import Welcome from "./components/Home/Welcome";
 import HomePage from "./components/Home/HomePage";
-import Tooltip from "./components/Tooltip";  
-import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
+
 import EditPersonalInfo from "./components/PersonalInfo/EditPersonalInfo";
 import { Route } from "react-router-dom";
- 
+import NotLoggedIn from "./components/Home/NotLoggedIn"
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css"
 
@@ -24,13 +23,16 @@ class App extends Component {
     this.state = {  
       authenticated: false,
       ShowBrowserNoti: true,
-      ShowBody: false
+      ShowBody: false,
+      results: [],
+      ProfilePictures: []
     };
   }
 
   componentDidMount(){
     document.title = "AMS"
     this.isUserAuthenticated();
+    this.GetData()
   }
 
 //checks to see if user is authenticated 
@@ -39,6 +41,40 @@ class App extends Component {
      this.setState({ authenticated: isLoggedIn})
     setTimeout( () => this.setState({ShowBody: true}), 3000)
 }
+
+
+GetData  = async () => {
+  //makes api call and sets state
+  
+    const BearerToken = await this.props.auth.getTokenSilently();
+    var results =   Axios.get("https://localhost:5001/api/home/GetAccountDetails",
+    {
+     headers: {'Authorization': `bearer ${BearerToken}`}
+
+   }
+    ).then( (results) => 
+     this.setState({
+     results: results.data
+    }),
+     
+    );
+
+    var results2 =   Axios.get("https://localhost:5001/api/home/GetProfilePhoto",
+    {
+     headers: {'Authorization': `bearer ${BearerToken}`}
+
+   }
+    ).then( (results) => 
+     this.setState({
+     ProfilePictures: results.data
+    }),
+     
+    );
+
+
+
+}
+
 
 
 //opens browser support notitication 
@@ -106,12 +142,21 @@ CloseShowBrowserNoti = () => {
                 authenticated = {this.state.authenticated}
                 />
               <Route exact path="/">
-                  <HomePage auth = {this.props.auth} 
-                       authenticated = {this.state.authenticated}/>
+                  <HomePage 
+                       results = {this.state.results}
+                       auth = {this.props.auth} 
+                       authenticated = {this.state.authenticated}
+                       ProfilePictures = {this.state.ProfilePictures}
+                       />
                </Route>
 
                <Route path="/EditPersonalInfo">
-                      <EditPersonalInfo auth = {this.props.auth} />
+                      <EditPersonalInfo
+                      results = {this.state.results}
+                      auth = {this.props.auth} 
+                      GetData = {this.GetData}
+                      
+                      />
                </Route>
                </Fade>
 
@@ -119,35 +164,7 @@ CloseShowBrowserNoti = () => {
           
         ) : (
           <Bounce top>
-            <div className="Center CenterText">
-              <p>
-                Looks Like you are not logged in... If you would like to see the
-                rest of the application, Please Log in Here{" "}
-              </p>
-              <Button
-                 
-                onClick={this.Login}
-                variant="outlined"
-              >
-                Log In
-              </Button>
-              <Tooltip
-                        placement="bottom"
-                        tooltip="Would you like to Log in without creating an account?
-                        Please use these credentials:
-                        **** Username: test@mailinator.com ****
-                        **** Password: Abcd@1234 *****       
-                        "
-                                              >
-                                                
-                        <LiveHelpOutlinedIcon 
-                        fontSize="large"
-                        />
-                        
-                        </Tooltip>
-               
-
-            </div>
+                <NotLoggedIn auth = {this.props.auth}/>
           </Bounce>
         )}
 

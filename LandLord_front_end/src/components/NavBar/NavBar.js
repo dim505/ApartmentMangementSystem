@@ -14,6 +14,7 @@ import Button from '@material-ui/core/Button';
 import Tooltip from "../Tooltip";  
 import LiveHelpOutlinedIcon from '@material-ui/icons/LiveHelpOutlined';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 
 function HomeIcon(props) {
   return (
@@ -36,7 +37,7 @@ export default class NavBar extends Component {
   //logs user out of application 
   Logout = () => {
       this.props.auth.logout({
-          returnTo: "https://amsfrontend.azurewebsites.net/LogOutcallback"
+          returnTo: "http://localhost:3000/LogOutcallback"
   
       })
   }
@@ -104,6 +105,19 @@ export default class NavBar extends Component {
               >
                 <Typography variant="h6" color="inherit">
                   <ApartmentIcon style={{ fontSize: 48 }} />
+                </Typography>
+              </NavLink> 
+                  :   <div></div>      
+          }   
+
+          {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                         
+              <NavLink
+                className="navbar__link"
+                activeClassName="navbar__link--active"
+                to="/AccountDetails"
+              >
+                <Typography variant="h6" color="inherit">
+                  <AccountBoxIcon style={{ fontSize: 48 }} />
                 </Typography>
               </NavLink> 
                   :   <div></div>      

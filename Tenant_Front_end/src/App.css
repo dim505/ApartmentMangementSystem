@@ -36,7 +36,7 @@
   margin-bottom: 0px;
 }
 
-.MuiTypography-h5 {
+.CardTitle {
   border-bottom: 1px solid black;
   text-align: left;
 }
@@ -65,3 +65,9 @@
     font-size: 12px;
     margin-left: 5px;
 }
+
+
+.ErrorPageStyle {
+  text-align: center;
+}
+

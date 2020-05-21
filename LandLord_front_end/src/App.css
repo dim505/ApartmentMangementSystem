@@ -150,4 +150,81 @@
 }
 
 
+.CenterText {
+  text-align: center;
+}
+
+.center {
+  margin: 0 auto;
+  text-align: center;
+}
+.CardHeight {
+  height: 95%;
+  margin: 5px;
+  text-align: center;
+}
+
+.CardHeight p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.CardFormStyle {
+  padding: 10px;
+}
+.CardTitle {
+  border-bottom: 1px solid black;
+  text-align: left;
+}
+
+.MuiAvatar-root {
+  margin: auto;
+}
+
+.CardHeight .CardBackground {
+  background-color: #f2f2f2;
+}
+
+.CardHeight .NewsContentStyle {
+  margin-left: 5px;
+  margin-top: 5px;
+}
+
+.HouseSelectStyle {
+  width: 100%;
+}
+
+.RentSummPap {
+  margin: 2px;
+}
+
+.PayHistTitle {
+  width: 95%;
+  margin: auto;
+  margin-top: 5px;
+}
+
+.ErrorPageStyle {
+  text-align: center;
+}
+
+.ModalStyle {
+  position: absolute;
+  top: 25%;
+  width: 95%;
+  left: 2.5%;
+}
+
+.ViewModal {
+  color: #707070;
+}
+
+.WelcomeBackStyle {
+  margin-left:auto
+
+}
+.WelcomeBackStyle2 {
+  margin-right:auto
+
+}
 

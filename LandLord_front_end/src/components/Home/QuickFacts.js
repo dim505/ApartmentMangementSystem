@@ -50,7 +50,7 @@ GetYearlyPropExp = async () => {
             const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call  
-    var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/home/YearlyPropExp",
+    var results =   Axios.get ("https://localhost:5001/api/home/YearlyPropExp",
     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -77,7 +77,7 @@ GetNumberOFTenants = async () => {
  
 
     //makes api call  
-    var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/home/NumberOFTenants",
+    var results =   Axios.get ("https://localhost:5001/api/home/NumberOFTenants",
     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 
@@ -107,7 +107,7 @@ GetPropertyStats  = async () => {
 
 
     //makes api call  
-    var results =   Axios.get ("https://amsbackend.azurewebsites.net/api/home/PropertyStats",
+    var results =   Axios.get ("https://localhost:5001/api/home/PropertyStats",
     {
       headers: {'Authorization': `bearer ${BearerToken}`}
 

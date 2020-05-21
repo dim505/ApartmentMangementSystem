@@ -16,16 +16,47 @@ export default class PersonalInfoCard extends Component {
             FirstName: "Billy",
             LastName: "Gram",
             Email: "bob@bob.com",
-            PhoneNumber: "911-4535353"
+            PhoneNumber: "911-4535353",
+            Image : ""
           }
-    }
+        }
+
+        
+  componentDidMount () {
+   if (this.props.ProfilePictures.length > 0 ) {this.FormatImage()}    
+
+  }
+
+  FormatImage () {
+    var objectURL = this.CreateImageUrl(this.props.ProfilePictures[0].image,this.props.ProfilePictures[0].contentType )
+    this.setState({Image: objectURL})
+    Window.ProfileImageName = this.props.ProfilePictures[0].filename
+  }
+
+      	//converts string from data bases to an array buffer 
+        base64ToArrayBuffer(base64) {
+          const binaryString = window.atob(base64); // Comment this if not using base64
+          const bytes = new Uint8Array(binaryString.length);
+          return bytes.map((byte, i) => binaryString.charCodeAt(i));
+        }
+      
+        //this function creates a URl to view the image 
+        CreateImageUrl(ImageStr, ImageType) {
+          
+          const data = ImageStr;
+          const arrayBuffer = this.base64ToArrayBuffer(data);
+          const blob = new Blob([arrayBuffer], { type: ImageType });
+          const objectURL = URL.createObjectURL(blob);
+          return objectURL;
+        }
+
     render () {
         return (
 
             <Card classes={{ root: "CardHeight" }}>
             <CardContent>
               <Typography
-                classes={{ h5: "Header" }}
+                classes={{ root: "CardTitle" }}
                 variant="h5"
                 component="h2"
               >
@@ -33,24 +64,28 @@ export default class PersonalInfoCard extends Component {
               </Typography>
 
               <Typography variant="body2" component="p">
-              <Avatar alt="Slave" src="/static/images/avatar/1.jpg" />
+              <Avatar alt="" src={this.state.Image} />
                 
                 
-                <b>
-                  {this.props.results.length <= 0 ? <p>No data found</p>   
+              
+                  {this.props.results.length <= 0 ?  <b> <p>No data found</p> </b>  
+                
                 :
               <div>
+                
+               <b>
                 <p>
                 {" "}
                 {this.props.results[0].name}
               </p>
               <p>{this.props.results[0].email} </p>
               <p>{this.props.results[0].phone} </p>
+              </b>
               </div>
                 
                 }
 
-                </b>
+               
               <Link to="/EditPersonalInfo">
                 <Button
                  variant="outlined"

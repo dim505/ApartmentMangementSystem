@@ -54,7 +54,7 @@ export default class UploadReceiptBtn extends Component {
 		//gets Auth0 token 
 		const BearerToken = await this.props.auth.getTokenSilently();
 		//defines URL 
-        const AddImageUrl = `https://amsbackend.azurewebsites.net/api/receipt/${ImageGuid}`;
+        const AddImageUrl = `https://localhost:5001/api/receipt/${ImageGuid}`;
         const formData = new FormData();
         formData.append("body", this.state.file);
         const config = {
@@ -76,7 +76,7 @@ export default class UploadReceiptBtn extends Component {
 
 		
         //makes api call  
-        var AddRecResults = await Axios.post("https://amsbackend.azurewebsites.net/api/receipt/AddReceipt",Mydata,
+        var AddRecResults = await Axios.post("https://localhost:5001/api/receipt/AddReceipt",Mydata,
         {
           headers: {'Authorization': `bearer ${BearerToken}`}
   

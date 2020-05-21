@@ -45,7 +45,9 @@ export default class LandLordInfoCard extends Component {
             />
             <Card classes={{ root: "CardHeight" }}>
             <CardContent>
-              <Typography variant="h5" component="h2">
+              <Typography 
+              classes={{ root: "CardTitle" }}
+              variant="h5" component="h2">
                 Contact Land lord
               </Typography>
               <Avatar alt="Slave" src="/static/images/avatar/1.jpg" />
