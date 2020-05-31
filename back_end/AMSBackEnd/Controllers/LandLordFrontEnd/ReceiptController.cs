@@ -24,7 +24,7 @@ namespace AMSBackEnd.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class ReceiptController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -37,8 +37,9 @@ namespace AMSBackEnd.Controllers
 
         [HttpGet]
 
-		//this gets all the receipts from the database
-        public IActionResult GetReceipts() {
+        //this gets all the receipts from the database
+        public IActionResult GetReceipts()
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -61,13 +62,14 @@ namespace AMSBackEnd.Controllers
                     "Receipts.ImageGuid where Receipts.Auth0ID = @LoginUserIdentifier",
                     new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }).ToList();
             }
-                return Ok(Receipts);
+            return Ok(Receipts);
         }
 
-		//this action method is responsible for deleting the requested receipt 
+        //this action method is responsible for deleting the requested receipt 
         [HttpDelete]
         [Route("delete/{id}")]
-        public IActionResult RemoveItem( int id) {
+        public IActionResult RemoveItem(int id)
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -83,7 +85,8 @@ namespace AMSBackEnd.Controllers
 
             var connStr = _config["ConnectionStrings:DefaultConnection"];
 
-            using (IDbConnection db = new SqlConnection(connStr)) {
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
                 var SqlStr = @"delete from Images
                              where Guid in (select ImageGuid from Receipts
                              where id = @ID)";
@@ -91,21 +94,22 @@ namespace AMSBackEnd.Controllers
                 {
                     ID = id
                 });
-                 SqlStr = @"delete from Receipts
+                SqlStr = @"delete from Receipts
                             where id = @ID and Auth0ID = @LoginUserIdentifier";
-                 result = db.Execute(SqlStr, new
+                result = db.Execute(SqlStr, new
                 {
                     ID = id,
                     LoginUserIdentifier = LoginUserIdentifier
-                 });
+                });
             }
             return Ok();
-           }
+        }
 
-		//this action method is responsible for updating the requested receipt record information from the Update Receipt Modal
+        //this action method is responsible for updating the requested receipt record information from the Update Receipt Modal
         [HttpPost]
         [Route("UpdateReceipt")]
-        public IActionResult UpdateReceipt([FromBody] JObject data) {
+        public IActionResult UpdateReceipt([FromBody] JObject data)
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -157,8 +161,8 @@ namespace AMSBackEnd.Controllers
 
 
         }
-		
-		//this action method is responsible for updating the image if necessary from the Update Receipt Modal 
+
+        //this action method is responsible for updating the image if necessary from the Update Receipt Modal 
         [HttpPost]
         [Route("UpdateImage/{id}")]
         public async Task<IActionResult> UpdateImage([FromRoute]String id, [FromForm]IFormFile body)
@@ -179,7 +183,8 @@ namespace AMSBackEnd.Controllers
 
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             byte[] fileBytes;
-            using (var memoryStream = new MemoryStream()) {
+            using (var memoryStream = new MemoryStream())
+            {
                 await body.CopyToAsync(memoryStream);
                 fileBytes = memoryStream.ToArray();
             }
@@ -188,7 +193,8 @@ namespace AMSBackEnd.Controllers
             var contentType = body.ContentType;
 
 
-            using (IDbConnection db = new SqlConnection(connStr)) {
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
                 var SqlStr = @"Update images
 	                                set image = @Image,
 		                            filename = @FileName,
@@ -204,21 +210,22 @@ namespace AMSBackEnd.Controllers
 
 
                     );
-            
-            
+
+
             };
-            
 
 
-                return Ok();
+
+            return Ok();
         }
 
 
 
-	    //when a user adds a receipt, this action method is responsible for adding the image to the database
+        //when a user adds a receipt, this action method is responsible for adding the image to the database
         [HttpPost]
         [Route("{id}")]
-        public async Task<IActionResult> AddImage([FromRoute]String id, [FromForm]IFormFile body) {
+        public async Task<IActionResult> AddImage([FromRoute]String id, [FromForm]IFormFile body)
+        {
 
             var LoginUserIdentifier = "";
 
@@ -235,7 +242,8 @@ namespace AMSBackEnd.Controllers
 
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             byte[] fileBytes;
-            using (var memoryStream = new MemoryStream()) {
+            using (var memoryStream = new MemoryStream())
+            {
                 await body.CopyToAsync(memoryStream);
                 fileBytes = memoryStream.ToArray();
             }
@@ -245,7 +253,8 @@ namespace AMSBackEnd.Controllers
             var contentType = body.ContentType;
 
 
-            using (IDbConnection db = new SqlConnection(connStr)) {
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
                 var SqlStr = @"insert into images values (@ID, @Image,@FileName, @Contenttype)";
                 var result = db.Execute(SqlStr, new
                 {
@@ -256,19 +265,20 @@ namespace AMSBackEnd.Controllers
 
                 });
 
-            
+
             }
 
-                
-                return Ok();
+
+            return Ok();
 
         }
-         
 
-		//when a user adds a receipt, this action method is responsible adding the text portion of the receipt to the database 
+
+        //when a user adds a receipt, this action method is responsible adding the text portion of the receipt to the database 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult AddReceipt([FromBody]JObject data) {
+        public IActionResult AddReceipt([FromBody]JObject data)
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -285,10 +295,12 @@ namespace AMSBackEnd.Controllers
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             ReceiptModel receiptModel = data["receipt"].ToObject<ReceiptModel>();
 
-            using (IDbConnection db = new SqlConnection(connStr)) {
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
                 var SqlStr = @"insert into Receipts(Date,Store,Tax,TotalAmount,ImageGuid,Auth0ID) values 
                             (@Date,@Store,@Tax,@TotalAmount,@ImageGuid,@LoginUserIdentifier )";
-                var result = db.Execute(SqlStr, new {
+                var result = db.Execute(SqlStr, new
+                {
 
                     Date = receiptModel.Date,
                     Store = receiptModel.Store,
@@ -300,15 +312,14 @@ namespace AMSBackEnd.Controllers
 
 
                     );
-            
+
             }
             return Ok();
 
         }
-        
-        
+
+
     };
 
-    
+
 }
- 

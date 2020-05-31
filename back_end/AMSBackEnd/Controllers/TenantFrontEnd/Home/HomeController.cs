@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 {
@@ -73,11 +75,10 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             List<TenantHomePage> HomePageInfo = new List<TenantHomePage>();
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                HomePageInfo = db.Query<TenantHomePage>("select ten.Name,ten.Phone," +
-                    " ten.Email, prop.Street, prop.State, prop.City," +
-                    "prop.ZipCode from tenants ten" +
-                    " inner join Properties prop on ten.guid = prop.Guid " +
-                    "where ten.Email = @email",
+                HomePageInfo = db.Query<TenantHomePage>("select ten.Name,ten.Phone, ten.Email, LandAcctDeet.Name as LandLordName," +
+                    " LandAcctDeet.Email as LandLordEmail, LandAcctDeet.PhoneNumber as LandLordPhoneNumber, prop.Street, prop.State, " +
+                    "prop.City, prop.ZipCode from tenants ten inner join Properties prop on ten.guid = prop.Guid inner join LandLordAccountDetails " +
+                    "LandAcctDeet on prop.Auth0ID = LandAcctDeet.Auth0ID where ten.Email = @email",
                     new { email = new DbString { Value = Useremail, IsFixedLength = false, IsAnsi = true } }
                     ).ToList();
             }
@@ -85,6 +86,27 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
+
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult ContactLandLord([FromBody] JObject data) {
+            var ConnStr = _config["ConnectionStrings:DefaultConnection"];
+            SendMessage sendMessage = data["message"].ToObject<SendMessage>();
+            var apiKey = _config["SendMailApiKey"];
+            var client = new SendGridClient(apiKey);
+            var msg = new SendGridMessage()
+            {
+                From = new EmailAddress("sendemailams@gmail.com", "Email Service"),
+                Subject = "TENANT MESSAGE: " + sendMessage.Subject,
+                 
+                HtmlContent = "<strong> Message sent from " + sendMessage.FromEmail  + "</br>"+ sendMessage.Message + " </strong>"
+            };
+            msg.AddTo(new EmailAddress(sendMessage.ToEmail, ""));
+            var response = client.SendEmailAsync(msg);
+            return Ok();
+
+        }
 
 
         [HttpPost]
@@ -122,8 +144,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
         }
 
         [HttpPost]
-        [Route("[action]")]
-        public async Task<IActionResult> AddTenantImage([FromForm] IFormFile body)
+        [Route("[action]/{email}")]
+        public async Task<IActionResult> AddTenantImage(string email, [FromForm] IFormFile body)
         {
 
             var LoginUserIdentifier = "";
@@ -157,13 +179,14 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
 
                 if (imageCounts[0].count == 0) {
-                    SqlStr = @"insert into TenantImage values (@Image, @FileName, @ContentType, @Auth0ID)";
+                    SqlStr = @"insert into TenantImage values (@Image, @FileName, @ContentType, @Auth0ID, @email)";
                     var result = db.Execute(SqlStr, new
                     {
                         Image = filesBytes,
                         FileName = body.FileName,
                         ContentType = body.ContentType,
-                        Auth0ID = LoginUserIdentifier
+                        Auth0ID = LoginUserIdentifier,
+                        email = email
 
                     });
 
@@ -192,6 +215,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             return Ok();
         }
 
+
         [HttpGet]
         [Route("[action]")]
 
@@ -213,7 +237,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             List<ProfilePictures> results = new List<ProfilePictures>();
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                results = db.Query<ProfilePictures>("select * from TenantImage where Auth0ID = @Auth0ID",
+                var SqlStr = @"select tenimg.image as Tenimage,	tenimg.filename as Tenfilename,	tenimg.contentType as TencontentType,	tenimg.Auth0ID as TenAuth0ID,	tenimg.email as Tenemail,	LandImg.image as Landimage,	LandImg.filename as Landfilename,	LandImg.contentType as LandcontentType,	LandImg.Auth0ID as LandAuth0ID from tenants ten inner join TenantImage tenimg on ten.Email = tenimg.email inner join Properties prop on ten.guid = prop.Guid  inner join LandLordAccountDetails LandAcctDeet  on prop.Auth0ID = LandAcctDeet.Auth0ID inner join LandLordProfileImage LandImg on LandAcctDeet.Auth0ID = LandImg.Auth0ID where tenimg.Auth0ID = @Auth0ID";
+                results = db.Query<ProfilePictures>(SqlStr,
                     new { Auth0ID = LoginUserIdentifier }).ToList();
             }
             return Ok(results);

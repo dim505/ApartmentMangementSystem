@@ -36,6 +36,9 @@
   margin-bottom: 0px;
 }
 
+.CardFormStyle {
+  padding: 10px;
+}
 .CardTitle {
   border-bottom: 1px solid black;
   text-align: left;
@@ -61,13 +64,51 @@
 }
 
 .NewsCardTimeStamp {
-    text-align: left;
-    font-size: 12px;
-    margin-left: 5px;
+  text-align: left;
+  font-size: 12px;
+  margin-left: 5px;
 }
-
 
 .ErrorPageStyle {
   text-align: center;
 }
 
+.HouseSelectStyle {
+  width: 100%;
+}
+
+.RentSummPap {
+  margin: 2px;
+}
+
+.PayHistTitle {
+  width: 95%;
+  margin: auto;
+  margin-top: 5px;
+}
+
+.ErrorPageStyle {
+  text-align: center;
+}
+
+.ModalStyle {
+  position: absolute;
+  top: 25%;
+  width: 95%;
+  left: 2.5%;
+}
+
+.ViewModal {
+  color: #707070;
+}
+
+.WelcomeBackStyle {
+  margin-left: auto;
+}
+.WelcomeBackStyle2 {
+  margin-right: auto;
+}
+
+.MuiSnackbarContent-message {
+  margin: auto;
+}

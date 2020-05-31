@@ -7,13 +7,18 @@ import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import SnackBar from "../SnackBar";
 import DialogBox from "../DialogBox";
+import Axios from "axios";
+import { post } from "axios";
+import { Link } from "react-router-dom";
+import Button from "@material-ui/core/Button";
+import Fade from "react-reveal/Fade";
 
 const validationSchema = Yup.object({
   Name: Yup.string("Enter a name").required("Name is required"),
   Email: Yup.string("Enter your email")
     .required("Email is required")
     .email("Enter a valid Email"),
-  PhoneNumber: Yup.number().required("Enter your Phone Number")
+  PhoneNumber: Yup.number().required("Enter your Phone Number"),
 });
 
 class EditLandLordInfo extends Component {
@@ -22,10 +27,12 @@ class EditLandLordInfo extends Component {
     this.state = {
       OpenNoti: false,
       Message: "",
-      Name: "Bill",
-      Email: "bob@bob.com",
-      PhoneNumber: "4134754431",
-      Image: ""
+      Name: "",
+      Email: "",
+      PhoneNumber: "",
+      Image: "",
+      AccountDetails: "",
+      ProfilePic: "",
     };
   }
 
@@ -37,84 +44,118 @@ class EditLandLordInfo extends Component {
     //;
   };
 
-  Save = () => {
+  Save = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
     this.CloseSaveWarnBox();
     window.resetForm({});
-    this.SetMessage("Personal Details Have successfully been saved")
-    this.OpenNoti();
+
+    if (window.values.file !== "") {
+      console.log(window.values);
+      const AddImageUrl = `https://localhost:5001/api/AccountDetails/Add_Update_LandLord_Image`;
+      const formData = new FormData();
+      formData.append("body", window.TenantPicture);
+      const config = {
+        headers: {
+          Authorization: `bearer ${BearerToken}`,
+          "content-type": "multipart/form-data",
+        },
+      };
+
+      var results = await post(AddImageUrl, formData, config);
+      console.log(results);
+    }
+
+    var Mydata = {};
+    Mydata.accountDetails = window.values;
+
+    //makes api call
+    var Results = await Axios.post(
+      "https://localhost:5001/api/AccountDetails/Add_Update_LandLordInfo",
+      Mydata,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
   };
 
   OpenSaveWarnBox = () => {
     this.setState({
-      OpnSaveWarningBox: true
+      OpnSaveWarningBox: true,
     });
   };
   CloseSaveWarnBox = () => {
     this.setState({
-      OpnSaveWarningBox: false
+      OpnSaveWarningBox: false,
     });
   };
 
   OpenNoti = () => {
-    debugger
+    debugger;
     this.setState({
       OpenNoti: true,
-      
     });
   };
 
-  SetMessage =  (message) => {
-   this.setState({
+  SetMessage = (message) => {
+    this.setState({
       Message: message,
     });
-    
-  } 
+  };
   CloseNoti = () => {
     this.setState({
-      OpenNoti: false
+      OpenNoti: false,
     });
   };
 
   render() {
     const values = {
-      Name: this.state.Name,
-      Email: this.state.Email,
-      PhoneNumber: this.state.PhoneNumber,
-      file: ""
+      Name: window.AccountDetails[0].name,
+      Email: window.AccountDetails[0].email,
+      PhoneNumber: window.AccountDetails[0].phoneNumber,
+      file: Window.ProfileImageName,
     };
     return (
-      <React.Fragment>
-        <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={1}>
-          <Typography
-            classes={{ root: "CardTitle" }}
-            variant="h5"
-            component="h2"
-          >
-            Edit Land Lord Details
-          </Typography>
-          <Formik
-            initialValues={values}
-            onSubmit={this.submitValues}
-            validationSchema={validationSchema}
-            render={props => <EditLandLordInfoForm 
-            OpenNoti = {this.OpenNoti}
-            SetMessage = {this.SetMessage}
-            {...props} />}
-          />
-        </Paper>
-        <SnackBar
-          OpenNoti={this.state.OpenNoti}
-          CloseNoti={this.CloseNoti}
-          message={this.state.Message}
-        />
+      <Fade top>
+        <React.Fragment>
+          <Link to="/AccountDetails">
+            <Button variant="outlined">Back</Button>
+          </Link>
 
-        <DialogBox
-          OpnSaveWarningBox={this.state.OpnSaveWarningBox}
-          CloseSaveWarnBox={this.CloseSaveWarnBox}
-          Save={this.Save}
-          message="Are you Sure you want to save?"
-        />
-      </React.Fragment>
+          <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={1}>
+            <Typography
+              classes={{ root: "CardTitle" }}
+              variant="h5"
+              component="h2"
+            >
+              Edit Land Lord Details
+            </Typography>
+            <Formik
+              initialValues={values}
+              onSubmit={this.submitValues}
+              validationSchema={validationSchema}
+              render={(props) => (
+                <EditLandLordInfoForm
+                  OpenNoti={this.OpenNoti}
+                  SetMessage={this.SetMessage}
+                  {...props}
+                />
+              )}
+            />
+          </Paper>
+          <SnackBar
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
+          />
+
+          <DialogBox
+            OpnSaveWarningBox={this.state.OpnSaveWarningBox}
+            CloseSaveWarnBox={this.CloseSaveWarnBox}
+            Save={this.Save}
+            message="Are you Sure you want to save?"
+          />
+        </React.Fragment>
+      </Fade>
     );
   }
 }

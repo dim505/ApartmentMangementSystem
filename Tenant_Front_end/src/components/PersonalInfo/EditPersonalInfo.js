@@ -10,15 +10,16 @@ import DialogBox from "../DialogBox";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-import Axios from 'axios';
-import { post } from 'axios';
+import Axios from "axios";
+import { post } from "axios";
+import Fade from "react-reveal/Fade";
 
 const validationSchema = Yup.object({
   Name: Yup.string("Enter a name").required("Name is required"),
   Email: Yup.string("Enter your email")
     .required("Email is required")
     .email("Enter a valid Email"),
-  PhoneNumber: Yup.number().required("Enter your Phone Number")
+  PhoneNumber: Yup.number().required("Enter your Phone Number"),
 });
 
 class EditPersonalInfo extends Component {
@@ -27,7 +28,7 @@ class EditPersonalInfo extends Component {
     this.state = {
       OpenNoti: false,
       Message: "",
-      Image: ""
+      Image: "",
     };
   }
 
@@ -38,72 +39,68 @@ class EditPersonalInfo extends Component {
     this.OpenSaveWarnBox();
     //;
   };
-   
-
 
   Save = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     this.CloseSaveWarnBox();
     window.resetForm({});
-    var Mydata = { }
-    Mydata.tenant =  window.values
+    var Mydata = {};
+    Mydata.tenant = window.values;
 
-
-    if (window.values.file !== "") 
-    {
-      const AddImageUrl = `https://localhost:5001/api/home/AddTenantImage`;
+    if (window.values.file !== "") {
+      console.log(window.values);
+      const AddImageUrl = `https://localhost:5001/api/home/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
-      formData.append("body", window.TenantPicture)
+      formData.append("body", window.TenantPicture);
       const config = {
-          headers: {
-            'Authorization': `bearer ${BearerToken}`,
-            'content-type' : "multipart/form-data"
-          }
-      }
+        headers: {
+          Authorization: `bearer ${BearerToken}`,
+          "content-type": "multipart/form-data",
+        },
+      };
 
-      var results = await post (AddImageUrl,formData,config)
-      console.log(results)
-
-    } 
-
+      var results = await post(AddImageUrl, formData, config);
+      console.log(results);
+    }
 
     //makes api call
     var Results = await Axios.post(
       "https://localhost:5001/api/home/UpdateTenantInfo",
       Mydata,
       {
-        headers: {'Authorization': `bearer ${BearerToken}`}
-
+        headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then(
-      this.OpenNoti()     
-    ); 
-
-
+    ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
   };
 
   OpenSaveWarnBox = () => {
     this.setState({
-      OpnSaveWarningBox: true
+      OpnSaveWarningBox: true,
     });
   };
   CloseSaveWarnBox = () => {
     this.setState({
-      OpnSaveWarningBox: false
+      OpnSaveWarningBox: false,
     });
   };
 
   OpenNoti = () => {
-    this.props.GetData()
-  this.setState({
+    debugger;
+    this.props.GetData();
+    this.setState({
       OpenNoti: true,
-      Message: "Edited have been scucessfully saved"
+    });
+  };
+
+  SetMessage = (message) => {
+    this.setState({
+      Message: message,
     });
   };
 
   CloseNoti = () => {
     this.setState({
-      OpenNoti: false
+      OpenNoti: false,
     });
   };
   render() {
@@ -111,47 +108,52 @@ class EditPersonalInfo extends Component {
       Name: this.props.results[0].name,
       Email: this.props.results[0].email,
       PhoneNumber: this.props.results[0].phone,
-      file: Window.ProfileImageName
+      file: Window.ProfileImageName,
     };
     return (
       <React.Fragment>
-              <Link to="/">
-          <Button
-            variant="outlined"
-            startIcon={<BackspaceIcon />}
-          >
-            BACK
-          </Button>
-        </Link>
-        <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={1}>
-          <Typography
-            classes={{ root: "CardTitle" }}
-            variant="h5"
-            component="h2"
-          >
-            Edit Personal Details
-          </Typography>
-          <Formik
-            enableReinitialize
-            initialValues={values}
-            validationSchema={validationSchema}
-            onSubmit={this.submitValues}
-            render={props => <EditPersonalInfoForm {...props} />}
+        <Fade top>
+          <Link to="/">
+            <Button variant="outlined" startIcon={<BackspaceIcon />}>
+              BACK
+            </Button>
+          </Link>
+
+          <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={1}>
+            <Typography
+              classes={{ root: "CardTitle" }}
+              variant="h5"
+              component="h2"
+            >
+              Edit Personal Details
+            </Typography>
+            <Formik
+              initialValues={values}
+              validationSchema={validationSchema}
+              onSubmit={this.submitValues}
+              render={(props) => (
+                <EditPersonalInfoForm
+                  OpenNoti={this.OpenNoti}
+                  SetMessage={this.SetMessage}
+                  {...props}
+                />
+              )}
+            />
+          </Paper>
+
+          <SnackBar
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
           />
-        </Paper>
 
-        <SnackBar
-          OpenNoti={this.state.OpenNoti}
-          CloseNoti={this.CloseNoti}
-          message={this.state.Message}
-        />
-
-        <DialogBox
-          OpnSaveWarningBox={this.state.OpnSaveWarningBox}
-          CloseSaveWarnBox={this.CloseSaveWarnBox}
-          Save={this.Save}
-          message="Are you sure you want to save?"
-        />
+          <DialogBox
+            OpnSaveWarningBox={this.state.OpnSaveWarningBox}
+            CloseSaveWarnBox={this.CloseSaveWarnBox}
+            Save={this.Save}
+            message="Are you sure you want to save?"
+          />
+        </Fade>
       </React.Fragment>
     );
   }

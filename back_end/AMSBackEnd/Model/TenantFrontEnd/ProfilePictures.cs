@@ -8,9 +8,17 @@ namespace AMSBackEnd.Model.TenantFrontEnd
     public class ProfilePictures
     {
 
-        public byte[] image { get; set; }
-        public string filename { get; set; }
-        public string contentType { get; set; }
-        public string Auth0ID { get; set; }
+        public byte[] Tenimage { get; set; }
+        public string Tenfilename { get; set; }
+        public string TencontentType { get; set; }
+        public string TenAuth0ID { get; set; }
+        public string Tenemail { get; set; }
+        public byte[] Landimage { get; set; }
+        public string Landfilename { get; set; }
+        public string LandcontentType { get; set; }
+        public string LandAuth0ID { get; set; }
+
+
+ 
     }
 }

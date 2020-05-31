@@ -20,12 +20,12 @@ const styles = {
     backgroundImage: `url(${Image})`,
     backgroundSize: "cover",
     backgroundRepeat: "no repeat",
-    WebkitTextStroke: "1px black"
+    WebkitTextStroke: "1px black",
   },
 
   root: {
-    marginTop: 10
-  }
+    marginTop: 10,
+  },
 };
 
 export default class App extends Component {
@@ -34,7 +34,7 @@ export default class App extends Component {
     NumberOFTenants: 20,
     NumOfProp: 0,
     TotalTax: 0,
-    TotalInsurance: 0
+    TotalInsurance: 0,
   };
 
   render() {
@@ -47,8 +47,16 @@ export default class App extends Component {
           </div>
         </Paper>
 
-        <Alert style={styles.root} variant="outlined" severity="success">
-          <AlertTitle>Welcome Back!  </AlertTitle>
+        <Alert
+          classes={{
+            icon: "WelcomeBackStyle",
+            message: "WelcomeBackStyle2",
+          }}
+          style={styles.root}
+          variant="outlined"
+          severity="success"
+        >
+          <AlertTitle>Welcome Back! </AlertTitle>
         </Alert>
       </div>
     );
