@@ -145,14 +145,6 @@ namespace AMSBackEnd.Controllers
         public IActionResult GetProperties()
         {
 
-
-
-            var client2 = new RestClient("https://dev-5wttvoce.auth0.com/oauth/token");
-            var request = new RestSharp.RestRequest(Method.POST);
-            request.AddHeader("content-type", "application/json");
-            request.AddParameter("application/json", "{\"client_id\":\"bOZwndtAhxyj5wEC2AjhUbYfjEPQmIju\",\"client_secret\":\"bcqkAKKWJ8jOu_3pwwZ9d_cfzrInwMDzqhSry9qexmkUnwiejjnzQGjyr5ar2J-1\",\"audience\":\"https://dev-5wttvoce.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
-            IRestResponse response2 = client2.Execute(request);
- 
             var LoginUserIdentifier = "";
 
             try

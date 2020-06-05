@@ -245,8 +245,41 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
 
         }
- 
-    
-    
+
+
+
+
+        [HttpGet]
+        [Route("[action]/{email}")]
+
+        public IActionResult GetNews([FromRoute] string email)
+        {
+
+            var LoginUserIdentifier = "";
+            try
+            {
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+            }
+            catch
+            {
+                LoginUserIdentifier = "";
+            }
+
+            var connStr = _config["ConnectionStrings:DefaultConnection"];
+            List<GetNews> results = new List<GetNews>();
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
+                var SqlStr = @"select Subject, Message, news.DateAdded from tenants ten inner join Properties prop on ten.guid = prop.Guid inner join Announcements news on prop.Guid = news.PropGuid where ten.Email = @email";
+                results = db.Query<GetNews>(SqlStr,
+                    new { email = email }).ToList();
+            }
+            return Ok(results);
+
+
+        }
+
+
+
     }
 }

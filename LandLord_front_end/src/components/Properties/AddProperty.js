@@ -3,15 +3,14 @@ import Button from "@material-ui/core/Button";
 import Bounce from "react-reveal/Bounce";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
-import AddPropertyForm from './AddPropertyForm'
+import AddPropertyForm from "./AddPropertyForm";
 import Snackbar from "@material-ui/core/Snackbar";
-import AddPropertySubmitButton from "./AddPropertySubmitButton"
-import Grid from '@material-ui/core/Grid';
-import AddPropertyAddressSuggest from './AddPropertyAddressSuggest'
+import AddPropertySubmitButton from "./AddPropertySubmitButton";
+import Grid from "@material-ui/core/Grid";
+import AddPropertyAddressSuggest from "./AddPropertyAddressSuggest";
 import Axios from "axios";
 
- 
-//parent component contains  form component and submit button component 
+//parent component contains  form component and submit button component
 export default class AddProperty extends Component {
   constructor(props) {
     super(props);
@@ -25,37 +24,35 @@ export default class AddProperty extends Component {
       ZipCode: "",
       Unit: "",
       YearlyInsurance: "",
-      Tax: ""
+      Tax: "",
     },
     SuggestedAddr: {
       Street: "",
       City: "",
       State: "",
-      ZipCode: ""
+      ZipCode: "",
     },
     UploadBtnCkcOnce: false,
     FillFormsNoti: false,
     SuggestedAddresses: [],
     SuggAddrChecked: false,
     CheckSuggAddrNoti: false,
-    ClearAddPropertyFormState: false
+    ClearAddPropertyFormState: false,
   };
 
- //this is a reference to AddPropertyForm clear state function that is triggered by the submit button 
+  //this is a reference to AddPropertyForm clear state function that is triggered by the submit button
   ClearAddPropertyFormState = () => {
     this.AddPropertyForm.current.ClearAddPropertyFormState();
   };
-  //receives state from child compoent then it updates the properties object that will eventaully get fed to submit compoenet 
-  handleChange = NewState => {
-     ;
+  //receives state from child compoent then it updates the properties object that will eventaully get fed to submit compoenet
+  handleChange = (NewState) => {
     this.setState({ property: NewState });
     if (!this.state.SuggAddrChecked) {
       this.GetSuggestedAddresses();
     }
   };
-	//updates the suggested address if another address gets checked 
+  //updates the suggested address if another address gets checked
   UpdateSuggAddr = () => {
-     ;
     if (window.SuggestedAddress[0].address.houseNumber === undefined) {
       window.SuggestedAddress[0].address.houseNumber = "";
     }
@@ -67,19 +64,19 @@ export default class AddProperty extends Component {
         Street: street,
         City: window.SuggestedAddress[0].address.city,
         State: window.SuggestedAddress[0].address.state,
-        ZipCode: window.SuggestedAddress[0].address.postalCode
-      }
+        ZipCode: window.SuggestedAddress[0].address.postalCode,
+      },
     });
   };
 
-  //tracks whether a checkbox is activly being checked 
-  SuggAddrChecked = checked => {
+  //tracks whether a checkbox is activly being checked
+  SuggAddrChecked = (checked) => {
     this.setState({ SuggAddrChecked: checked });
   };
 
-  //function responsible for getting address suggestions 
+  //function responsible for getting address suggestions
   GetSuggestedAddresses = async () => {
-	//this builds out the address query 
+    //this builds out the address query
     var query = [];
     if (this.state.property.Street.length > 0) {
       query.push(this.state.property.Street);
@@ -101,48 +98,35 @@ export default class AddProperty extends Component {
     query = query.join("");
 
     console.log(query);
-  //makes the API call to gets the suggestions 
-      //gets logged in user ID 
-      const BearerToken = await this.props.auth.getTokenSilently();
-      //makes the API call to gets the suggestions 
-      
+    //makes the API call to gets the suggestions
+    //gets logged in user ID
+    const BearerToken = await this.props.auth.getTokenSilently();
+    //makes the API call to gets the suggestions
+
     var result = await Axios.get(
-      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
+      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
       {
-        headers: {'Authorization': `bearer ${BearerToken}`},
+        headers: { Authorization: `bearer ${BearerToken}` },
         params: {
-
           query: query,
-
-        }
+        },
       }
-//
-//
-      
-    ).then( (result) =>
-
-      {
-
-        
-        this.setState({ SuggestedAddresses: result.data.suggestions })
-      
-      
-        }
-      );
-
-
-
+      //
+      //
+    ).then((result) => {
+      this.setState({ SuggestedAddresses: result.data.suggestions });
+    });
   };
-	//function to test if any of the forms are empty
+  //function to test if any of the forms are empty
   isEmpty(str) {
     return !str || /^\s*$/.test(str);
   }
-//This does some checks and sets the appropiate flags if the forms are empty when trying to submit 
+  //This does some checks and sets the appropiate flags if the forms are empty when trying to submit
   UploadSubmitCheck = async () => {
     if (!this.state.SuggAddrChecked) {
       this.setState({
         UploadBtnCkcOnce: true,
-        CheckSuggAddrNoti: true
+        CheckSuggAddrNoti: true,
       });
     } else {
       //checks if forms are empty then reset state accordly
@@ -153,34 +137,33 @@ export default class AddProperty extends Component {
       ) {
         await this.setState({
           UploadBtnCkcOnce: false,
-          FillFormsNoti: false
+          FillFormsNoti: false,
         });
       } else {
-		//UploadBtnCkcOnce : checks if upload button clicked once 
-		//FillFormsNoti: opens notification tell user to fill in blank forms 
+        //UploadBtnCkcOnce : checks if upload button clicked once
+        //FillFormsNoti: opens notification tell user to fill in blank forms
         await this.setState({
           UploadBtnCkcOnce: true,
-          FillFormsNoti: true
+          FillFormsNoti: true,
         });
       }
     }
   };
-  
-		//closes fill empty forms notification t
+
+  //closes fill empty forms notification t
   CloseFillFormsNoti() {
     this.setState({
-      FillFormsNoti: false
+      FillFormsNoti: false,
     });
   }
-	//closes the "Please Check off a Suggested Address " notification 
+  //closes the "Please Check off a Suggested Address " notification
   CloseCheckSuggAddrNoti() {
     this.setState({
-      CheckSuggAddrNoti: false
+      CheckSuggAddrNoti: false,
     });
   }
-  
-  
-	//clears the state for everything 
+
+  //clears the state for everything
   ClearState = () => {
     this.setState({
       property: {
@@ -190,20 +173,20 @@ export default class AddProperty extends Component {
         ZipCode: "",
         Unit: "",
         YearlyInsurance: "",
-        Tax: ""
+        Tax: "",
       },
       SuggestedAddr: {
         Street: "",
         City: "",
         State: "",
-        ZipCode: ""
+        ZipCode: "",
       },
       UploadBtnCkcOnce: false,
       FillFormsNoti: false,
       SuggestedAddresses: [],
       SuggAddrChecked: false,
       CheckSuggAddrNoti: false,
-      ClearAddPropertyFormState: true
+      ClearAddPropertyFormState: true,
     });
     window.SuggestedAddress = [];
     window.SuggestedAddresses = [];
@@ -218,7 +201,7 @@ export default class AddProperty extends Component {
             open={this.state.FillFormsNoti}
             onClose={() => this.CloseFillFormsNoti()}
             ContentProps={{
-              "aria-describedby": "message-id"
+              "aria-describedby": "message-id",
             }}
             message={
               <span id="message-id">Please Fill Out the Forms in red</span>
@@ -231,7 +214,7 @@ export default class AddProperty extends Component {
             open={this.state.CheckSuggAddrNoti}
             onClose={() => this.CloseCheckSuggAddrNoti()}
             ContentProps={{
-              "aria-describedby": "message-id"
+              "aria-describedby": "message-id",
             }}
             message={
               <span id="message-id">Please Check off a Suggested Address </span>
@@ -256,17 +239,16 @@ export default class AddProperty extends Component {
                 UploadBtnCkcOnce={this.state.UploadBtnCkcOnce}
                 SuggestedAddr={this.state.SuggestedAddr}
                 SuggAddrChecked={this.state.SuggAddrChecked}
-                ref = {this.AddPropertyForm}
+                ref={this.AddPropertyForm}
               />
               <AddPropertySubmitButton
                 property={this.state.property}
                 UploadSubmitCheck={this.UploadSubmitCheck}
                 SuggAddrChecked={this.state.SuggAddrChecked}
                 ClearState={this.ClearState}
-                ClearAddPropertyFormState = {this.ClearAddPropertyFormState}
-                auth = {this.props.auth}
-                SuggestedAddr = {this.state.SuggestedAddr}
-                
+                ClearAddPropertyFormState={this.ClearAddPropertyFormState}
+                auth={this.props.auth}
+                SuggestedAddr={this.state.SuggestedAddr}
               />
             </Grid>
             <Grid item xs={6}>
@@ -274,7 +256,7 @@ export default class AddProperty extends Component {
                 SuggestedAddresses={this.state.SuggestedAddresses}
                 UpdateSuggAddr={this.UpdateSuggAddr}
                 SuggAddrChecked={this.SuggAddrChecked}
-                            />
+              />
             </Grid>
           </Grid>
         </Bounce>

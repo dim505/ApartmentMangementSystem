@@ -46,7 +46,7 @@ class App extends Component {
 
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://localhost:5001/api/home/GetAccountDetails",
+      "https://amsbackend.azurewebsites.net/api/home/GetAccountDetails",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -57,7 +57,7 @@ class App extends Component {
     );
 
     var results2 = Axios.get(
-      "https://localhost:5001/api/home/GetProfilePhoto",
+      "https://amsbackend.azurewebsites.net/api/home/GetProfilePhoto",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -153,6 +153,7 @@ class App extends Component {
                   results={this.state.results}
                   auth={this.props.auth}
                   GetData={this.GetData}
+                  ProfilePictures={this.state.ProfilePictures}
                 />
               </Route>
             </Fade>

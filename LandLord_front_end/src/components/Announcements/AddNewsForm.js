@@ -7,7 +7,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
-export const AddNewsForm = props => {
+export const AddNewsForm = (props) => {
   const {
     values: { Subject, Message, HouseSelect, properties },
     errors,
@@ -16,11 +16,10 @@ export const AddNewsForm = props => {
     isValid,
     setFieldTouched,
     handleSubmit,
-    resetForm
+    resetForm,
   } = props;
 
   const change = (name, e) => {
-    debugger;
     e.persist();
     handleChange(e);
     setFieldTouched(name, true, false);
@@ -39,7 +38,7 @@ export const AddNewsForm = props => {
           onChange={change.bind(null, "HouseSelect")}
           value={HouseSelect || ""}
         >
-          {window.properties}
+          {props.properties}
         </Select>
         <FormHelperText>
           {touched.HouseSelect ? errors.HouseSelect : ""}

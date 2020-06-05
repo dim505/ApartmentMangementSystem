@@ -37,15 +37,16 @@ class UpdateNews extends Component {
     this.CloseSaveWarnBox();
     this.props.CloseModal();
     var Mydata = {};
-    Mydata = window.values;
+    Mydata.Announcement = window.values;
+    Mydata.Announcement.ID = this.props.PropNewsFiltered[0].id;
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/Property/AddProperty",
+      "https://amsbackend.azurewebsites.net/api/Announcements/UpdateNews",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then((Results) => console.log(Results));
+    ).then((Results) => this.props.GetPropNews());
 
     this.props.OpenNoti("Changes Saved");
   };
@@ -63,10 +64,18 @@ class UpdateNews extends Component {
 
   render() {
     debugger;
+    var Address =
+      this.props.PropNewsFiltered[0].street +
+      " " +
+      this.props.PropNewsFiltered[0].city +
+      ", " +
+      this.props.PropNewsFiltered[0].state +
+      " " +
+      this.props.PropNewsFiltered[0].zipCode;
     const values = {
-      Subject: this.props.PropNewsFiltered[0].NewsHeader,
-      Message: this.props.PropNewsFiltered[0].NewsBody,
-      House: this.props.PropNewsFiltered[0].Property,
+      Subject: this.props.PropNewsFiltered[0].subject,
+      Message: this.props.PropNewsFiltered[0].message,
+      House: Address,
     };
     return (
       <React.Fragment>

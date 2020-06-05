@@ -29,6 +29,12 @@ export default class LandLordInfoCard extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
+      this.FormatImage();
+    }
+  }
+
   OpenNoti = () => {
     this.setState({ OpenNoti: true, Message: "Message was successfully sent" });
   };

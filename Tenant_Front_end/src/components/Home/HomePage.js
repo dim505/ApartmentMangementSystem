@@ -98,7 +98,7 @@ export default class HomePage extends Component {
           </Grid>
 
           <Grid item xs={4}>
-            <NewsCard />
+            <NewsCard results={this.props.results} auth={this.props.auth} />
           </Grid>
         </Grid>
       </div>

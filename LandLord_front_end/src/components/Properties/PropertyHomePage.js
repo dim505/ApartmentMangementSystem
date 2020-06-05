@@ -51,9 +51,12 @@ export default class PropertyHomePage extends Component {
     //show the updated records
     setTimeout(() => {
       //makes api call to get all properties
-      var results = Axios.get("https://localhost:5001/api/property", {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }).then((results) =>
+      var results = Axios.get(
+        "https://amsbackend.azurewebsites.net/api/property",
+        {
+          headers: { Authorization: `bearer ${BearerToken}` },
+        }
+      ).then((results) =>
         this.setState({
           Properties: results.data,
         })

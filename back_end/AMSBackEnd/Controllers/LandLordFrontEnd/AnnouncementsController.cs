@@ -148,11 +148,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
             List<GetAnnouncement> Announcements = new List<GetAnnouncement>();
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                  Announcements = db.Query<GetAnnouncement>("Select Annon.*, Left(Annon.Subject, 10)  as ShortSubject, " +
-                    "Left(Annon.Message,20)  as  [LongSubject], prop.Street, prop.City, prop.State, prop.ZipCode from Announcements" +
-                    " Annon inner join Properties prop on Annon.PropGuid = prop.Guid" +
-                    "where Auth0ID = @LoginUserIdentifier" +
-                    "order by DateAdded",
+                  Announcements = db.Query<GetAnnouncement>("Select Annon.*, Left(Annon.Subject, 20)  as ShortSubject, Left(Annon.Message,20)  as  [ShortMessage], prop.Street, prop.City, prop.State,  prop.ZipCode from Announcements Annon inner join Properties prop on Annon.PropGuid = prop.Guid where Annon.Auth0ID = @LoginUserIdentifier  order by DateAdded",
                     new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }).ToList();
             }
             return Ok(Announcements);
@@ -168,8 +164,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
 
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                var SqlStr = @"delete from Announcements
-                             where id = @ID)";
+                var SqlStr = @"delete from Announcements where id = @ID";
                 var result = db.Execute(SqlStr, new
                 {
                     ID = id

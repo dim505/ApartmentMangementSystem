@@ -22,7 +22,7 @@ class AddNews extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      properties: [{ id: 1, Address: "12 verde Drive Greenfield MA" }],
+      properties: [],
       OpenNoti: false,
       Message: "",
     };
@@ -33,26 +33,41 @@ class AddNews extends Component {
   }
 
   SetData = async () => {
-    window.properties = [];
-    await this.setState({
-      properties: [
-        { guid: 1, Address: "All Properties" },
-        { guid: 4, Address: "12 verde Drive Greenfield MA" },
-        { guid: 2, Address: "9 verde Drive Greenfield MA" },
-        { guid: 3, Address: "66 verde Drive Greenfield MA" },
-      ],
-    });
+    window.propertiesUnFormatted = [];
+    window.propertiesFormatted = [];
 
-    this.state.properties.map((property) =>
-      window.properties.push(
+    //gets logged in user ID
+    const BearerToken = await this.props.auth.getTokenSilently();
+
+    //makes api call  and sets state
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/property",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) => {
+      this.ApiCallResults(results);
+    });
+  };
+
+  ApiCallResults = (results) => {
+    window.propertiesUnFormatted = results.data;
+    this.FormatData();
+    this.setState({
+      properties: window.propertiesFormatted,
+    });
+  };
+
+  FormatData = () => {
+    window.propertiesUnFormatted.map((property) =>
+      window.propertiesFormatted.push(
         <MenuItem key={property.guid} value={property.guid}>
           {" "}
-          {property.Address}
+          {property.street} {property.city}, {property.state} {property.zipCode}
         </MenuItem>
       )
     );
   };
-
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
@@ -65,17 +80,17 @@ class AddNews extends Component {
     window.resetForm({});
     this.OpenNoti();
     console.log(window.values);
-    /*var MyData = {};
+    var MyData = {};
     MyData.Announcement = window.values;
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://localhost:5001/api/tenant/UpdateTenant",
-      Mydata,
+      "https://amsbackend.azurewebsites.net/api/Announcements/AddNews",
+      MyData,
       {
-        headers: { Authorization: `bearer ${BearerToken}` }
+        headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then(results => console.log(results)); */
+    ).then((results) => console.log(results));
   };
 
   OpenSaveWarnBox = () => {
@@ -128,7 +143,9 @@ class AddNews extends Component {
                 initialValues={values}
                 onSubmit={this.submitValues}
                 validationSchema={validationSchema}
-                render={(props) => <AddNewsForm {...props} />}
+                render={(props) => (
+                  <AddNewsForm properties={this.state.properties} {...props} />
+                )}
               />
             </Paper>
           </div>

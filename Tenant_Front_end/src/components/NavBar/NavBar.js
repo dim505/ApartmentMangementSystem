@@ -9,10 +9,10 @@ import { NavLink } from "react-router-dom";
 import PeopleIcon from "@material-ui/icons/People";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
-import ApartmentIcon from '@material-ui/icons/Apartment';
-import Button from '@material-ui/core/Button';
+import ApartmentIcon from "@material-ui/icons/Apartment";
+import Button from "@material-ui/core/Button";
 
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 
 function HomeIcon(props) {
   return (
@@ -22,43 +22,30 @@ function HomeIcon(props) {
   );
 }
 
-
-
-
-
 export default class NavBar extends Component {
-
-//redirects user to log in page
+  //redirects user to log in page
   Login = () => {
     this.props.auth.loginWithRedirect();
-  }
-  //logs user out of application 
+  };
+  //logs user out of application
   Logout = () => {
-      this.props.auth.logout({
-          returnTo: "http://localhost:3000"
-  
-      })
-  }
+    this.props.auth.logout({
+      returnTo: "https://amstenantfrontend.azurewebsites.net",
+    });
+  };
 
   render() {
-
     const QuestIconStyle = {
       marginTop: "7px",
       fontSize: "24px",
-      color:"red"
-
-
-    }
-
-    
-
+      color: "red",
+    };
 
     return (
-      <div className="NavBar"      >
+      <div className="NavBar">
         <Flip left>
           <AppBar color="transparent" position="static">
             <Toolbar variant="dense">
-
               <NavLink
                 exact={true}
                 className="navbar__link"
@@ -70,42 +57,18 @@ export default class NavBar extends Component {
                 </Typography>
               </NavLink>
 
- 
-
- 
-		  
-   
-
-              {   this.props.authenticated || window.handleRedirectCallbackAlreadyCalled === 1 ?                  
-              
-              <Button
-              variant="outlined"
-              onClick={this.Logout}
-            >
-                                      Log Out
-
-            </Button>  
- 
-                  :   
-                  
-                  
-                  <div>    
-                  <Button onClick={this.Login} 
-                      variant="outlined"              >
-                       Log In
-                   </Button>    
-        
-
-        
-        
-                  </div>          
-          }    
-
-
-
-
-
-
+              {this.props.authenticated ||
+              window.handleRedirectCallbackAlreadyCalled === 1 ? (
+                <Button variant="outlined" onClick={this.Logout}>
+                  Log Out
+                </Button>
+              ) : (
+                <div>
+                  <Button onClick={this.Login} variant="outlined">
+                    Log In
+                  </Button>
+                </div>
+              )}
             </Toolbar>
           </AppBar>
         </Flip>

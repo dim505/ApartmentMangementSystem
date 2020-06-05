@@ -38,7 +38,7 @@ export default class PersonalInfoCard extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://localhost:5001/api/AccountDetails/GetAccountInfo",
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountInfo",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -50,7 +50,7 @@ export default class PersonalInfoCard extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://localhost:5001/api/AccountDetails/GetAccountPhotoInfo",
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountPhotoInfo",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

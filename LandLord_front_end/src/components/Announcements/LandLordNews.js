@@ -15,60 +15,52 @@ import Fade from "react-reveal/Fade";
 
 export default class LandLordNews extends Component {
   state = {
-    PropNews: [
-      {
-        Property: "All Properties",
-        NewsHeader: "Super Pooper Scooper",
-        NewsBody:
-          "JAJAJAJAJAJA JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJA",
-        NewsBodyShort: "JAJAJAJ AJAJAJ AJ AJAJ AJAJA",
-      },
-      {
-        Property: "12 verde Drive Greenfield MA",
-        NewsHeader: "PlumbingBroken",
-        NewsBody:
-          "JAJAJAJAJAJA JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJA",
-        NewsBodyShort: "JAJAJAJ AJAJAJ AJ AJAJ AJAJA",
-      },
-      {
-        Property: "9 verde Drive Greenfield MA",
-        NewsHeader: "Free Rent",
-        NewsBody:
-          "JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJA",
-        NewsBodyShort: "JAJAJAJAJ AJA JAJAJA AJAJ A",
-      },
-      {
-        Property: "66 verde Drive Greenfield MA",
-        NewsHeader: "Free Loader",
-        NewsBody:
-          "JAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJAJA",
-        NewsBodyShort: "JAJAJA JAJAJAJ AJAJAJ AJAJA",
-      },
-    ],
+    PropNews: [],
     PropNewsFiltered: [],
     DialogBoxMessage: "",
     OpnModal: false,
     OpnModalVeiw: false,
   };
 
-  FilterProp = (Property) => {
+  componentDidMount() {
+    this.GetPropNews();
+  }
+
+  GetPropNews = async () => {
+    //gets logged in user ID
+    const BearerToken = await this.props.auth.getTokenSilently();
+
+    //makes api call  and sets state
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/Announcements/GetNews",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) => {
+      this.setState({
+        PropNews: results.data,
+      });
+    });
+  };
+
+  FilterProp = (iD) => {
     let PropNewsFiltered = this.state.PropNews;
     PropNewsFiltered = PropNewsFiltered.filter(
-      (PropNewsItem) => PropNewsItem.Property === Property
+      (PropNewsItem) => PropNewsItem.iD === iD
     );
     return PropNewsFiltered;
   };
 
-  OpnModalVeiw = (Property) => {
-    var PropNewsFiltered = this.FilterProp(Property);
+  OpnModalVeiw = (iD) => {
+    var PropNewsFiltered = this.FilterProp(iD);
     this.setState({
       OpnModalVeiw: true,
       PropNewsFiltered: PropNewsFiltered,
     });
   };
 
-  OpnModal = (Property) => {
-    var PropNewsFiltered = this.FilterProp(Property);
+  OpnModal = (propGuid) => {
+    var PropNewsFiltered = this.FilterProp(propGuid);
     this.setState({
       OpnModal: true,
       PropNewsFiltered: PropNewsFiltered,
@@ -87,8 +79,8 @@ export default class LandLordNews extends Component {
     });
   };
 
-  HandleClick = (property) => {
-    Window.PropertyToDel = property;
+  HandleClick = (iD) => {
+    Window.NewsToDel = iD;
     this.OpenSaveWarnBox();
   };
 
@@ -99,11 +91,11 @@ export default class LandLordNews extends Component {
     this.CloseSaveWarnBox();
     //const BearerToken = await this.props.auth.getTokenSilently();
     await Axios.delete(
-      `https://localhost:5001/api/receipt/delete/${Window.PropertyToDel}`,
+      `https://amsbackend.azurewebsites.net/api/Announcements/DeleteNews/${Window.NewsToDel}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    );
+    ).then(() => this.GetPropNews());
 
     this.OpenNoti("Delete was deleted");
   };
@@ -114,6 +106,7 @@ export default class LandLordNews extends Component {
       DialogBoxMessage: "Are you sure you want to delete the record?",
     });
   };
+
   CloseSaveWarnBox = (Message) => {
     this.setState({
       OpnSaveWarningBox: false,
@@ -146,19 +139,27 @@ export default class LandLordNews extends Component {
             </Grid>
           </Grid>
 
-          <Paper classes={{ root: "PayHistTitle" }} elevation={5}>
-            {" "}
-            <Typography align="center" variant="h4" gutterBottom>
-              Announcement History
-            </Typography>
-          </Paper>
+          {this.state.PropNews.length <= 0 ? (
+            <b>No News Found. Please add some</b>
+          ) : (
+            <div>
+              <Paper classes={{ root: "PayHistTitle" }} elevation={5}>
+                {" "}
+                <Typography align="center" variant="h4" gutterBottom>
+                  Announcement History
+                </Typography>
+              </Paper>
 
-          <AnnouncementHistoryTable
-            OpnModalVeiw={this.OpnModalVeiw}
-            OpnModal={this.OpnModal}
-            PropNews={this.state.PropNews}
-            HandleClick={this.HandleClick}
-          />
+              <AnnouncementHistoryTable
+                OpnModalVeiw={this.OpnModalVeiw}
+                OpnModal={this.OpnModal}
+                PropNews={this.state.PropNews}
+                HandleClick={this.HandleClick}
+                auth={this.props.auth}
+              />
+            </div>
+          )}
+
           <SnackBar
             OpenNoti={this.state.OpenNoti}
             CloseNoti={this.CloseNoti}
@@ -186,6 +187,8 @@ export default class LandLordNews extends Component {
               PropNewsFiltered={this.state.PropNewsFiltered}
               CloseModal={this.CloseModal}
               OpenNoti={this.OpenNoti}
+              auth={this.props.auth}
+              GetPropNews={this.GetPropNews}
             />
           </AnnonModal>
 

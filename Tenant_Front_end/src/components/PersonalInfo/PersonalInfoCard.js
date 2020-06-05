@@ -15,12 +15,19 @@ export default class PersonalInfoCard extends Component {
       LastName: "Gram",
       Email: "bob@bob.com",
       PhoneNumber: "911-4535353",
-      Image: "",
     },
+
+    Image: "",
   };
 
   componentDidMount() {
     if (this.props.ProfilePictures.length > 0) {
+      this.FormatImage();
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
       this.FormatImage();
     }
   }

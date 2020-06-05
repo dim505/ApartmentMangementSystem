@@ -51,7 +51,7 @@ class EditLandLordInfo extends Component {
 
     if (window.values.file !== "") {
       console.log(window.values);
-      const AddImageUrl = `https://localhost:5001/api/AccountDetails/Add_Update_LandLord_Image`;
+      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -70,7 +70,7 @@ class EditLandLordInfo extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/AccountDetails/Add_Update_LandLordInfo",
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLordInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

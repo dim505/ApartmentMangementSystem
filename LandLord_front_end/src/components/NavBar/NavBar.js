@@ -33,7 +33,7 @@ export default class NavBar extends Component {
   //logs user out of application
   Logout = () => {
     this.props.auth.logout({
-      returnTo: "http://localhost:3000/LogOutcallback",
+      returnTo: "https://amsfrontend.azurewebsites.net/LogOutcallback",
     });
   };
 

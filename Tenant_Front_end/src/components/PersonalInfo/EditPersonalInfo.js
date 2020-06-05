@@ -47,9 +47,9 @@ class EditPersonalInfo extends Component {
     var Mydata = {};
     Mydata.tenant = window.values;
 
-    if (window.values.file !== "") {
+    if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://localhost:5001/api/home/AddTenantImage/${window.values.Email}`;
+      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/home/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -65,7 +65,7 @@ class EditPersonalInfo extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/home/UpdateTenantInfo",
+      "https://amsbackend.azurewebsites.net/api/home/UpdateTenantInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -108,7 +108,10 @@ class EditPersonalInfo extends Component {
       Name: this.props.results[0].name,
       Email: this.props.results[0].email,
       PhoneNumber: this.props.results[0].phone,
-      file: Window.ProfileImageName,
+      file:
+        this.props.ProfilePictures.length > 0
+          ? this.props.ProfilePictures[0].tenfilename
+          : "",
     };
     return (
       <React.Fragment>
@@ -133,6 +136,7 @@ class EditPersonalInfo extends Component {
               onSubmit={this.submitValues}
               render={(props) => (
                 <EditPersonalInfoForm
+                  ProfilePictures={this.props.ProfilePictures}
                   OpenNoti={this.OpenNoti}
                   SetMessage={this.SetMessage}
                   {...props}

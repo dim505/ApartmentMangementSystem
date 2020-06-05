@@ -1,50 +1,42 @@
 //https://github.com/fullstackreact/google-maps-react
 import React, { Component } from "react";
 import CanvasJSReact from "./GraphDepdency/canvasjs.react";
-import Axios from 'axios';
+import Axios from "axios";
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-//chart shows number of properties added each year 
+//chart shows number of properties added each year
 export default class NumberOfPropertiesAdded extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      Properties: []
+      Properties: [],
     };
   }
-  
-    //gets data for chart 
-    componentDidMount() {this.GetData()}
 
-  	//makes api call and sets state
-    GetData = async () => {
-      const BearerToken = await this.props.auth.getTokenSilently();
-      var results =   Axios.get("https://localhost:5001/api/Home/NumOfPropPerYear",
+  //gets data for chart
+  componentDidMount() {
+    this.GetData();
+  }
+
+  //makes api call and sets state
+  GetData = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/Home/NumOfPropPerYear",
       {
-       headers: {'Authorization': `bearer ${BearerToken}`}
- 
-     }
-      ).then( (results) => 
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) =>
       this.setState({
-        Properties: results.data
-      }),
-       
-      );
- 
- 
-   }
-
-
+        Properties: results.data,
+      })
+    );
+  };
 
   //formats date from DB into something the chart can use and puts it into a dataset
   FormatData() {
-    
-
-
-    	
-
     window.dataPoints = [];
     for (var i in this.state.Properties) {
       var x = this.state.Properties[i].date;
@@ -54,7 +46,7 @@ export default class NumberOfPropertiesAdded extends Component {
       window.dataPoints.push({ x, y });
     }
   }
-//used to format date
+  //used to format date
   parseDate(input) {
     var parts = input.split("-");
     // new Date(year, month [, day [, hours[, minutes[, seconds[, ms]]]]])
@@ -67,37 +59,32 @@ export default class NumberOfPropertiesAdded extends Component {
       animationEnabled: true,
       exportEnabled: true,
       title: {
-        text: "Number of Properties Added Each Year"
+        text: "Number of Properties Added Each Year",
       },
       axisX: {
-        valueFormatString: "YYYY"
+        valueFormatString: "YYYY",
       },
       axisY: {
-        title: "Number of Properties"
+        title: "Number of Properties",
       },
       data: [
         {
           type: "stepLine",
           xValueFormatString: "YYYY",
-          dataPoints: window.dataPoints
-        }
-      ]
+          dataPoints: window.dataPoints,
+        },
+      ],
     };
 
     options.data[0].dataPoints = window.dataPoints;
 
     return (
       <div>
-        {this.state.Properties.length > 0 ? 
-                  <CanvasJSChart
-                  options={options}
-                  
-                /> :
-                
-                <h3> No Properties Found. Please Add Some </h3>
-      }
-
-   
+        {this.state.Properties.length > 0 ? (
+          <CanvasJSChart options={options} />
+        ) : (
+          <h3> No Properties Found. Please Add Some </h3>
+        )}
       </div>
     );
   }

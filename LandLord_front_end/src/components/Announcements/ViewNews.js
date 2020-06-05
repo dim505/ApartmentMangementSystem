@@ -62,10 +62,18 @@ class ViewNews extends Component {
   };
   render() {
     debugger;
+    var Address =
+      this.props.PropNewsFiltered[0].street +
+      " " +
+      this.props.PropNewsFiltered[0].city +
+      ", " +
+      this.props.PropNewsFiltered[0].state +
+      " " +
+      this.props.PropNewsFiltered[0].zipCode;
     const values = {
-      Subject: this.props.PropNewsFiltered[0].NewsHeader,
-      Message: this.props.PropNewsFiltered[0].NewsBody,
-      House: this.props.PropNewsFiltered[0].Property,
+      Subject: this.props.PropNewsFiltered[0].subject,
+      Message: this.props.PropNewsFiltered[0].message,
+      House: Address,
     };
     return (
       <React.Fragment>

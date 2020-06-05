@@ -22,30 +22,33 @@ export default class AnnouncementHistoryTable extends Component {
             </TableRow>
           </TableHead>
           <TableBody>
-            {this.props.PropNews.map(dataline => (
-              <TableRow key={dataline.Property}>
-                <TableCell>{dataline.Property}</TableCell>
-                <TableCell>{dataline.NewsHeader} ....</TableCell>
+            {this.props.PropNews.map((dataline) => (
+              <TableRow key={dataline.iD}>
                 <TableCell>
-                  <Typography>${dataline.NewsBodyShort} ....</Typography>
+                  {dataline.street} {dataline.city}, {dataline.state}{" "}
+                  {dataline.ZipCode}{" "}
+                </TableCell>
+                <TableCell>{dataline.shortSubject}....</TableCell>
+                <TableCell>
+                  <Typography>{dataline.shortMessage}....</Typography>
                 </TableCell>
 
                 <TableCell align="right">
                   <Button
-                    onClick={() => this.props.OpnModalVeiw(dataline.Property)}
+                    onClick={() => this.props.OpnModalVeiw(dataline.iD)}
                     variant="outlined"
                   >
                     View
                   </Button>
 
                   <Button
-                    onClick={() => this.props.OpnModal(dataline.Property)}
+                    onClick={() => this.props.OpnModal(dataline.iD)}
                     variant="outlined"
                   >
                     Update
                   </Button>
                   <Button
-                    onClick={() => this.props.HandleClick(dataline.Property)}
+                    onClick={() => this.props.HandleClick(dataline.id)}
                     variant="outlined"
                     color="secondary"
                   >

@@ -6,39 +6,37 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import Axios from 'axios';
-import Tooltip from '@material-ui/core/Tooltip';
+import Axios from "axios";
+import Tooltip from "@material-ui/core/Tooltip";
 
-//contains remove  button to delete a tenant  
+//contains remove  button to delete a tenant
 export default class TenantRemoveButton extends Component {
   state = { OpnWarningBox: false };
 
-  async RemoveTenant (guid) {
-		const BearerToken = await this.props.auth.getTokenSilently();
-     Axios.delete(`https://localhost:5001/api/tenant/delete/${guid}`,
-	     {
-      headers: {'Authorization': `bearer ${BearerToken}`}
-  
-    }
-	 );
-	
-
+  async RemoveTenant(guid) {
+    const BearerToken = await this.props.auth.getTokenSilently();
+    Axios.delete(
+      `https://amsbackend.azurewebsites.net/api/tenant/delete/${guid}`,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    );
   }
 
-//opens Tenant was saved notification and closes modal/warning box 
+  //opens Tenant was saved notification and closes modal/warning box
   OpenItmRmvNoti = (guid) => {
-    this.RemoveTenant(guid)
+    this.RemoveTenant(guid);
     this.CloseWarnBox();
     this.props.OpenTenantRmvNoti();
     this.props.GetProperties();
     this.props.GetTenants();
   };
-  
-  //closes warning save YES/no box 
+
+  //closes warning save YES/no box
   CloseWarnBox = () => {
     this.setState({ OpnWarningBox: false });
   };
-	//opens warning save YES/no box
+  //opens warning save YES/no box
   OpenWarnBox = () => {
     this.setState({ OpnWarningBox: true });
   };
@@ -72,7 +70,7 @@ export default class TenantRemoveButton extends Component {
           </DialogActions>
         </Dialog>
         <Tooltip title="Delete" placement="top">
-        <DeleteIcon onClick={() => this.OpenWarnBox()} />
+          <DeleteIcon onClick={() => this.OpenWarnBox()} />
         </Tooltip>
       </div>
     );
