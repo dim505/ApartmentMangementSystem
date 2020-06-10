@@ -28,6 +28,8 @@ const styles = {
   },
 };
 
+
+//this component contains the preloaded splash screen that you see when you first log into the application 
 export default class App extends Component {
   state = {
     YearlyPropExp: 9000,

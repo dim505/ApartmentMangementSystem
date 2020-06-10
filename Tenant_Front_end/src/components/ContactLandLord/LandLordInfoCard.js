@@ -23,28 +23,33 @@ export default class LandLordInfoCard extends Component {
     Image: "",
   };
 
+	//formats image if pictures are retrived 
   componentDidMount() {
     if (this.props.ProfilePictures.length > 0) {
       this.FormatImage();
     }
   }
 
+	//checks to format image with each render 
   componentDidUpdate(prevProps) {
     if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
       this.FormatImage();
     }
   }
 
+
+//opens notification
   OpenNoti = () => {
     this.setState({ OpenNoti: true, Message: "Message was successfully sent" });
   };
-
+//closes notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
 
+	//function used to Format image 
   FormatImage() {
     var objectURL = this.CreateImageUrl(
       this.props.ProfilePictures[0].landimage,
@@ -70,12 +75,14 @@ export default class LandLordInfoCard extends Component {
     return objectURL;
   }
 
+	//opens modal 
   OpenModal = () => {
     this.setState({
       OpnModal: true,
     });
   };
-
+  
+	//closes modal 
   CloseModal = () => {
     this.setState({
       OpnModal: false,

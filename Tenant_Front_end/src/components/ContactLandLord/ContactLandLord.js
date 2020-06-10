@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
 import DialogBox from "../DialogBox";
 
+//rules that enforced data validation
 const validationSchema = Yup.object({
   Subject: Yup.string("Enter a Subject").required("Subject is Required"),
   Message: Yup.string("Enter a Message").required("Message is Required"),
@@ -19,14 +20,19 @@ class ContactLandLord extends Component {
   }
 
   submitValues = (values, { resetForm }) => {
+    //gets values from form
     window.values = values;
+    //gets function to reset form
     window.resetForm = resetForm;
+    //opens warning dialog box
     this.OpenSaveWarnBox();
     //;
   };
 
   Save = async () => {
+    //gets auth token
     const BearerToken = await this.props.auth.getTokenSilently();
+    //Builds out object to send to back end
     var Mydata = {};
     Mydata.message = window.values;
     Mydata.message.FromEmail = this.props.results[0].email;
@@ -34,23 +40,27 @@ class ContactLandLord extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/home/ContactLandLord",
+      "https://localhost:5001/api/home/ContactLandLord",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
     ).then(setTimeout(() => this.props.OpenNoti(), 1000));
 
+    //closes warning box, Modal, and reset form
     this.CloseSaveWarnBox();
     window.resetForm({});
     this.props.CloseModal();
   };
 
+  //function to open warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+
+  //function to close warning box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,

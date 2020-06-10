@@ -6,6 +6,8 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 
+
+//component used to act as a template for dialog boxes 
 export default class DialogBox extends Component {
   render() {
     return (

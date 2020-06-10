@@ -1,6 +1,8 @@
 import React from "react";
 import Snackbar from "@material-ui/core/Snackbar";
 
+
+//component used to act as a template for notifications 
 export default function SnackBar(props) {
   return (
     <Snackbar

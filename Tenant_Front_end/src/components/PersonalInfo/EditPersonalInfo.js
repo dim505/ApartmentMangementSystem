@@ -14,6 +14,7 @@ import Axios from "axios";
 import { post } from "axios";
 import Fade from "react-reveal/Fade";
 
+//object used to validate forms
 const validationSchema = Yup.object({
   Name: Yup.string("Enter a name").required("Name is required"),
   Email: Yup.string("Enter your email")
@@ -33,23 +34,31 @@ class EditPersonalInfo extends Component {
   }
 
   submitValues = (values, { resetForm }) => {
+    //gets values from form
     console.log(window.LandLordPicture);
     window.values = values;
+    //gets function to reset form
     window.resetForm = resetForm;
+    //opens warning dialog box
     this.OpenSaveWarnBox();
     //;
   };
 
   Save = async () => {
+    //gets auth token
     const BearerToken = await this.props.auth.getTokenSilently();
+    //closes warning box
     this.CloseSaveWarnBox();
+    //resets form
     window.resetForm({});
+    //Builds out object to send to back end
     var Mydata = {};
     Mydata.tenant = window.values;
 
+    //checks to see if an image was uploaded then makes api call to upload image
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/home/AddTenantImage/${window.values.Email}`;
+      const AddImageUrl = `https://localhost:5001/api/home/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -65,7 +74,7 @@ class EditPersonalInfo extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/home/UpdateTenantInfo",
+      "https://localhost:5001/api/home/UpdateTenantInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -73,17 +82,21 @@ class EditPersonalInfo extends Component {
     ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
   };
 
+  //closes warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+
+  //opens warningbox
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
 
+  //opens notification
   OpenNoti = () => {
     debugger;
     this.props.GetData();
@@ -92,12 +105,14 @@ class EditPersonalInfo extends Component {
     });
   };
 
+  //sets message for notification
   SetMessage = (message) => {
     this.setState({
       Message: message,
     });
   };
 
+  //closes notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,

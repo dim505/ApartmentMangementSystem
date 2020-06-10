@@ -20,11 +20,11 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomeController : ControllerBase
+    public class TenHomeController : ControllerBase
     {
 
         private readonly IConfiguration _config;
-        public HomeController(IConfiguration config) {
+        public TenHomeController(IConfiguration config) {
             _config = config;
 
         }
@@ -75,7 +75,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             List<TenantHomePage> HomePageInfo = new List<TenantHomePage>();
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                HomePageInfo = db.Query<TenantHomePage>("select ten.Name,ten.Phone, ten.Email, LandAcctDeet.Name as LandLordName," +
+                HomePageInfo = db.Query<TenantHomePage>("select ten.tenGuid, ten.Name,ten.Phone, ten.Email, LandAcctDeet.Name as LandLordName," +
                     " LandAcctDeet.Email as LandLordEmail, LandAcctDeet.PhoneNumber as LandLordPhoneNumber, prop.Street, prop.State, " +
                     "prop.City, prop.ZipCode from tenants ten inner join Properties prop on ten.guid = prop.Guid inner join LandLordAccountDetails " +
                     "LandAcctDeet on prop.Auth0ID = LandAcctDeet.Auth0ID where ten.Email = @email",

@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
+import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 
 export default class PersonalInfoCard extends Component {
   state = {
@@ -20,17 +21,20 @@ export default class PersonalInfoCard extends Component {
     Image: "",
   };
 
+  //formats image if pictures are retrived
   componentDidMount() {
     if (this.props.ProfilePictures.length > 0) {
       this.FormatImage();
     }
   }
-
+  //checks to format image with each render
   componentDidUpdate(prevProps) {
     if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
       this.FormatImage();
     }
   }
+
+  //function used to Format image
 
   FormatImage() {
     var objectURL = this.CreateImageUrl(
@@ -75,7 +79,10 @@ export default class PersonalInfoCard extends Component {
             {this.props.results.length <= 0 ? (
               <b>
                 {" "}
-                <p>No data found</p>{" "}
+                <p>
+                  No data found <SentimentVeryDissatisfiedIcon /> Please make
+                  sure you were added as a Tenant by the Landlord.
+                </p>{" "}
               </b>
             ) : (
               <div>
@@ -84,12 +91,12 @@ export default class PersonalInfoCard extends Component {
                   <p>{this.props.results[0].email} </p>
                   <p>{this.props.results[0].phone} </p>
                 </b>
+
+                <Link to="/EditPersonalInfo">
+                  <Button variant="outlined">Edit Information</Button>
+                </Link>
               </div>
             )}
-
-            <Link to="/EditPersonalInfo">
-              <Button variant="outlined">Edit Information</Button>
-            </Link>
           </Typography>
         </CardContent>
       </Card>

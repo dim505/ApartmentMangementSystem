@@ -2,6 +2,7 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 
+//contains the textfields needed to send a message to the Land Lord
 export const ContactLandLordForm = props => {
   const {
     values: { Subject, Message },

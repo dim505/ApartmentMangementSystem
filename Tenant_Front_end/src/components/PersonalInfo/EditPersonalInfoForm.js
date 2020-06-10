@@ -8,6 +8,9 @@ import WebIcon from "@material-ui/icons/Web";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
+
+
+//contains the textfields needed updated the tenants personal information
 export const EditPersonalInfoForm = (props) => {
   const {
     values: { Name, Email, PhoneNumber, file },

@@ -6,6 +6,7 @@ import LiveHelpOutlinedIcon from "@material-ui/icons/LiveHelpOutlined";
 import Button from "@material-ui/core/Button";
 import Image from "react-bootstrap/Image";
 
+//this component is shown when the user is not logged in
 export default class NotLoggedIn extends Component {
   //redirects user to log in page
   Login = () => {

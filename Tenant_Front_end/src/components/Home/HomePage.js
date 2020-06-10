@@ -12,12 +12,11 @@ import PersonalInfoCard from "../PersonalInfo/PersonalInfoCard";
 import LandLordInfoCard from "../ContactLandLord/LandLordInfoCard";
 import Axios from "axios";
 import NewsCard from "../news/NewsCard";
+import OutstandingBalanceInfoCard from "../OutstandingBalance/OutstandingBalanceInfoCard";
+import PaymentHistCard from "../PaymentHistory/PaymentHistCard";
 
 export default class HomePage extends Component {
-  state = {
-    AmountOwned: "5000.00",
-    PaymentDueDate: "1/1/2020",
-  };
+  //this component contains all the child components of the home page
 
   render() {
     return (
@@ -26,57 +25,14 @@ export default class HomePage extends Component {
           <Grid item xs={8}>
             <Grid container>
               <Grid item xs={6}>
-                <Card classes={{ root: "CardHeight" }}>
-                  <CardContent>
-                    <Typography
-                      classes={{ root: "CardTitle" }}
-                      variant="h5"
-                      component="h2"
-                    >
-                      Outstanding Balance
-                    </Typography>
-
-                    <Typography variant="body2" component="p">
-                      <p>
-                        {" "}
-                        <b> Home </b>{" "}
-                      </p>
-                      <HomeIcon />
-                      <p>
-                        <i>
-                          {" "}
-                          {this.props.results.length <= 0 ? (
-                            <p>No data found</p>
-                          ) : (
-                            <p>
-                              {this.props.results[0].street}{" "}
-                              {this.props.results[0].city},
-                              {this.props.results[0].state}{" "}
-                              {this.props.results[0].zipCode}
-                            </p>
-                          )}
-                        </i>
-                      </p>
-                      <h1> ${this.state.AmountOwned} </h1>
-                      <p> Due on {this.state.PaymentDueDate}</p>
-                      <Button variant="outlined"> Pay Now</Button>
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <OutstandingBalanceInfoCard
+                  auth={this.props.auth}
+                  results={this.props.results}
+                />
               </Grid>
 
               <Grid item xs={6}>
-                <Card classes={{ root: "CardHeight" }}>
-                  <CardContent>
-                    <Typography variant="h5" component="h2">
-                      Payment History
-                    </Typography>
-
-                    <Typography variant="body2" component="p">
-                      <Button variant="outlined">View History</Button>
-                    </Typography>
-                  </CardContent>
-                </Card>
+                <PaymentHistCard />
               </Grid>
             </Grid>
 

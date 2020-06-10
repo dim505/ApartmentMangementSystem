@@ -8,12 +8,13 @@ import "react-dots-loader/index.css";
 import Axios from "axios";
 import Welcome from "./components/Home/Welcome";
 import HomePage from "./components/Home/HomePage";
-
+import PaymentHistory from "./components/PaymentHistory/PaymentHistory";
 import EditPersonalInfo from "./components/PersonalInfo/EditPersonalInfo";
 import { Route } from "react-router-dom";
 import NotLoggedIn from "./components/Home/NotLoggedIn";
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css";
+import PaymentPortal from "./components/PaymentHistory/PaymentPortal";
 
 class App extends Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class App extends Component {
 
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/GetAccountDetails",
+      "https://localhost:5001/api/TenHome/GetAccountDetails",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -57,7 +58,7 @@ class App extends Component {
     );
 
     var results2 = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/GetProfilePhoto",
+      "https://localhost:5001/api/TenHome/GetProfilePhoto",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -155,6 +156,13 @@ class App extends Component {
                   GetData={this.GetData}
                   ProfilePictures={this.state.ProfilePictures}
                 />
+              </Route>
+              <Route path="/PaymentHistory">
+                <PaymentHistory />
+              </Route>
+
+              <Route path="/PathThatLeadsToNoWhere">
+                <PaymentPortal auth={this.props.auth} />
               </Route>
             </Fade>
           </div>

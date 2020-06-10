@@ -13,6 +13,7 @@ export default class NewsCard extends Component {
     news: [],
   };
 
+  //checks if api call is made and makes api call
   componentDidMount() {
     window.NewsApiCallMade = false;
     if (this.props.results.length > 0) {
@@ -20,6 +21,7 @@ export default class NewsCard extends Component {
     }
   }
 
+  //checks if api call is made with each render and makes api call
   componentDidUpdate(prevProps) {
     if (
       this.props.results.length > 0 &&
@@ -35,7 +37,7 @@ export default class NewsCard extends Component {
     window.NewsApiCallMade = true;
     //makes api call  and sets state
     var results = Axios.get(
-      `https://amsbackend.azurewebsites.net/api/Home/GetNews/${this.props.results[0].email}`,
+      `https://localhost:5001/api/Home/GetNews/${this.props.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
