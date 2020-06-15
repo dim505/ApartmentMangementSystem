@@ -28,11 +28,16 @@ export default class HomePage extends Component {
                 <OutstandingBalanceInfoCard
                   auth={this.props.auth}
                   results={this.props.results}
+                  PaymentInfoCard={this.props.PaymentInfoCard}
+                  GetData={this.props.GetData}
                 />
               </Grid>
 
               <Grid item xs={6}>
-                <PaymentHistCard />
+                <PaymentHistCard
+                  auth={this.props.auth}
+                  results={this.props.results}
+                />
               </Grid>
             </Grid>
 

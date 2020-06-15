@@ -57,7 +57,7 @@ export default class ReceiptModal extends Component {
 
     //makes API call to update text portion of the reciept
     var AddRecResults = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/receipt/UpdateReceipt",
+      "https://localhost:5001/api/receipt/UpdateReceipt",
 
       Mydata,
 
@@ -71,8 +71,8 @@ export default class ReceiptModal extends Component {
 
     //check to see if new file has been uploaded
     if (this.state.file !== null) {
-      //makes API call to update the imagehttps://amsbackend.azurewebsites.net
-      const url = `https://amsbackend.azurewebsites.net/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+      //makes API call to update the imagehttps://localhost:5001
+      const url = `https://localhost:5001/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
 
       const formData = new FormData();
       formData.append("body", this.state.file);

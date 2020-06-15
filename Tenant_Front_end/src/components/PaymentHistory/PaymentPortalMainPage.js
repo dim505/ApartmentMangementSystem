@@ -21,14 +21,20 @@ export default class PaymentPortalMainPage extends Component {
             Monthly Rent
           </Typography>
           <Typography variant="h5" gutterBottom>
-            Payment Due: <span className="RedText"> $400</span>
+            Payment Due:{" "}
+            <span className="RedText">
+              {" "}
+              ${this.props.PaymentInfoCard[0].rentDue}.00{" "}
+            </span>
           </Typography>
           <StripeProvider apiKey="pk_test_zaWyvliomz572zcBnFEvreOs00ykM1wcnO">
             <PaymentPortal
+              PaymentInfoCard={this.props.PaymentInfoCard}
               OpenNoti={this.props.OpenNoti}
               CloseModal={this.props.CloseModal}
               auth={this.props.auth}
               results={this.props.results}
+              GetData={this.props.GetData}
             />
           </StripeProvider>
         </Paper>

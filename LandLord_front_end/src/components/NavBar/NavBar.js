@@ -25,6 +25,7 @@ function HomeIcon(props) {
   );
 }
 
+//this component contains the Nav Bar
 export default class NavBar extends Component {
   //redirects user to log in page
   Login = () => {
@@ -33,7 +34,7 @@ export default class NavBar extends Component {
   //logs user out of application
   Logout = () => {
     this.props.auth.logout({
-      returnTo: "https://amsfrontend.azurewebsites.net/LogOutcallback",
+      returnTo: "http://localhost:3000/LogOutcallback",
     });
   };
 

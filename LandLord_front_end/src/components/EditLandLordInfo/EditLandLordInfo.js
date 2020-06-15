@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Fade from "react-reveal/Fade";
 
+//declares rules for validating textfields
+
 const validationSchema = Yup.object({
   Name: Yup.string("Enter a name").required("Name is required"),
   Email: Yup.string("Enter your email")
@@ -36,6 +38,7 @@ class EditLandLordInfo extends Component {
     };
   }
 
+  //opens warning box when submit is clicked
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
@@ -44,14 +47,16 @@ class EditLandLordInfo extends Component {
     //;
   };
 
+  //if user clicks yes, it makes api call to saved landlord account information
   Save = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     this.CloseSaveWarnBox();
     window.resetForm({});
 
+    //makes api call to update image if an image has been uploaded
     if (window.values.file !== "") {
       console.log(window.values);
-      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLord_Image`;
+      const AddImageUrl = `https://localhost:5001/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -65,12 +70,13 @@ class EditLandLordInfo extends Component {
       console.log(results);
     }
 
+    //builds out object
     var Mydata = {};
     Mydata.accountDetails = window.values;
 
-    //makes api call
+    //makes API call to update text portion of account details
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLordInfo",
+      "https://localhost:5001/api/AccountDetails/Add_Update_LandLordInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -78,29 +84,32 @@ class EditLandLordInfo extends Component {
     ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
   };
 
+  //function used to open warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+  //function used to close warning box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
-
+  //function used to open notification alert
   OpenNoti = () => {
     debugger;
     this.setState({
       OpenNoti: true,
     });
   };
-
+  //this sets message for notification alert
   SetMessage = (message) => {
     this.setState({
       Message: message,
     });
   };
+  //function used to close notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,

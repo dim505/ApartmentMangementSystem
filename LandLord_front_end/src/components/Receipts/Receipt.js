@@ -32,12 +32,9 @@ export default class Receipt extends Component {
   //makes api call and sets state
   getReceipts = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/receipt",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/receipt", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       this.setState({
         Receipts: results.data,
         ShowBody: true,

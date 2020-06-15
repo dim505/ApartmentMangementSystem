@@ -8,6 +8,7 @@ import "react-dots-loader/index.css";
 import Axios from "axios";
 import Welcome from "./components/Home/Welcome";
 import HomePage from "./components/Home/HomePage";
+import PaymentPortalMainPage from "./components/PaymentHistory/PaymentPortalMainPage";
 import PaymentHistory from "./components/PaymentHistory/PaymentHistory";
 import EditPersonalInfo from "./components/PersonalInfo/EditPersonalInfo";
 import { Route } from "react-router-dom";
@@ -26,6 +27,8 @@ class App extends Component {
       ShowBody: false,
       results: [],
       ProfilePictures: [],
+      PaymentInfoCard: [],
+      PaymentInfoHist: [],
     };
   }
 
@@ -34,6 +37,39 @@ class App extends Component {
     this.isUserAuthenticated();
     this.GetData();
   }
+  componentDidUpdate() {
+    if (
+      this.state.results.length > 0 &&
+      this.state.PaymentInfoCard.length <= 0
+    ) {
+      this.GetPaymentInfo();
+    }
+  }
+
+  GetPaymentInfo = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
+    var results = Axios.get(
+      `https://localhost:5001/api/Payment/GetWhenRentDue/${this.state.results[0].email}`,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) =>
+      this.setState({
+        PaymentInfoCard: results.data,
+      })
+    );
+
+    var results2 = Axios.get(
+      `https://localhost:5001/api/Payment/GetPaymentHistory/${this.state.results[0].email}`,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) =>
+      this.setState({
+        PaymentInfoHist: results.data,
+      })
+    );
+  };
 
   //checks to see if user is authenticated
   async isUserAuthenticated() {
@@ -146,6 +182,8 @@ class App extends Component {
                   auth={this.props.auth}
                   authenticated={this.state.authenticated}
                   ProfilePictures={this.state.ProfilePictures}
+                  PaymentInfoCard={this.state.PaymentInfoCard}
+                  GetData={this.GetData}
                 />
               </Route>
 
@@ -153,16 +191,18 @@ class App extends Component {
                 <EditPersonalInfo
                   results={this.state.results}
                   auth={this.props.auth}
-                  GetData={this.GetData}
+                  GetData={() => this.GetData}
                   ProfilePictures={this.state.ProfilePictures}
                 />
               </Route>
               <Route path="/PaymentHistory">
-                <PaymentHistory />
-              </Route>
-
-              <Route path="/PathThatLeadsToNoWhere">
-                <PaymentPortal auth={this.props.auth} />
+                <PaymentHistory
+                  auth={this.props.auth}
+                  results={this.state.results}
+                  PaymentInfoCard={this.state.PaymentInfoCard}
+                  PaymentInfoHist={this.state.PaymentInfoHist}
+                  GetPaymentInfo={this.GetPaymentInfo}
+                />
               </Route>
             </Fade>
           </div>

@@ -5,27 +5,12 @@ import Button from "@material-ui/core/Button";
 import { injectStripe } from "react-stripe-elements";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Fade from "@material-ui/core/Fade";
-/* 
+import NumberFormat from "react-number-format";
 
+import Tooltip from "@material-ui/core/Tooltip";
 
-
-
-          value={Name || ""}
-          helperText={touched.Name ? errors.Name : ""}
-          error={touched.Name && Boolean(errors.Name)}
-          onChange={change.bind(null, "Name")}
-		  
-		  
-
-          value={AmtDue || ""}
-          helperText={touched.AmtDue ? errors.AmtDue : ""}
-          error={touched.AmtDue && Boolean(errors.AmtDue)}
-          onChange={change.bind(null, "AmtDue")}
-		  
-		  
-*/
 class PaymentPortalForm extends Component {
-  state = { Name: "", AmtDue: "", Email: "", loading: false };
+  state = { Name: "", AmtDue: 0, Email: "" };
 
   componentWillUnmount() {
     window.SubmitButtonClicked = false;
@@ -99,28 +84,38 @@ class PaymentPortalForm extends Component {
         <TextField
           id="AmtDue"
           name="AmtDue"
+          type="number"
           label="Amount Due"
-          value={this.state.AmtDue || ""}
+          value={this.state.AmtDue}
+          fullWidth
           helperText={
-            this.isEmpty(this.state.Name) && window.SubmitButtonClicked
+            this.isEmpty(this.state.AmtDue) && window.SubmitButtonClicked
               ? "Enter Amount"
               : ""
           }
+          InputProps={{
+            inputProps: { min: 1, max: this.props.PaymentInfoCard[0].rentDue },
+          }}
           error={window.SubmitButtonClicked && this.isEmpty(this.state.AmtDue)}
-          fullWidth
-          multiline
           onChange={(event) => {
             this.handleChange({ AmtDue: event.target.value });
           }}
         />
 
         <CardElement />
-        <Button type="submit" fullWidth variant="raised" color="primary">
+
+        <Button
+          classes={{ root: "PaymentSubmitBtn" }}
+          type="submit"
+          fullWidth
+          variant="raised"
+          color="primary"
+        >
           Submit Payment{" "}
           <Fade
-            in={this.state.loading}
+            in={this.props.LoadSpinner}
             style={{
-              transitionDelay: this.state.loading ? "800ms" : "0ms",
+              transitionDelay: this.props.LoadSpinner ? "800ms" : "0ms",
             }}
             unmountOnExit
           >

@@ -12,6 +12,8 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Fade from "react-reveal/Fade";
 
+//declares rules for validating textfields
+
 const validationSchema = Yup.object({
   Subject: Yup.string("Enter a Subject").required("Subject is Required"),
   Message: Yup.string("Enter a Message").required("Message is Required"),
@@ -28,10 +30,12 @@ class AddNews extends Component {
     };
   }
 
+  //gets data for list of properties on component mount
   componentDidMount() {
     this.SetData();
   }
 
+  //makes api call to get data
   SetData = async () => {
     window.propertiesUnFormatted = [];
     window.propertiesFormatted = [];
@@ -40,16 +44,14 @@ class AddNews extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call  and sets state
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) => {
+    var results = Axios.get("https://localhost:5001/api/property", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) => {
       this.ApiCallResults(results);
     });
   };
 
+  //sets state
   ApiCallResults = (results) => {
     window.propertiesUnFormatted = results.data;
     this.FormatData();
@@ -58,6 +60,7 @@ class AddNews extends Component {
     });
   };
 
+  //builds out select list of properties
   FormatData = () => {
     window.propertiesUnFormatted.map((property) =>
       window.propertiesFormatted.push(
@@ -68,6 +71,8 @@ class AddNews extends Component {
       )
     );
   };
+
+  //opens warning box when submit is clicked
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
@@ -75,17 +80,23 @@ class AddNews extends Component {
     //;
   };
 
+  //if user clicks yes, it makes api call to add news
   Save = async () => {
+    //closes warning dialog
     this.CloseSaveWarnBox();
+    //resets form
     window.resetForm({});
+    //opens this was successful notification
     this.OpenNoti();
     console.log(window.values);
+    //builds out object
     var MyData = {};
     MyData.Announcement = window.values;
+    //gets auth0 token
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Announcements/AddNews",
+      "https://localhost:5001/api/Announcements/AddNews",
       MyData,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -93,17 +104,20 @@ class AddNews extends Component {
     ).then((results) => console.log(results));
   };
 
+  //function used to open warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+  //function used to close warning box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
 
+  //function used to open notification alert
   OpenNoti = () => {
     this.setState({
       OpenNoti: true,
@@ -111,6 +125,7 @@ class AddNews extends Component {
     });
   };
 
+  //function used to close notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,

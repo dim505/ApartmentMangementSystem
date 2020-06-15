@@ -46,7 +46,7 @@ export default class Home_Dashboard extends Component {
   getReceipts = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Home/GetReceiptTotals",
+      "https://localhost:5001/api/Home/GetReceiptTotals",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -62,12 +62,9 @@ export default class Home_Dashboard extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call  and sets state
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/property", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       this.setState({
         Properties: results.data,
       })

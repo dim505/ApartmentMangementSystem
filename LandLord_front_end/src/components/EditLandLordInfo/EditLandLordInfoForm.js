@@ -8,6 +8,8 @@ import WebIcon from "@material-ui/icons/Web";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
+
+//form that contains the necessary textfields to edit the landlord account information
 export const EditLandLordInfoForm = props => {
   const {
     values: { Name, Email, PhoneNumber, file },
@@ -20,6 +22,7 @@ export const EditLandLordInfoForm = props => {
     setFieldValue
   } = props;
 
+//handles the update in state for form and tracks if its touched 
   const change = (name, e) => {
     e.persist();
     handleChange(e);
@@ -86,6 +89,7 @@ export const EditLandLordInfoForm = props => {
               style={{ display: "none" }}
               onChange={event => {
                 debugger
+				//checks if the uploaded file is valid 
                 if (event.currentTarget.files.length > 0 && event.currentTarget.files[0].size < 500000 && event.currentTarget.files[0] !== "undefined") {
                   
                 
@@ -94,7 +98,7 @@ export const EditLandLordInfoForm = props => {
                   setFieldValue("file", event.currentTarget.files[0].name);
                   window.TenantPicture = event.target.files[0];
                          
-
+				//lets user know file is too big 
                  } else if (event.currentTarget.files.length > 0 && event.currentTarget.files[0] !== "undefined") {
                     console.log(props)
                    props.SetMessage("Please Upload a thumbnail file under 512 kb")

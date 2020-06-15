@@ -37,7 +37,7 @@ export default class NewsCard extends Component {
     window.NewsApiCallMade = true;
     //makes api call  and sets state
     var results = Axios.get(
-      `https://localhost:5001/api/Home/GetNews/${this.props.results[0].email}`,
+      `https://localhost:5001/api/TenHome/GetNews/${this.props.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

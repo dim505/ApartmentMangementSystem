@@ -23,6 +23,7 @@
     "react-dom": "^16.13.1",
     "react-dots-loader": "^1.1.4",
     "react-konva": "^16.13.0-0",
+    "react-number-format": "^4.4.1",
     "react-numeric-input": "^2.2.3",
     "react-popper-tooltip": "^2.11.1",
     "react-reveal": "^1.2.2",

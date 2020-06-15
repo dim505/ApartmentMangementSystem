@@ -2,6 +2,8 @@ import React from "react";
 import TooltipTrigger from "react-popper-tooltip";
 import "react-popper-tooltip/dist/styles.css";
 
+
+//shared compoent used to share helpful hints  with a hover 
 const Tooltip = ({ children, tooltip, hideArrow, ...props }) => (
   <TooltipTrigger
     {...props}

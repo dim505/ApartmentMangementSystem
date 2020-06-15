@@ -58,7 +58,7 @@ class EditPersonalInfo extends Component {
     //checks to see if an image was uploaded then makes api call to upload image
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://localhost:5001/api/home/AddTenantImage/${window.values.Email}`;
+      const AddImageUrl = `https://localhost:5001/api/TenHome/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -74,12 +74,19 @@ class EditPersonalInfo extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/home/UpdateTenantInfo",
+      "https://localhost:5001/api/TenHome/UpdateTenantInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
+    ).then(
+      setTimeout(
+        () => this.props.GetData(),
+        this.OpenNoti(),
+        this.SetMessage("Update was sucessful"),
+        3000
+      )
+    );
   };
 
   //closes warning box

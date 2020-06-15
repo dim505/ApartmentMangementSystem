@@ -46,7 +46,7 @@ export default class TenantModalSave extends Component {
     console.log(Mydata);
     //makes API call
     var results = Axios.post(
-      "https://amsbackend.azurewebsites.net/api/tenant/UpdateTenant",
+      "https://localhost:5001/api/tenant/UpdateTenant",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -74,12 +74,13 @@ export default class TenantModalSave extends Component {
     }
   };
 
+  //opens notification alert
   OpenTenantFieldsEmptyNoti() {
     this.setState({
       OpenTenantFieldsEmptyNoti: true,
     });
   }
-
+  //opens notification alert
   CloseTenantFieldsEmptyNoti() {
     this.setState({
       OpenTenantFieldsEmptyNoti: false,

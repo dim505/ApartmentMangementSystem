@@ -15,32 +15,11 @@ import SnackBar from "../SnackBar";
 import Fade from "react-reveal/Fade";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 
 export default class PaymentHistory extends Component {
   state = {
-    Rent: [
-      { Month: "Jan 2020", Amount: "1500" },
-      { Month: "Feb 2020", Amount: "1500" },
-      { Month: "Mar 2020", Amount: "1500" },
-      { Month: "Jun 2020", Amount: "1500" },
-      { Month: "July 2020", Amount: "1500" },
-      { Month: "Aug 2020", Amount: "1500" },
-      { Month: "Sept 2020", Amount: "1500" },
-      { Month: "Oct 2020", Amount: "1500" },
-      { Month: "Nov 2020", Amount: "1500" },
-      { Month: "Dec 2020", Amount: "1500" },
-    ],
-
-    RentMainTable: [
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-    ],
+    PaymentInfo: [],
     OpenNoti: "",
     Message: "",
     OpnModal: "",
@@ -83,7 +62,11 @@ export default class PaymentHistory extends Component {
           <Grid container>
             <Grid item xs={9}>
               <Typography variant="h4">
-                Total Due is <span className="RedText"> $400 </span>{" "}
+                Total Due is{" "}
+                <span className="RedText">
+                  {" "}
+                  ${this.props.PaymentInfoCard[0].rentDue}{" "}
+                </span>{" "}
               </Typography>
               <Typography variant="body2">Rent Due</Typography>
             </Grid>
@@ -109,15 +92,23 @@ export default class PaymentHistory extends Component {
                   <TableCell>Amount </TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {this.state.RentMainTable.map((dataline) => (
-                  <TableRow key={dataline.DatePaid}>
-                    <TableCell>{dataline.DatePaid}</TableCell>
-                    <TableCell>{dataline.Period}</TableCell>
-                    <TableCell>${dataline.Amount}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+
+              {this.props.results.length <= 0 ? (
+                <p>No payment history found</p>
+              ) : (
+                <TableBody>
+                  {this.props.PaymentInfoHist.map((dataline) => (
+                    <TableRow>
+                      <TableCell>{dataline.datePaid} </TableCell>
+                      <TableCell>
+                        {dataline.firstOfMonth.substring(0, 9)} -{" "}
+                        {dataline.lastDateOfMonth.substring(0, 9)}
+                      </TableCell>
+                      <TableCell>${dataline.amountPaid}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
             </Table>
           </TableContainer>
 
@@ -134,6 +125,10 @@ export default class PaymentHistory extends Component {
             <PaymentPortalMainPage
               OpenNoti={this.OpenNoti}
               CloseModal={this.CloseModal}
+              results={this.props.results}
+              auth={this.props.auth}
+              PaymentInfoCard={this.props.PaymentInfoCard}
+              GetData={this.props.GetPaymentInfo}
             />
           </AnnonModal>
         </Paper>

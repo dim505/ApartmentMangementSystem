@@ -23,6 +23,7 @@ export default class PersonalInfoCard extends Component {
     ProfilePictures: [],
   };
 
+  //gets account details and photo data
   componentDidMount() {
     if (
       this.state.AccountDetails.length <= 0 &&
@@ -36,9 +37,9 @@ export default class PersonalInfoCard extends Component {
     //gets logged in user ID
     const BearerToken = await this.props.auth.getTokenSilently();
 
-    //makes api call  and sets state
+    //makes api call to get account details text and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountInfo",
+      "https://localhost:5001/api/AccountDetails/GetAccountInfo",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -48,9 +49,9 @@ export default class PersonalInfoCard extends Component {
       });
     });
 
-    //makes api call  and sets state
+    //makes api call to get account photo  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountPhotoInfo",
+      "https://localhost:5001/api/AccountDetails/GetAccountPhotoInfo",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -58,11 +59,12 @@ export default class PersonalInfoCard extends Component {
       await this.setState({
         ProfilePictures: results.data,
       });
-
+      //this formats the format so It can be used in the browser
       this.FormatImage();
     });
   };
 
+  //this formats the format so It can be used in the browser
   FormatImage(ProfilePictures) {
     debugger;
     var objectURL = this.CreateImageUrl(

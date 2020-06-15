@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import SnackBar from "../SnackBar";
 import DialogBox from "../DialogBox";
 
+//declares rules for validating textfields 
 const validationSchema = Yup.object({
   Subject: Yup.string("Enter a Subject").required("Subject is Required"),
   Message: Yup.string("Enter a Message").required("Message is Required"),
@@ -24,6 +25,7 @@ class ViewNews extends Component {
     };
   }
 
+//opens warning box when submit is clicked 
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
@@ -31,23 +33,30 @@ class ViewNews extends Component {
     //;
   };
 
+//if user clicks yes, it makes api call to add news 
   Save = () => {
+	  //closes warning dialog
     this.CloseSaveWarnBox();
+	//resets form
     window.resetForm({});
+	//opens this was successful notification 
     this.OpenNoti();
   };
 
+//function used to open warning box 
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+  //function used to close warning box 
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
 
+//function used to open notification alert
   OpenNoti = () => {
     this.setState({
       OpenNoti: true,
@@ -55,6 +64,7 @@ class ViewNews extends Component {
     });
   };
 
+//function used to close notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
@@ -62,6 +72,7 @@ class ViewNews extends Component {
   };
   render() {
     debugger;
+	//builds out address from API call results 
     var Address =
       this.props.PropNewsFiltered[0].street +
       " " +

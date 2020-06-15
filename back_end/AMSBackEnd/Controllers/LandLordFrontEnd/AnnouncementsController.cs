@@ -17,6 +17,8 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using WebApplication3.Modal;
 
+
+//this controller is responsible for all api end points for the announcement page on the landlord front end 
 namespace AMSBackEnd.Controllers.LandLordFrontEnd
 {
     [Route("api/[controller]")]
@@ -29,7 +31,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
             _config = config;
         }
 
-        // POST api/values
+        // this end point is used to add news to the database from the add new form
         [HttpPost]
         [Route("[action]")]
         public IActionResult AddNews([FromBody] JObject data)
@@ -75,7 +77,8 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
             return Ok();
 
         }
-
+		
+		//this end point is used to update a individual news article 
         [HttpPost]
         [Route("[action]")]
         public IActionResult UpdateNews([FromBody] JObject data)
@@ -127,6 +130,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
 
         }
 
+		 //this end point used to get all the news related to the land lord so he/she can manage it 
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetNews()
@@ -155,7 +159,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
 
 
         }
-
+		//end point used to delete a new article 
         [HttpDelete]
         [Route("[action]/{id}")]
         public IActionResult DeleteNews(int id)

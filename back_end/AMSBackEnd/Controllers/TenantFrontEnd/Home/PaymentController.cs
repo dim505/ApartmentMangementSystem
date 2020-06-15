@@ -22,33 +22,8 @@ namespace WebApplication3.Controllers
 {
 
 
-    /* 
-     * 
-     * 
-     * 
-     * 
-     SQL CODE FOR THE HOME PAGE 
-        declare @email varchar(255) = 'd.komerzan@gmail.com'
-
  
-
-
- -- sql to get the payment history main page and  payment history info card
-select rent.TenGuid, rent.DatePaid, CONVERT(char(3), DATENAME(MONTH,rent.DatePaid ),0) + ' ' +  Datename(YEAR, rent.DatePaid) as ShortDate, DATEADD(DAY,1,EOMONTH( rent.DatePaid,-1)) as FirstOfMonth,
-CONVERT(DATE, DATEADD(d, -( DAY(DATEADD(m, 1, rent.DatePaid)) ), DATEADD(m, 1, rent.DatePaid))) as LastDateOfMonth, rent.AmountPaid from tenants ten
-inner join  RentHistory rent
-on ten.tenGuid = rent.TenGuid
-where ten.Email = @Email
-
-
- W
-
-select CONVERT(varchar(10),CONVERT(DATE, DATEADD(d, -( DAY(DATEADD(m, 1, GETDATE())) ), DATEADD(m, 1, GetDate()))),101) as RentDueDate,  (select DATEDIFF(month,  DateAdded, GetDate()) *  RentDueEaMon  from tenants where Email = @Email) - SUM(AmountPaid )  as RentDue   from tenants ten 
-inner join  RentHistory rent
-on ten.tenGuid = rent.TenGuid
-where ten.Email = @Email
-     * 
-     * */
+	 //this controller is responsible for dealing with the payment information and charging of the the tenant 
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : ControllerBase
@@ -61,7 +36,7 @@ where ten.Email = @Email
         }
 
 
-
+		//this will get the payment history of a tenant for the payment history page
         [HttpGet]
         [Route("[action]/{email}")]
         public IActionResult GetPaymentHistory([FromRoute] string Email) {
@@ -82,7 +57,7 @@ where ten.Email = @Email
             List<PaymentHistory> paymentHistories = new List<PaymentHistory>();
             var SqlStr = @"select rent.TenGuid, rent.DatePaid, CONVERT(char(3), DATENAME(MONTH, rent.DatePaid), 0) + ' ' + Datename(YEAR, rent.DatePaid) as ShortDate, 
             DATEADD(DAY, 1, EOMONTH(rent.DatePaid, -1)) as FirstOfMonth, CONVERT(DATE, DATEADD(d, -(DAY(DATEADD(m, 1, rent.DatePaid))), DATEADD(m, 1, rent.DatePaid))) as LastDateOfMonth, 
-            rent.AmountPaid from tenants ten inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @Email ";
+            rent.AmountPaid from tenants ten inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @Email";
             using (IDbConnection db = new SqlConnection(connStr)) {
                 paymentHistories = db.Query<PaymentHistory>(SqlStr,
                     new { Email = new DbString { Value = Email, IsFixedLength = false, IsAnsi = true } }).ToList();
@@ -93,7 +68,46 @@ where ten.Email = @Email
         }
 
 
+        //this will get the payment history summary for the payment history info card
+        [HttpGet]
+        [Route("[action]/{email}")]
+        public IActionResult GetPaymentHistoryInfoCard([FromRoute] string Email)
+        {
+            var LoginUserIdentifier = "";
 
+            try
+            {
+                //gets the login token from Auth0
+                LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            }
+            catch (Exception e)
+            {
+                LoginUserIdentifier = "";
+
+            }
+
+            var connStr = _config["ConnectionStrings:DefaultConnection"];
+            List<PaymentHistInfoCard> paymentHistInfoCard = new List<PaymentHistInfoCard>();
+            var SqlStr = @"select ShortDate, SUM(AmountPaid) as AmountPaid from 
+                            (
+                            select CONVERT(char(3), DATENAME(MONTH, rent.DatePaid), 0) + ' ' + 
+                            Datename(YEAR, rent.DatePaid) as ShortDate, rent.AmountPaid
+                            from tenants ten 
+                            inner join  RentHistory rent on ten.tenGuid = rent.TenGuid 
+                            where ten.Email = @Email
+                             ) src
+                             group by ShortDate";
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
+                paymentHistInfoCard = db.Query<PaymentHistInfoCard>(SqlStr,
+                    new { Email = new DbString { Value = Email, IsFixedLength = false, IsAnsi = true } }).ToList();
+            }
+
+
+            return Ok(paymentHistInfoCard);
+        }
+
+        //this endpoint will get the necessary information for the outstanding balance info card 
         [HttpGet]
         [Route("[action]/{email}")]
         public IActionResult GetWhenRentDue([FromRoute] string Email)
@@ -112,7 +126,7 @@ where ten.Email = @Email
             }
 
 
-            var SqlStr = @"select CONVERT(varchar(10),CONVERT(DATE, DATEADD(d, -( DAY(DATEADD(m, 1, GETDATE())) ), DATEADD(m, 1, GetDate()))),101) as RentDueDate,  (select DATEDIFF(month,  DateAdded, GetDate()) *  RentDueEaMon  from tenants where Email = @email) - SUM(AmountPaid )  as RentDue   from tenants ten  inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @email";
+            var SqlStr = @"select CONVERT(varchar(10),CONVERT(DATE, DATEADD(d, -( DAY(DATEADD(m, 1, GETDATE())) ), DATEADD(m, 1, GetDate()))),101) as RentDueDate,  (select DATEDIFF(month,  DateAdded, GetDate()) *  RentDueEaMon  from tenants where Email = @Email) - SUM(AmountPaid )  as RentDue   from tenants ten  inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @email";
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             List<WhenRentDue> whenRentDues = new List<WhenRentDue>();
             using (IDbConnection db = new SqlConnection(connStr))
@@ -130,7 +144,7 @@ where ten.Email = @Email
         }
 
 
-
+		//this endpoint is responsible for charging the customers credit card for the rent 
         [HttpPost]
         [Route("[action]")]
         public IActionResult ChargeRents([FromBody] JObject data)
@@ -164,6 +178,7 @@ where ten.Email = @Email
 
             }
         }
+			//function used to charge the customer 
             private void ChargeCustomer(string paymentToken, decimal RentTotal, string email)
         {
             //defined api key  to identify one self to strip 

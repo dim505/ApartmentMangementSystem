@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace AMSBackEnd.Model.TenantFrontEnd
-{
+{	//controller home endpoint GetAccountDetails: used to get data to prepopulate home page with tenant data 
     public class TenantHomePage
     {
         public string tenGuid { get; set; }

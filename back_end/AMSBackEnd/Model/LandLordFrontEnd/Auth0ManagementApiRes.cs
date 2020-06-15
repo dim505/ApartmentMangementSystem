@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 namespace AMSBackEnd.Model.LandLordFrontEnd
 {
+	
+	//obsolete code 
     public class Auth0ManagementApiRes
     {
         public static string _access_token;

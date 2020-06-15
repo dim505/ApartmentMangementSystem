@@ -7,6 +7,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
+
+//form used when the view modal button is clicked. This displays the news in view only mode 
 export const ViewNewsForm = props => {
   const {
     values: { Subject, Message, House },
@@ -19,6 +21,7 @@ export const ViewNewsForm = props => {
     resetForm
   } = props;
 
+	////handles the update in state for form and tracks if its touched 
   const change = (name, e) => {
     debugger;
     e.persist();

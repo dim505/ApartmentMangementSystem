@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace WebApplication3.Modal
 {
+	//used in Announcements controller, GetNews endpoint. Gets all news for Landlord to manage
     public class GetAnnouncement
     {
 

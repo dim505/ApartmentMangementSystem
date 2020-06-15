@@ -100,7 +100,7 @@ export default class PropertyUpdateModal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     var result = await Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
+      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
         params: {
@@ -147,7 +147,7 @@ export default class PropertyUpdateModal extends Component {
           document.getElementById("zipcode").value;
         //makes api call to get all properties
         var results = await Axios.get(
-          "https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
+          "https://localhost:5001/api/property/GetSuggestedPropertiesLatLng",
           {
             headers: { Authorization: `bearer ${BearerToken}` },
             params: {
@@ -177,7 +177,7 @@ export default class PropertyUpdateModal extends Component {
 
         //makes API call to update text portion of the reciept
         var Results = await Axios.post(
-          "https://amsbackend.azurewebsites.net/api/property/UpdateProperty",
+          "https://localhost:5001/api/property/UpdateProperty",
           Mydata,
           {
             headers: { Authorization: `bearer ${BearerToken}` },

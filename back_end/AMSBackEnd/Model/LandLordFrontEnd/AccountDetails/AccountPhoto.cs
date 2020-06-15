@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AMSBackEnd.Model.LandLordFrontEnd.AccountDetails
 {
+	//used in AccountDetails controller, GetAccountPhotoInfo endpoint to get the landlord profile photo
     public class AccountPhoto
     {
         public byte[] image { get; set; }

@@ -45,12 +45,9 @@ export default class QuickFacts extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/YearlyPropExp",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/home/YearlyPropExp", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       //sets state
       {
         if (results.data[0].yearlyPropExp > 0) {
@@ -68,12 +65,9 @@ export default class QuickFacts extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/NumberOFTenants",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/home/NumberOFTenants", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       //sets state
       {
         if (results.data[0].numberOFTenants > 0) {
@@ -91,12 +85,9 @@ export default class QuickFacts extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/PropertyStats",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/home/PropertyStats", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       //sets state
       this.setState({
         PropertyStats: results.data,

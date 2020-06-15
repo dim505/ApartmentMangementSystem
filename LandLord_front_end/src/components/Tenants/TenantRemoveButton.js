@@ -15,12 +15,9 @@ export default class TenantRemoveButton extends Component {
 
   async RemoveTenant(guid) {
     const BearerToken = await this.props.auth.getTokenSilently();
-    Axios.delete(
-      `https://amsbackend.azurewebsites.net/api/tenant/delete/${guid}`,
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    );
+    Axios.delete(`https://localhost:5001/api/tenant/delete/${guid}`, {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    });
   }
 
   //opens Tenant was saved notification and closes modal/warning box

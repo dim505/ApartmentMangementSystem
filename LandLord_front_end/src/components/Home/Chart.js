@@ -14,6 +14,7 @@ export default class Chart extends Component {
     OpnGraphModal: false
   };
  
+	//function used to select the graph to display in the modal for a closer view 
   OpenGraphModal (GraphClicked) {
     console.log(GraphClicked )
     this.setState({
@@ -22,7 +23,8 @@ export default class Chart extends Component {
     })
 
   }
-
+	
+	//this closes the graph modal 
   CloseGraphModal = ( ) => {
     this.setState({OpnGraphModal: false})
 

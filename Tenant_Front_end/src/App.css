@@ -113,13 +113,9 @@
   margin: auto;
 }
 
-
-
 .MonthRentIconStyle {
   margin-bottom: -5px;
 }
-
-
 
 input,
 .StripeElement {
@@ -168,3 +164,10 @@ input:focus,
   color: red;
 }
 
+.PaymentSubmitBtn {
+  padding-top: 12px !important;
+}
+
+.StyleToolTip {
+  font-size: 15px;
+}

@@ -7,6 +7,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
+//form that contains the necessary textfields to add a news item 
 export const AddNewsForm = (props) => {
   const {
     values: { Subject, Message, HouseSelect, properties },
@@ -19,6 +20,7 @@ export const AddNewsForm = (props) => {
     resetForm,
   } = props;
 
+	//handles the update in state for form and tracks if its touched 
   const change = (name, e) => {
     e.persist();
     handleChange(e);

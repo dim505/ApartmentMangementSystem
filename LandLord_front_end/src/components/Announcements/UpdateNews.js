@@ -9,6 +9,7 @@ import SnackBar from "../SnackBar";
 import DialogBox from "../DialogBox";
 import Axios from "axios";
 
+//declares rules for validating textfields
 const validationSchema = Yup.object({
   Subject: Yup.string("Enter a Subject").required("Subject is Required"),
   Message: Yup.string("Enter a Message").required("Message is Required"),
@@ -24,13 +25,14 @@ class UpdateNews extends Component {
     };
   }
 
+  //opens warning box when submit is clicked
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
     this.OpenSaveWarnBox();
     //;
   };
-
+  //if user clicks yes, it makes api call to add news
   Save = async () => {
     //gets logged in user ID
     const BearerToken = await this.props.auth.getTokenSilently();
@@ -41,7 +43,7 @@ class UpdateNews extends Component {
     Mydata.Announcement.ID = this.props.PropNewsFiltered[0].id;
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Announcements/UpdateNews",
+      "https://localhost:5001/api/Announcements/UpdateNews",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -51,11 +53,13 @@ class UpdateNews extends Component {
     this.props.OpenNoti("Changes Saved");
   };
 
+  //function used to open warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+  //function used to close warning box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,

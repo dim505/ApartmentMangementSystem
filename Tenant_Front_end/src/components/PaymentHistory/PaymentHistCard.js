@@ -10,32 +10,37 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import { Link } from "react-router-dom";
+import Axios from "axios";
 
 export default class PaymentHistCard extends Component {
   state = {
-    Rent: [
-      { Month: "Jan 2020", Amount: "1500" },
-      { Month: "Feb 2020", Amount: "1500" },
-      { Month: "Mar 2020", Amount: "1500" },
-      { Month: "Jun 2020", Amount: "1500" },
-      { Month: "July 2020", Amount: "1500" },
-      { Month: "Aug 2020", Amount: "1500" },
-      { Month: "Sept 2020", Amount: "1500" },
-      { Month: "Oct 2020", Amount: "1500" },
-      { Month: "Nov 2020", Amount: "1500" },
-      { Month: "Dec 2020", Amount: "1500" },
-    ],
+    PaymentInfo: [],
+  };
 
-    RentMainTable: [
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-      { DatePaid: "08/14/15", Period: "08/14/15 - 09/14/15", Amount: "1500" },
-    ],
+  componentDidMount() {
+    if (this.props.results.length > 0) {
+      this.GetData();
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.props.results.length > 0 && this.state.PaymentInfo.length <= 0) {
+      this.GetData();
+    }
+  }
+
+  GetData = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
+    var results = Axios.get(
+      `https://localhost:5001/api/Payment/GetPaymentHistoryInfoCard/${this.props.results[0].email}`,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) =>
+      this.setState({
+        PaymentInfo: results.data,
+      })
+    );
   };
 
   render() {
@@ -50,17 +55,23 @@ export default class PaymentHistCard extends Component {
             Payment History
           </Typography>
 
-          {this.state.Rent.map((RentPerMonth) => (
-            <Paper classes={{ root: "RentSummPap" }} elevation={5}>
-              Rent {RentPerMonth.Month} paid ${RentPerMonth.Amount}{" "}
-            </Paper>
-          ))}
-
-          <Typography variant="body2" component="p">
-            <Link to="/PaymentHistory">
-              <Button variant="outlined">View History</Button>
-            </Link>
-          </Typography>
+          {this.props.results.length <= 0 ? (
+            <p>No payment history found. Please make a payment.</p>
+          ) : (
+            <div>
+              {this.state.PaymentInfo.map((PaymentInfoPerMonth) => (
+                <Paper classes={{ root: "RentSummPap" }} elevation={5}>
+                  {PaymentInfoPerMonth.shortDate} Rent paid $
+                  {PaymentInfoPerMonth.amountPaid}{" "}
+                </Paper>
+              ))}
+              <Typography variant="body2" component="p">
+                <Link to="/PaymentHistory">
+                  <Button variant="outlined">View History</Button>
+                </Link>
+              </Typography>
+            </div>
+          )}
         </CardContent>
       </Card>
     );

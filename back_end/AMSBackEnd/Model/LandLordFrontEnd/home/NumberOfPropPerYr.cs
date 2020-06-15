@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AMSBackEnd.Model.home
 {
+	////gets info for one of the quick facts cards 
     public class NumberOfPropPerYr
     {
 

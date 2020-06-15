@@ -16,6 +16,8 @@ using RestSharp;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
+
+//this controller is responsible for getting all the information about the home page 
 namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 {
     [Route("api/[controller]")]
@@ -29,6 +31,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
+		//this endpoint gets all the account details of the home page 
         [Route("GetAccountDetails")]
         public IActionResult GetAccountDetails(string email)
         {
@@ -45,7 +48,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
                 LoginUserIdentifier = "";
 
             }
-
+	
+			//making API call to get temp token to be able to interact with Auth0 Management API 
             var client = new RestClient("https://dev-5wttvoce.auth0.com/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
@@ -61,7 +65,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
             var GetUserEmailUrl = "https://dev-5wttvoce.auth0.com/api/v2/users/" + LoginUserIdentifier;
 
-
+			//making api call to get Auth0 email from Auth0ID
             client = new RestClient(GetUserEmailUrl);
             request = new RestRequest(Method.GET);
             request.AddHeader("authorization", HeaderString);
@@ -73,6 +77,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             var connStr = _config["ConnectionStrings:DefaultConnection"];
 
             List<TenantHomePage> HomePageInfo = new List<TenantHomePage>();
+			//Nows since it got the Tenants email it will get the information for the home page such as address,landlord info, and tenant info
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 HomePageInfo = db.Query<TenantHomePage>("select ten.tenGuid, ten.Name,ten.Phone, ten.Email, LandAcctDeet.Name as LandLordName," +
@@ -87,7 +92,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
         }
 
 
-
+		//this endpoint sends a message to the landlord from the tenant via email 
         [HttpPost]
         [Route("[action]")]
         public IActionResult ContactLandLord([FromBody] JObject data) {
@@ -108,7 +113,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
-
+		//THIS ENDpoint is responsible for updating the tenants personal information 
         [HttpPost]
         [Route("[action]")]
         public IActionResult UpdateTenantInfo([FromBody] JObject data) {
@@ -143,6 +148,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             }
         }
 
+		//this endpoint is responsible for updating/adding the tenants profile image 
         [HttpPost]
         [Route("[action]/{email}")]
         public async Task<IActionResult> AddTenantImage(string email, [FromForm] IFormFile body)
@@ -216,6 +222,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
         }
 
 
+		//this endpoint gets all the profile photos for the home page 
         [HttpGet]
         [Route("[action]")]
 
@@ -248,7 +255,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
 
 
-
+		//THIS endpoint gets all the news for the tenant related this his apartment 
         [HttpGet]
         [Route("[action]/{email}")]
 

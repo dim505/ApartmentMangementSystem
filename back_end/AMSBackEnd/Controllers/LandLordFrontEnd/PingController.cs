@@ -48,39 +48,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
-        [HttpGet]
-        [Route("[action]")]
-        //end used by ping service to return dummy data
-        public IActionResult GetToken()
-        {
-
-            var client = new RestClient("https://dev-5wttvoce.auth0.com/oauth/token");
-            var request = new RestRequest(Method.POST);
-            request.AddHeader("content-type", "application/json");
-            request.AddParameter("application/json", "{\"client_id\":\"bOZwndtAhxyj5wEC2AjhUbYfjEPQmIju\",\"client_secret\":\"bcqkAKKWJ8jOu_3pwwZ9d_cfzrInwMDzqhSry9qexmkUnwiejjnzQGjyr5ar2J-1\",\"audience\":\"https://dev-5wttvoce.auth0.com/api/v2/\",\"grant_type\":\"client_credentials\"}", ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
-
-
-            JObject joResponse = JObject.Parse(response.Content);
-
-            var HeaderString = "Bearer " + (string)joResponse.SelectToken("access_token");
-
-            
-
-
-
-
-             client = new RestClient("https://dev-5wttvoce.auth0.com/api/v2/users/USER_ID");
-             request = new RestRequest(Method.GET);
-            request.AddHeader("authorization", HeaderString);
-            IRestResponse response2 = client.Execute(request);
-
-
-            
-
-            return Ok(response2);
-
-        }
+ 
 
 
 

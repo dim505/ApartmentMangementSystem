@@ -30,16 +30,18 @@ namespace AMSBackEnd.Jobs
 
         public static void SchduleReOccuringJobs()
         {
-
+			//running a test job 
             RecurringJob.RemoveIfExists(nameof(MyJob));
             RecurringJob.AddOrUpdate<MyJob>(nameof(MyJob),
             job => job.Run(JobCancellationToken.Null),
             Cron.Daily(5, 00), TimeZoneInfo.Local);
-
+			
+			//sets send text job to run daily 
             RecurringJob.RemoveIfExists(nameof(LeaseDateSendText));
             RecurringJob.AddOrUpdate<Inter_LeaseDateSendText>(
                  LeaseDateSendText => LeaseDateSendText.SendText(), Cron.Daily);
           
+			//sets email job to run daily 
             RecurringJob.RemoveIfExists(nameof(SendEmail));
             RecurringJob.AddOrUpdate<ISendEmail>(
                              SendEmail => SendEmail.SendEmailAction(), Cron.Daily);

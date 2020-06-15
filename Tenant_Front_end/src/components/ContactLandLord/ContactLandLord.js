@@ -40,7 +40,7 @@ class ContactLandLord extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/home/ContactLandLord",
+      "https://localhost:5001/api/TenHome/ContactLandLord",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -72,7 +72,7 @@ class ContactLandLord extends Component {
     return (
       <React.Fragment>
         <div>
-          <Paper classes={{ root: "CardHeight" }} elevation={3}>
+          <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={3}>
             <Typography
               classes={{ root: "CardTitle" }}
               variant="h5"

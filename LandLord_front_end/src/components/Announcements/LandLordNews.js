@@ -13,6 +13,7 @@ import AnnouncementHistoryTable from "./AnnouncementHistoryTable";
 import { Link } from "react-router-dom";
 import Fade from "react-reveal/Fade";
 
+//parent component that holds the news page
 export default class LandLordNews extends Component {
   state = {
     PropNews: [],
@@ -22,17 +23,19 @@ export default class LandLordNews extends Component {
     OpnModalVeiw: false,
   };
 
+  //gets all the news related to Landlord's property
   componentDidMount() {
     this.GetPropNews();
   }
 
+  //makes api call to get the news property
   GetPropNews = async () => {
     //gets logged in user ID
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Announcements/GetNews",
+      "https://localhost:5001/api/Announcements/GetNews",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -43,6 +46,7 @@ export default class LandLordNews extends Component {
     });
   };
 
+  //filters the property to display on the Modal
   FilterProp = (iD) => {
     let PropNewsFiltered = this.state.PropNews;
     PropNewsFiltered = PropNewsFiltered.filter(
@@ -51,6 +55,7 @@ export default class LandLordNews extends Component {
     return PropNewsFiltered;
   };
 
+  //opens the view modal and set the property to be displayed
   OpnModalVeiw = (iD) => {
     var PropNewsFiltered = this.FilterProp(iD);
     this.setState({
@@ -58,7 +63,7 @@ export default class LandLordNews extends Component {
       PropNewsFiltered: PropNewsFiltered,
     });
   };
-
+  //opens the edit modal and set the property to be displayed
   OpnModal = (propGuid) => {
     var PropNewsFiltered = this.FilterProp(propGuid);
     this.setState({
@@ -79,47 +84,51 @@ export default class LandLordNews extends Component {
     });
   };
 
+  //function that handles the delete button click
   HandleClick = (iD) => {
     Window.NewsToDel = iD;
     this.OpenSaveWarnBox();
   };
 
+  //function that is called to delete a news item
   DeleteNews = async () => {
     //gets logged in user ID
     const BearerToken = await this.props.auth.getTokenSilently();
-
+    //closes warning box
     this.CloseSaveWarnBox();
-    //const BearerToken = await this.props.auth.getTokenSilently();
+    //makes API to delete new item and gets new list
     await Axios.delete(
-      `https://amsbackend.azurewebsites.net/api/Announcements/DeleteNews/${Window.NewsToDel}`,
+      `https://localhost:5001/api/Announcements/DeleteNews/${Window.NewsToDel}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
     ).then(() => this.GetPropNews());
-
+    //open notification alert
     this.OpenNoti("Delete was deleted");
   };
 
+  //function used to open warning box
   OpenSaveWarnBox = (DialogBoxMessage) => {
     this.setState({
       OpnSaveWarningBox: true,
       DialogBoxMessage: "Are you sure you want to delete the record?",
     });
   };
-
+  //function used to close warning box
   CloseSaveWarnBox = (Message) => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
 
+  //function used to open notification alert
   OpenNoti = (Message) => {
     this.setState({
       OpenNoti: true,
       Message: Message,
     });
   };
-
+  //function used to close notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,

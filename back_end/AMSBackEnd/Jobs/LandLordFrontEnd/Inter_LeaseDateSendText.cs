@@ -22,7 +22,7 @@ namespace AMSBackEnd.Jobs
 
 
 
-
+	//this job is the same as the email job, its figures out which tenants are about to expire and send a text to the land lord 
     public class LeaseDateSendText : Inter_LeaseDateSendText
     {
 

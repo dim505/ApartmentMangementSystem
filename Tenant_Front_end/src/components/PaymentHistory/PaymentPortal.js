@@ -28,12 +28,14 @@ class PaymentPortal extends Component {
   Save = async () => {
     debugger;
     this.CloseSaveWarnBox();
-    this.props.CloseModal();
-    this.props.OpenNoti("Payment Was Seucessful");
+
     this.setState({ LoadSpinner: true });
     var MyData = {};
     MyData.Payment = Window.PaymentPortalFormState;
     MyData.Payment.TenGuid = this.props.results[0].tenGuid;
+    MyData.Payment.AmtDue = (
+      Math.round(MyData.Payment.AmtDue * 100) / 100
+    ).toFixed(2);
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
@@ -42,7 +44,13 @@ class PaymentPortal extends Component {
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then((results) => console.log(results));
+    ).then(
+      setTimeout(() => {
+        this.props.GetData();
+        this.props.CloseModal();
+        this.props.OpenNoti("Payment Was Seucessful");
+      }, 3000)
+    );
   };
 
   OpenSaveWarnBox = () => {
@@ -63,6 +71,8 @@ class PaymentPortal extends Component {
           <Paper classes={{ root: "CardHeight CardFormStyle" }} elevation={3}>
             <Elements>
               <PaymentPortalForm
+                LoadSpinner={this.state.LoadSpinner}
+                PaymentInfoCard={this.props.PaymentInfoCard}
                 OpenNoti={this.props.OpenNoti}
                 OpenSaveWarnBox={this.OpenSaveWarnBox}
               />

@@ -9,6 +9,7 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
+//tihs table  will contain the actual news with various actions
 export default class AnnouncementHistoryTable extends Component {
   render() {
     return (
@@ -26,7 +27,7 @@ export default class AnnouncementHistoryTable extends Component {
               <TableRow key={dataline.iD}>
                 <TableCell>
                   {dataline.street} {dataline.city}, {dataline.state}{" "}
-                  {dataline.ZipCode}{" "}
+                  {dataline.zipCode}{" "}
                 </TableCell>
                 <TableCell>{dataline.shortSubject}....</TableCell>
                 <TableCell>

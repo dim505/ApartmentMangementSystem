@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Modal from "@material-ui/core/Modal";
 import Fade from "@material-ui/core/Fade";
 
+
+//this is a modal component template used by many pages
 export default class AnnonModal extends Component {
   render() {
     return (

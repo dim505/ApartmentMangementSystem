@@ -18,6 +18,8 @@ namespace AMSBackEnd.Jobs
         void SendEmailAction();
     }
 
+
+	//this job is responsible  for texting landlords about their expired tanants 
     public class SendEmail : ISendEmail 
     {
 
@@ -34,12 +36,13 @@ namespace AMSBackEnd.Jobs
 
             using (IDbConnection db = new SqlConnection(connstr))
             {
-
+				//selects all the tenants from the database 
                 var tenants = db.Query<TenantLease>("select Name, LeaseDue from tenants").ToList();
                 DateTime CurrDate = DateTime.Now;
-
+				//loops through all the tenants 
                 foreach (var tenant in tenants)
                 {
+					//calculates if lease is about to expire
                     String DateDiff = (CurrDate - DateTime.Parse(tenant.LeaseDue)).TotalDays.ToString();
 
                     //change to 335 to about expired leases
@@ -54,14 +57,15 @@ namespace AMSBackEnd.Jobs
            
                  
 
-
+				//builds message
                 string StrList = "Peoples Lease who is about to Expire: " + string.Join("^", list);
 
 
 
                 var apiKey = _config["SendMailApiKey"];
                 var client = new SendGridClient(apiKey);
-                var msg = new SendGridMessage()
+              
+			  var msg = new SendGridMessage()
                 {
                     From = new EmailAddress("sendemailams@gmail.com", "Email Service"),
                     Subject = "Expiring Tenants",
@@ -69,21 +73,10 @@ namespace AMSBackEnd.Jobs
                     HtmlContent = "<strong> " + StrList  + " </strong>"
                 };
                 msg.AddTo(new EmailAddress("d.komerzan@gmail.com", "Dmitriy Komerzan"));
-                var response =  client.SendEmailAsync(msg);
-                /*
-
-                MailMessage mail = new MailMessage();
-                SmtpClient SmtpSever = new SmtpClient("smtp.sendgrid.net");
-                mail.From = new MailAddress("apikey");
-                mail.To.Add("d.komerzan@gmail.com");
-                mail.Subject = "Tenants Whos Lease Are About To Expire";
-                mail.Body = StrList;
-                SmtpSever.Port = 465;
-                SmtpSever.UseDefaultCredentials = false;
-                SmtpSever.Credentials = new System.Net.NetworkCredential("apikey", GmailPassword);
-                SmtpSever.EnableSsl = true;
-                SmtpSever.Send(mail);
-                */
+            
+				//sends email 
+     			var response =  client.SendEmailAsync(msg);
+ 
 
                 }
 
