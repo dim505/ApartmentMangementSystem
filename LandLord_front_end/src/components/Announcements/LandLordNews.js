@@ -72,12 +72,13 @@ export default class LandLordNews extends Component {
     });
   };
 
+  //function used to open the view only modal
   CloseModal = () => {
     this.setState({
       OpnModal: false,
     });
   };
-
+  //function used to close the view only modal
   CloseModalView = () => {
     this.setState({
       OpnModalVeiw: false,

@@ -28,6 +28,7 @@ class App extends Component {
 
   componentDidMount() {
     document.title = "AMS";
+	//checks if user is authenticated 
     this.isUserAuthenticated();
   }
 

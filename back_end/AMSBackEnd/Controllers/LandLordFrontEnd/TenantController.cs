@@ -91,7 +91,8 @@ namespace AMSBackEnd.Controllers
 	                                set Name = @Name,
 		                                Email = @Email,
 		                                Phone = @Phone,
-		                                LeaseDue = @LeaseDue
+		                                LeaseDue = @LeaseDue,
+                                        RentDueEaMon = @RentDue
 	                          where tenGuid = @tenGuid and Auth0ID = @LoginUserIdentifier ";
                 var result = db.Execute(SqlStr, new
                 {
@@ -100,6 +101,7 @@ namespace AMSBackEnd.Controllers
                     Phone = updateTenant.phone,
                     LeaseDue = updateTenant.leaseDue,
                     tenGuid = updateTenant.tenGuid,
+                    RentDue = updateTenant.rentDue,
                     LoginUserIdentifier = LoginUserIdentifier
                 });
 
@@ -139,7 +141,7 @@ namespace AMSBackEnd.Controllers
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 var SqlStr = @"select distinct Email, count(email) as EmailCount  from tenants
-                            where Email = '@Email'
+                            where Email = RTRIM(LTRIM(@Email))
                             group by email";
                 tenantCheckEmails = db.Query<TenantCheckEmail>(SqlStr,
                     new { Email = new DbString { Value = tenant.Email, IsFixedLength = false, IsAnsi = true }
@@ -148,7 +150,7 @@ namespace AMSBackEnd.Controllers
             }
 
 
-            if (tenantCheckEmails.Count > 1)
+            if (tenantCheckEmails.Count >= 1)
             {
 
                 return NotFound("duplicate email");
@@ -159,8 +161,8 @@ namespace AMSBackEnd.Controllers
                 using (IDbConnection db2 = new SqlConnection(connStr))
                 {
                    var SqlStr = @"insert into tenants (Name, Email, 
-                Phone, LeaseDue, guid, tenGuid,Auth0ID,DateAdded) 
-                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded)";
+                Phone, LeaseDue, guid, tenGuid,Auth0ID,DateAdded,RentDueEaMon) 
+                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded, @RentDueEaMon)";
                     var result = db2.Execute(SqlStr, new
                     {
                         Name = tenant.Name,
@@ -170,6 +172,7 @@ namespace AMSBackEnd.Controllers
                         guid = tenant.PropertyGuid,
                         tenGuid = tenant.tenGuid,
                         LoginUserIdentifier = LoginUserIdentifier,
+                        RentDueEaMon = tenant.RentDue,
                         DateAdded = DateAdded
                     });
 

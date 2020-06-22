@@ -29,7 +29,7 @@ export default class HomePage extends Component {
                   auth={this.props.auth}
                   results={this.props.results}
                   PaymentInfoCard={this.props.PaymentInfoCard}
-                  GetData={this.props.GetData}
+                  GetPaymentInfo={this.props.GetPaymentInfo}
                 />
               </Grid>
 

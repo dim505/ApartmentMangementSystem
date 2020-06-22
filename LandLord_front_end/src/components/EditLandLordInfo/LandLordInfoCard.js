@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Axios from "axios";
 import Fade from "react-reveal/Fade";
 
+//component acts as a parent for the Personal info card
 export default class PersonalInfoCard extends Component {
   state = {
     PersonalInfo: {

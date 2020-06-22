@@ -11,6 +11,7 @@ import AnnonModal from "../AnnonModal";
 import PaymentPortalMainPage from "../PaymentHistory/PaymentPortalMainPage";
 import Axios from "axios";
 
+//this component tells users how much money they owe and when its due
 export default class OutstandingBalanceInfoCard extends Component {
   state = {
     AmountOwned: "5000.00",
@@ -20,25 +21,28 @@ export default class OutstandingBalanceInfoCard extends Component {
     OpnModal: "",
   };
 
+  //function opens payment portal modal
   OpnModal = () => {
     this.setState({
       OpnModal: true,
     });
   };
 
+  //function closes payment portal modal
   CloseModal = () => {
     this.setState({
       OpnModal: false,
     });
   };
 
+  //function opens notification alert
   OpenNoti = (message) => {
     this.setState({
       OpenNoti: true,
       Message: message,
     });
   };
-
+  //function closes  notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
@@ -107,7 +111,7 @@ export default class OutstandingBalanceInfoCard extends Component {
             CloseModal={this.CloseModal}
             auth={this.props.auth}
             results={this.props.results}
-            GetData={this.props.GetData}
+            GetData={this.props.GetPaymentInfo}
           />
         </AnnonModal>
       </Card>

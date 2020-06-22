@@ -4,6 +4,7 @@ import Fade from "@material-ui/core/Fade";
 import Modal from "@material-ui/core/Modal";
 import Grid from "@material-ui/core/Grid";
 
+//modal used to contact land lord 
 export default class ContactLandLordModal extends Component {
   render() {
     return (

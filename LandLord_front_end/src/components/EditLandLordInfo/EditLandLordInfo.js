@@ -54,7 +54,7 @@ class EditLandLordInfo extends Component {
     window.resetForm({});
 
     //makes api call to update image if an image has been uploaded
-    if (window.values.file !== "") {
+    if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
       const AddImageUrl = `https://localhost:5001/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();

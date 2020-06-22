@@ -12,27 +12,29 @@ import TableRow from "@material-ui/core/TableRow";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 
+//this component contains the payment history in detail
 export default class PaymentHistCard extends Component {
   state = {
     PaymentInfo: [],
   };
 
+  //gets data on component mount
   componentDidMount() {
     if (this.props.results.length > 0) {
       this.GetData();
     }
   }
-
+  //gets data on component update if not done so already
   componentDidUpdate() {
     if (this.props.results.length > 0 && this.state.PaymentInfo.length <= 0) {
       this.GetData();
     }
   }
-
+  //API call to get data
   GetData = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      `https://localhost:5001/api/Payment/GetPaymentHistoryInfoCard/${this.props.results[0].email}`,
+      `https://amsbackend.azurewebsites.net/api/Payment/GetPaymentHistoryInfoCard/${this.props.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

@@ -9,6 +9,7 @@ import { white } from "material-ui/styles/colors";
 
 import { Alert, AlertTitle } from "@material-ui/lab";
 
+//jss style for the AMS banner 
 const styles = {
   paperContainer: {
     color: white,

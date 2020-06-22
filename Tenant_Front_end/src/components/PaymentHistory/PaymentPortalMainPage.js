@@ -5,6 +5,7 @@ import PaymentPortal from "./PaymentPortal";
 import Paper from "@material-ui/core/Paper";
 import { StripeProvider } from "react-stripe-elements";
 
+//parent component that contains the payment portal
 export default class PaymentPortalMainPage extends Component {
   render() {
     return (

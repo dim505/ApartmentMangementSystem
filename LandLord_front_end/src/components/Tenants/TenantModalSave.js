@@ -34,6 +34,7 @@ export default class TenantModalSave extends Component {
     var tenant = {
       name: document.getElementById("name").value,
       email: document.getElementById("email").value,
+      rentDue: document.getElementById("rentDue").value,
       phone: document.getElementById("phone").value,
       leaseDue: document.getElementById("leaseDue").value,
       guid: this.props.TenantsFiltered[0].guid,
@@ -51,7 +52,10 @@ export default class TenantModalSave extends Component {
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then((results) => console.log(results));
+    ).then((results) => {
+      this.props.GetProperties();
+      this.props.GetTenants();
+    });
   };
   //opens Tenant was saved notification and closes modal/warning box
   OpenTenantSaveNoti = (e) => {
@@ -66,8 +70,6 @@ export default class TenantModalSave extends Component {
       this.update(e);
       this.props.OpenTenantSaveNoti();
       this.props.CloseTenantList();
-      this.props.GetProperties();
-      this.props.GetTenants();
     } else {
       this.CloseSaveWarnBox();
       this.OpenTenantFieldsEmptyNoti();

@@ -17,6 +17,8 @@ import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 
+
+//this component contains the payment history in detail
 export default class PaymentHistory extends Component {
   state = {
     PaymentInfo: [],
@@ -25,30 +27,33 @@ export default class PaymentHistory extends Component {
     OpnModal: "",
   };
 
+
+	//opens make payment modal
   OpnModal = () => {
     this.setState({
       OpnModal: true,
     });
   };
-
+	//closes make payment modal
   CloseModal = () => {
     this.setState({
       OpnModal: false,
     });
   };
-
+	//function open alert notification
   OpenNoti = (message) => {
     this.setState({
       OpenNoti: true,
       Message: message,
     });
   };
-
+	//function closes alert notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
+
 
   render() {
     return (

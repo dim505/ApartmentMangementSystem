@@ -8,8 +8,6 @@ import WebIcon from "@material-ui/icons/Web";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
-
-
 //contains the textfields needed updated the tenants personal information
 export const EditPersonalInfoForm = (props) => {
   const {
@@ -25,6 +23,7 @@ export const EditPersonalInfoForm = (props) => {
     SetMessage,
   } = props;
 
+  //updates state and tracks what fields were touched
   const change = (name, e) => {
     e.persist();
     handleChange(e);
@@ -49,6 +48,7 @@ export const EditPersonalInfoForm = (props) => {
         value={Email}
         name="Email"
         label="Email"
+        inputProps={{ className: "DisabledTextfield" }}
         disabled
         fullWidth
         onChange={change.bind(null, "Email")}
@@ -69,6 +69,7 @@ export const EditPersonalInfoForm = (props) => {
 
       <TextField
         disabled
+        inputProps={{ className: "DisabledTextfield" }}
         id="file"
         name="file"
         label="Profile Image"
@@ -92,6 +93,8 @@ export const EditPersonalInfoForm = (props) => {
               style={{ display: "none" }}
               onChange={(event) => {
                 debugger;
+
+                //checks if the uploaded file is value
                 if (
                   event.currentTarget.files.length > 0 &&
                   event.currentTarget.files[0].size < 500000 &&

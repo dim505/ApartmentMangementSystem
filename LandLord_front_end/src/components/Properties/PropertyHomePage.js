@@ -127,8 +127,8 @@ export default class PropertyHomePage extends Component {
             </Grid>
           </Grid>
           <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            key={{ vertical: "top", horizontal: "center" }}
             open={this.state.OpenPropertyRmvNoti}
             onClose={() => this.ClosePropertyRmvNoti()}
             ContentProps={{

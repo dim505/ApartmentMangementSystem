@@ -57,7 +57,9 @@ namespace WebApplication3.Controllers
             List<PaymentHistory> paymentHistories = new List<PaymentHistory>();
             var SqlStr = @"select rent.TenGuid, rent.DatePaid, CONVERT(char(3), DATENAME(MONTH, rent.DatePaid), 0) + ' ' + Datename(YEAR, rent.DatePaid) as ShortDate, 
             DATEADD(DAY, 1, EOMONTH(rent.DatePaid, -1)) as FirstOfMonth, CONVERT(DATE, DATEADD(d, -(DAY(DATEADD(m, 1, rent.DatePaid))), DATEADD(m, 1, rent.DatePaid))) as LastDateOfMonth, 
-            rent.AmountPaid from tenants ten inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @Email";
+            rent.AmountPaid from tenants ten inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @Email
+            order by convert(datetime, rent.DatePaid, 120) desc
+";
             using (IDbConnection db = new SqlConnection(connStr)) {
                 paymentHistories = db.Query<PaymentHistory>(SqlStr,
                     new { Email = new DbString { Value = Email, IsFixedLength = false, IsAnsi = true } }).ToList();

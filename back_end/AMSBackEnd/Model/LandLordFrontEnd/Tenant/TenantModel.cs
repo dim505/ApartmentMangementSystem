@@ -12,6 +12,7 @@ namespace AMSBackEnd.Model
         public string Email { get; set; }
         public string Phone { get; set; }
         public string LeaseDue { get; set; }
+        public string RentDue { get; set; }
         public string PropertyGuid { get; set; }
         public string tenGuid { get; set; }
 

@@ -16,22 +16,27 @@ import NotLoggedIn from "./components/Home/NotLoggedIn";
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css";
 import PaymentPortal from "./components/PaymentHistory/PaymentPortal";
+import SnackBar from "./components/SnackBar";
 
+//gets app data upon load
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       authenticated: false,
-      ShowBrowserNoti: true,
+      OpenNoti: true,
       ShowBody: false,
       results: [],
       ProfilePictures: [],
       PaymentInfoCard: [],
       PaymentInfoHist: [],
+      Message:
+        "Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers.",
     };
   }
 
+  //sets title, get data, check if visiting user is authenticated
   componentDidMount() {
     document.title = "AMS";
     this.isUserAuthenticated();
@@ -46,10 +51,11 @@ class App extends Component {
     }
   }
 
+  //gets payment due now and payment history data
   GetPaymentInfo = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      `https://localhost:5001/api/Payment/GetWhenRentDue/${this.state.results[0].email}`,
+      `https://amsbackend.azurewebsites.net/api/Payment/GetWhenRentDue/${this.state.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -60,7 +66,7 @@ class App extends Component {
     );
 
     var results2 = Axios.get(
-      `https://localhost:5001/api/Payment/GetPaymentHistory/${this.state.results[0].email}`,
+      `https://amsbackend.azurewebsites.net/api/Payment/GetPaymentHistory/${this.state.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -83,7 +89,7 @@ class App extends Component {
 
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://localhost:5001/api/TenHome/GetAccountDetails",
+      "https://amsbackend.azurewebsites.net/api/TenHome/GetAccountDetails",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -92,9 +98,9 @@ class App extends Component {
         results: results.data,
       })
     );
-
+    //makes 2nd api call to get profile photos
     var results2 = Axios.get(
-      "https://localhost:5001/api/TenHome/GetProfilePhoto",
+      "https://amsbackend.azurewebsites.net/api/TenHome/GetProfilePhoto",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -105,57 +111,36 @@ class App extends Component {
     );
   };
 
-  //opens browser support notitication
-  OpenShowBrowserNoti = () => {
-    this.setState({ ShowBrowserNoti: true });
-  };
-
-  //closes browser support notitication
-  CloseShowBrowserNoti = () => {
-    this.setState({ ShowBrowserNoti: false });
-  };
-
   //redirects user to log in page
   Login = () => {
     this.props.auth.loginWithRedirect();
   };
 
-  render() {
-    if (
-      sessionStorage.getItem("AppLoadedOnce") !== true &&
-      this.state.ShowBrowserNoti === false
-    ) {
-      sessionStorage.setItem("AppLoadedOnce", true);
-    }
+  //function open alert notification
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
+  };
+  //function closes alert notification
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
+  };
 
+  render() {
+    //checks to see if user logged in and sets flag to show so
     if (
       window.location.search.includes("code=") &&
       window.handleRedirectCallbackAlreadyCalled !== 1
     ) {
       window.handleRedirectCallbackAlreadyCalled = 1;
-
-      //handles success and error responses from Auth0 after a user logs in (required per Auth0 API documentation to have this )
-      //	await this.props.auth.handleRedirectCallback();
     }
 
     return (
       <div>
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.ShowBrowserNoti}
-          onClose={() => this.CloseShowBrowserNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={
-            <span id="message-id">
-              Please note only Edge and Chrome are currently supported. You
-              might run into UI issues with other browsers.
-            </span>
-          }
-        />
-
         {this.props.authenticated ||
         window.handleRedirectCallbackAlreadyCalled === 1 ? (
           <div className="CenterAlignText">
@@ -184,6 +169,7 @@ class App extends Component {
                   ProfilePictures={this.state.ProfilePictures}
                   PaymentInfoCard={this.state.PaymentInfoCard}
                   GetData={this.GetData}
+                  GetPaymentInfo={this.GetPaymentInfo}
                 />
               </Route>
 
@@ -191,7 +177,7 @@ class App extends Component {
                 <EditPersonalInfo
                   results={this.state.results}
                   auth={this.props.auth}
-                  GetData={() => this.GetData}
+                  GetData={this.GetData}
                   ProfilePictures={this.state.ProfilePictures}
                 />
               </Route>
@@ -207,9 +193,17 @@ class App extends Component {
             </Fade>
           </div>
         ) : (
-          <Bounce top>
-            <NotLoggedIn auth={this.props.auth} />
-          </Bounce>
+          <div>
+            <Bounce top>
+              <NotLoggedIn auth={this.props.auth} />
+            </Bounce>
+
+            <SnackBar
+              OpenNoti={this.state.OpenNoti}
+              CloseNoti={this.CloseNoti}
+              message={this.state.Message}
+            />
+          </div>
         )}
       </div>
     );

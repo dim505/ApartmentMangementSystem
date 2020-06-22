@@ -207,3 +207,8 @@
 .WelcomeBackStyle2 {
   margin-right: auto;
 }
+
+.MuiSnackbarContent-message {
+  margin: auto;
+}
+

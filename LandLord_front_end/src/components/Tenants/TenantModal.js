@@ -12,26 +12,23 @@ import TextField from "@material-ui/core/TextField";
 import TenantModalSave from "./TenantModalSave";
 import Fade from "@material-ui/core/Fade";
 import Snackbar from "@material-ui/core/Snackbar";
+import MuiPhoneNumber from "material-ui-phone-number";
 
 //component contains update modal
 export default class TenantModal extends Component {
-  state = { OpenTenantSaveNoti: false
-   
-  };
+  state = { OpenTenantSaveNoti: false };
 
-	//opens Tenant was Saved Notification 
+  //opens Tenant was Saved Notification
   OpenTenantSaveNoti = () => {
-     ;
     this.setState({ OpenTenantSaveNoti: true });
   };
-	//closes Tenant was Saved Notification 
+  //closes Tenant was Saved Notification
   CloseTenantSaveNoti = () => {
     this.setState({ OpenTenantSaveNoti: false });
   };
 
-
-
   render() {
+    var MinDate = new Date().toISOString().split("T")[0];
     return (
       <div>
         <Snackbar
@@ -40,7 +37,7 @@ export default class TenantModal extends Component {
           open={this.state.OpenTenantSaveNoti}
           onClose={() => this.CloseTenantSaveNoti()}
           ContentProps={{
-            "aria-describedby": "message-id"
+            "aria-describedby": "message-id",
           }}
           message={<span id="message-id">Tenants Has Been Updated </span>}
         />
@@ -66,23 +63,23 @@ export default class TenantModal extends Component {
                       <TableCell> </TableCell>
                       <TableCell> </TableCell>
                       <TableCell> </TableCell>
+                      <TableCell> </TableCell>
                       <TableCell>
                         {" "}
                         <TenantModalSave
                           OpenTenantSaveNoti={this.OpenTenantSaveNoti}
                           CloseModal={this.props.CloseModal}
-                          TenantsFiltered = {this.props.TenantsFiltered}
-                          CloseTenantList = {this.props.CloseTenantList}
-                          GetProperties = {this.props.GetProperties}
-                          GetTenants = {this.props.GetTenants}
-						              auth = {this.props.auth}
-                          
+                          TenantsFiltered={this.props.TenantsFiltered}
+                          CloseTenantList={this.props.CloseTenantList}
+                          GetProperties={this.props.GetProperties}
+                          GetTenants={this.props.GetTenants}
+                          auth={this.props.auth}
                         />{" "}
                       </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {this.props.TenantsFiltered.map(Tenant => (
+                    {this.props.TenantsFiltered.map((Tenant) => (
                       <TableRow key={Tenant.guid}>
                         <TableCell align="right">
                           <TextField
@@ -91,29 +88,43 @@ export default class TenantModal extends Component {
                             type="text"
                             defaultValue={Tenant.name}
                             InputLabelProps={{
-                              shrink: true
+                              shrink: true,
                             }}
                           />
                         </TableCell>
                         <TableCell align="right">
                           <TextField
+                            id="rentDue"
+                            label="Tenant Rent"
+                            type="number"
+                            defaultValue={Tenant.rentDueEaMon}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            InputProps={{ inputProps: { min: 0 } }}
+                          />
+                        </TableCell>
+                        <TableCell align="right">
+                          <MuiPhoneNumber
                             id="phone"
                             label="phone"
-                            type="text"
-                            defaultValue={Tenant.phone}
+                            value={Tenant.phone}
                             InputLabelProps={{
-                              shrink: true
+                              shrink: true,
                             }}
+                            defaultCountry="usa"
+                            regions={["north-america", "carribean"]}
                           />
                         </TableCell>
                         <TableCell align="right">
                           <TextField
+                            disabled
                             id="email"
                             label="email"
                             type="text"
                             defaultValue={Tenant.email}
                             InputLabelProps={{
-                              shrink: true
+                              shrink: true,
                             }}
                           />
                         </TableCell>
@@ -121,12 +132,13 @@ export default class TenantModal extends Component {
                         <TableCell align="right">
                           <TextField
                             id="leaseDue"
-                            label="lease Due"
+                            label="Lease Expire Date"
                             type="date"
                             defaultValue={Tenant.leaseDue}
                             InputLabelProps={{
-                              shrink: true
+                              shrink: true,
                             }}
+                            inputProps={{ min: MinDate }}
                           />
                         </TableCell>
 

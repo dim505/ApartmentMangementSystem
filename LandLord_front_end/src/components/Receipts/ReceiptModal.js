@@ -137,6 +137,7 @@ export default class ReceiptModal extends Component {
                           type="number"
                           id="tax"
                           defaultValue={Receipt.tax}
+                          InputProps={{ inputProps: { min: 0 } }}
                         />
                       </TableCell>
                       <TableCell align="right">
@@ -145,6 +146,7 @@ export default class ReceiptModal extends Component {
                           type="number"
                           id="totalAmount"
                           defaultValue={Receipt.totalAmount}
+                          InputProps={{ inputProps: { min: 0 } }}
                         />
                       </TableCell>
                       <TableCell align="right">

@@ -7,57 +7,65 @@ import Button from "@material-ui/core/Button";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import Bounce from "react-reveal/Bounce";
 
-
-//main parent that houses the add tenants page 
+//main parent that houses the add tenants page
 export default class AddTenants extends Component {
-  constructor (props) {
-      super(props);
-      this.AddTenantsForm = React.createRef();
+  constructor(props) {
+    super(props);
+    this.AddTenantsForm = React.createRef();
   }
-  
+
   state = {
     UploadBtnCkcOnce: false,
-    Tenants: [{ Name: "", Email: "", Phone: "", LeaseDue: "", PropertyGuid: "" }]
+    Tenants: [
+      {
+        Name: "",
+        Email: "",
+        Phone: "",
+        LeaseDue: "",
+        PropertyGuid: "",
+        RentDue: "",
+      },
+    ],
   };
-	//CONTAINS REFERENCE TO CLEAR CHILD COMPONENT STATE 
+  //CONTAINS REFERENCE TO CLEAR CHILD COMPONENT STATE
   ClearAddTenantsFormState = () => {
-      this.AddTenantsForm.current.ClearAddTenantsFormState();
+    this.AddTenantsForm.current.ClearAddTenantsFormState();
   };
-//takes state from child component and update its accordly 
-  handleChange = NewState => {
-     ;
+  //takes state from child component and update its accordly
+  handleChange = (NewState) => {
     this.setState({ Tenants: NewState });
   };
 
-	//function to test of function is Empty
+  //function to test of function is Empty
   isEmpty(str) {
     return !str || /^\s*$/.test(str);
   }
 
   UploadSubmitCheck = async () => {
-	  //checks if forms are empty then reset state accordantly 
+    //checks if forms are empty then reset state accordantly
     if (
       !this.isEmpty(this.state.Tenants.Name) &&
       !this.isEmpty(this.state.Tenants.Email) &&
       !this.isEmpty(this.state.Tenants.Phone) &&
-      !this.isEmpty(this.state.Tenants.LeaseDue)
+      !this.isEmpty(this.state.Tenants.LeaseDue) &&
+      !this.isEmpty(this.state.Tenants.RentDue)
     ) {
       await this.setState({
         UploadBtnCkcOnce: false,
-        FillFormsNoti: false
+        FillFormsNoti: false,
       });
     } else {
       await this.setState({
         UploadBtnCkcOnce: true,
-        FillFormsNoti: true
+        FillFormsNoti: true,
       });
     }
   };
-  
-//closes Fill empty forms notification 
+
+  //closes Fill empty forms notification
   CloseFillFormsNoti() {
     this.setState({
-      FillFormsNoti: false
+      FillFormsNoti: false,
     });
   }
   render() {
@@ -71,7 +79,7 @@ export default class AddTenants extends Component {
               open={this.state.FillFormsNoti}
               onClose={() => this.CloseFillFormsNoti()}
               ContentProps={{
-                "aria-describedby": "message-id"
+                "aria-describedby": "message-id",
               }}
               message={
                 <span id="message-id">Please Fill Out the Forms in red</span>
@@ -92,15 +100,14 @@ export default class AddTenants extends Component {
           <AddTenantsForm
             UploadBtnCkcOnce={this.state.UploadBtnCkcOnce}
             onChanged={this.handleChange}
-            auth = {this.props.auth}
-            ref = {this.AddTenantsForm}
+            auth={this.props.auth}
+            ref={this.AddTenantsForm}
           />
           <AddTenantsSubmitButton
             Tenants={this.state.Tenants}
             UploadSubmitCheck={this.UploadSubmitCheck}
-            auth = {this.props.auth}
-            ClearAddTenantsFormState = {this.ClearAddTenantsFormState}
-            
+            auth={this.props.auth}
+            ClearAddTenantsFormState={this.ClearAddTenantsFormState}
           />
         </Bounce>
       </div>

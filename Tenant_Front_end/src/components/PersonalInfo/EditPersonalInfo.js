@@ -23,6 +23,7 @@ const validationSchema = Yup.object({
   PhoneNumber: Yup.number().required("Enter your Phone Number"),
 });
 
+//parent component contains a form that is used to update the tenants information
 class EditPersonalInfo extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +34,7 @@ class EditPersonalInfo extends Component {
     };
   }
 
+  //function that handles intial click of submit button
   submitValues = (values, { resetForm }) => {
     //gets values from form
     console.log(window.LandLordPicture);
@@ -43,7 +45,7 @@ class EditPersonalInfo extends Component {
     this.OpenSaveWarnBox();
     //;
   };
-
+  //function that does the actual submit of data if user presses yes
   Save = async () => {
     //gets auth token
     const BearerToken = await this.props.auth.getTokenSilently();
@@ -58,7 +60,7 @@ class EditPersonalInfo extends Component {
     //checks to see if an image was uploaded then makes api call to upload image
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://localhost:5001/api/TenHome/AddTenantImage/${window.values.Email}`;
+      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/Tenhome/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -67,26 +69,19 @@ class EditPersonalInfo extends Component {
           "content-type": "multipart/form-data",
         },
       };
-
+      //makes API call to update image
       var results = await post(AddImageUrl, formData, config);
       console.log(results);
     }
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/TenHome/UpdateTenantInfo",
+      "https://amsbackend.azurewebsites.net/api/Tenhome/UpdateTenantInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then(
-      setTimeout(
-        () => this.props.GetData(),
-        this.OpenNoti(),
-        this.SetMessage("Update was sucessful"),
-        3000
-      )
-    );
+    ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
   };
 
   //closes warning box
@@ -126,6 +121,7 @@ class EditPersonalInfo extends Component {
     });
   };
   render() {
+    //clears default values for the form
     const values = {
       Name: this.props.results[0].name,
       Email: this.props.results[0].email,
@@ -153,6 +149,7 @@ class EditPersonalInfo extends Component {
               Edit Personal Details
             </Typography>
             <Formik
+              enableReinitialize={true}
               initialValues={values}
               validationSchema={validationSchema}
               onSubmit={this.submitValues}

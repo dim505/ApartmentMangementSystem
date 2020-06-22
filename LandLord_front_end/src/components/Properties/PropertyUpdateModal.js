@@ -230,8 +230,8 @@ export default class PropertyUpdateModal extends Component {
     return (
       <div>
         <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          key={{ vertical: "top", horizontal: "center" }}
           open={this.state.OpenPropertySavedNoti}
           onClose={() => this.ClosePropertySavedNoti()}
           ContentProps={{
@@ -241,8 +241,8 @@ export default class PropertyUpdateModal extends Component {
         />
 
         <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          key={{ vertical: "top", horizontal: "center" }}
           open={this.state.CheckSuggAddrNoti}
           onClose={() => this.CloseCheckSuggAddrNoti()}
           ContentProps={{
@@ -257,8 +257,8 @@ export default class PropertyUpdateModal extends Component {
         />
 
         <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          key={{ vertical: "top", horizontal: "center" }}
           open={this.state.PropertyFieldEmptyNoti}
           onClose={() => this.ClosePropertyFieldEmptyNoti()}
           ContentProps={{
@@ -359,8 +359,8 @@ export default class PropertyUpdateModal extends Component {
                         <TableCell align="right">
                           <TextField
                             id="unit"
-                            label="Units"
-                            type="text"
+                            label="Number of Units"
+                            type="number"
                             defaultValue={Property.unit}
                             InputLabelProps={{
                               shrink: true,

@@ -5,7 +5,7 @@ import Axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 //contains submit button and code to add tenant to DB
 export default class AddTenantsSubmitButton extends Component {
-  state = { TenantUploadedNoti: false };
+  state = { TenantUploadedNoti: false, TenantUploadedNotiFailed: false };
 
   isEmpty(str) {
     return !str || /^\s*$/.test(str);
@@ -32,7 +32,8 @@ export default class AddTenantsSubmitButton extends Component {
       !this.isEmpty(this.props.Tenants.Name) &&
       !this.isEmpty(this.props.Tenants.Email) &&
       !this.isEmpty(this.props.Tenants.Phone) &&
-      !this.isEmpty(this.props.Tenants.LeaseDue)
+      !this.isEmpty(this.props.Tenants.LeaseDue) &&
+      !this.isEmpty(this.props.Tenants.RentDue)
     ) {
       //gets GUID
       var TenGuid = this.uuidv4();
@@ -45,24 +46,36 @@ export default class AddTenantsSubmitButton extends Component {
       console.log(Mydata);
 
       //makes api call
-      var AddRecResults = await Axios.post(
+      var AddRecResults = Axios.post(
         "https://localhost:5001/api/Tenant/AddTenant",
         Mydata,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
         }
-      ).then(
-        (AddRecResults) => this.setState({ ReceiptUploadedNoti: true }),
-        console.log(AddRecResults),
-        //opens Tenant was Uploaded successfully Notification
-        this.setState({ TenantUploadedNoti: true }),
-        this.props.ClearAddTenantsFormState()
-      );
+      )
+        .catch(async (AddRecResults) => {
+          if (AddRecResults !== undefined) {
+            await this.setState({ TenantUploadedNotiFailed: true });
+          }
+        })
+
+        .then((AddRecResults) => {
+          if (this.state.TenantUploadedNotiFailed === false) {
+            //opens Tenant was Uploaded successfully Notification
+            this.setState({ TenantUploadedNoti: true });
+            this.props.ClearAddTenantsFormState();
+          }
+        });
     }
   };
   //closes Tenant was Uploaded successfully Notification
   CloseTenantUploadedNoti() {
     this.setState({ TenantUploadedNoti: false });
+  }
+
+  //closes Tenant was Uploaded successfully Notification
+  CloseTenantUploadedNotiFailed() {
+    this.setState({ TenantUploadedNotiFailed: false });
   }
 
   render() {
@@ -78,6 +91,23 @@ export default class AddTenantsSubmitButton extends Component {
               "aria-describedby": "message-id",
             }}
             message={<span id="message-id">Tenant Added</span>}
+          />
+        </div>
+
+        <div className="SnackbarClass">
+          <Snackbar
+            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            key={{ vertical: "bottom", horizontal: "center" }}
+            open={this.state.TenantUploadedNotiFailed}
+            onClose={() => this.CloseTenantUploadedNotiFailed()}
+            ContentProps={{
+              "aria-describedby": "message-id",
+            }}
+            message={
+              <span id="message-id">
+                Duplicate Email. Please Choose Another Email.
+              </span>
+            }
           />
         </div>
 

@@ -40,7 +40,7 @@ class ContactLandLord extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/TenHome/ContactLandLord",
+      "https://amsbackend.azurewebsites.net/api/Tenhome/ContactLandLord",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

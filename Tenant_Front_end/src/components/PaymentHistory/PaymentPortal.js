@@ -10,6 +10,7 @@ import DialogBox from "../DialogBox";
 import Axios from "axios";
 import { Elements } from "react-stripe-elements";
 
+//this parent component houses the textfield forms for the parent portal/makes api call
 class PaymentPortal extends Component {
   constructor(props) {
     super(props);
@@ -19,17 +20,19 @@ class PaymentPortal extends Component {
       LoadSpinner: false,
     };
   }
-
+  //open warning dialog box
   submitValues = () => {
     this.OpenSaveWarnBox();
     //;
   };
-
+  //if yes continues to make the API call
   Save = async () => {
     debugger;
+    //closes warning dialog box
     this.CloseSaveWarnBox();
-
+    //loader starts spinner incase the transaction takes a long time
     this.setState({ LoadSpinner: true });
+    //builds out object
     var MyData = {};
     MyData.Payment = Window.PaymentPortalFormState;
     MyData.Payment.TenGuid = this.props.results[0].tenGuid;
@@ -39,25 +42,28 @@ class PaymentPortal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://localhost:5001/api/Payment/ChargeRents",
+      "https://amsbackend.azurewebsites.net/api/Payment/ChargeRents",
       MyData,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
     ).then(
+      //give time to update record before reseting everything
       setTimeout(() => {
         this.props.GetData();
         this.props.CloseModal();
-        this.props.OpenNoti("Payment Was Seucessful");
+        this.props.OpenNoti("Payment Was Successful");
       }, 3000)
     );
   };
 
+  //opens warning dialog box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
+  //closes warning dialog box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,

@@ -9,6 +9,8 @@ import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
 
+
+//parent component that displays the tenants information and a profile picture
 export default class PersonalInfoCard extends Component {
   state = {
     PersonalInfo: {

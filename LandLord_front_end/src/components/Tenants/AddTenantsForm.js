@@ -10,6 +10,7 @@ export default class AddTenantsForm extends Component {
     Email: "",
     Phone: "",
     LeaseDue: "",
+    RentDue: "",
     PropertyGuid: "",
     Properties: [],
   };
@@ -25,6 +26,7 @@ export default class AddTenantsForm extends Component {
       Email: "",
       Phone: "",
       LeaseDue: "",
+      RentDue: "",
     });
   };
 
@@ -33,12 +35,9 @@ export default class AddTenantsForm extends Component {
     //gets auth0 token
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes api call
-    var results = Axios.get(
-      "https://localhost:5001rewebsites.net/api/property",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get("https://localhost:5001/api/property", {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       this.setState({
         Properties: results.data,
         PropertyGuid: results.data[0].guid,
@@ -61,6 +60,7 @@ export default class AddTenantsForm extends Component {
     this.setState(NewState, () => this.props.onChanged(this.state));
   };
   render() {
+    var MinDate = new Date().toISOString().split("T")[0];
     return (
       <div>
         <Form.Group as={Row}>
@@ -148,7 +148,29 @@ export default class AddTenantsForm extends Component {
 
         <Form.Group as={Row}>
           <Form.Label column sm="2">
-            Lease Date
+            Rent Due Each Month
+          </Form.Label>
+          <Col sm="10">
+            <Form.Control
+              className={
+                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.RentDue)
+                  ? "ShowRed"
+                  : " "
+              }
+              type="number"
+              min={1}
+              value={this.state.RentDue}
+              onChange={(event) =>
+                this.handleChange({ RentDue: event.target.value })
+              }
+              placeholder="Enter Rent Due Amount Here"
+            />
+          </Col>
+        </Form.Group>
+
+        <Form.Group as={Row}>
+          <Form.Label column sm="2">
+            Lease Expire Date
           </Form.Label>
           <Col sm="10">
             <Form.Control
@@ -163,6 +185,7 @@ export default class AddTenantsForm extends Component {
                 this.handleChange({ LeaseDue: event.target.value })
               }
               placeholder="Enter Lease Due Date Here"
+              min={MinDate}
             />
           </Col>
         </Form.Group>

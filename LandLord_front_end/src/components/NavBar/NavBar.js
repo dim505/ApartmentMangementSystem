@@ -11,11 +11,12 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import Button from "@material-ui/core/Button";
-import Tooltip from "../Tooltip";
+import Tooltip2 from "../Tooltip";
 import LiveHelpOutlinedIcon from "@material-ui/icons/LiveHelpOutlined";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
+import Tooltip from "@material-ui/core/Tooltip";
 
 function HomeIcon(props) {
   return (
@@ -57,7 +58,9 @@ export default class NavBar extends Component {
                 to="/"
               >
                 <Typography variant="h6" color="inherit">
-                  <HomeIcon style={{ fontSize: 48 }} />
+                  <Tooltip title="Home" placement="bottom">
+                    <HomeIcon style={{ fontSize: 48 }} />
+                  </Tooltip>
                 </Typography>
               </NavLink>
 
@@ -69,7 +72,9 @@ export default class NavBar extends Component {
                   to="/Tenants"
                 >
                   <Typography variant="h6" color="inherit">
-                    <PeopleIcon style={{ fontSize: 48 }} />
+                    <Tooltip title="Tenants" placement="bottom">
+                      <PeopleIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
                   </Typography>
                 </NavLink>
               ) : (
@@ -84,7 +89,9 @@ export default class NavBar extends Component {
                   to="/Receipt"
                 >
                   <Typography variant="h6" color="inherit">
-                    <AttachMoneyIcon style={{ fontSize: 48 }} />
+                    <Tooltip title="Receipts" placement="bottom">
+                      <AttachMoneyIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
                   </Typography>
                 </NavLink>
               ) : (
@@ -99,7 +106,9 @@ export default class NavBar extends Component {
                   to="/Properties"
                 >
                   <Typography variant="h6" color="inherit">
-                    <ApartmentIcon style={{ fontSize: 48 }} />
+                    <Tooltip title="Properties" placement="bottom">
+                      <ApartmentIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
                   </Typography>
                 </NavLink>
               ) : (
@@ -114,7 +123,9 @@ export default class NavBar extends Component {
                   to="/AccountDetails"
                 >
                   <Typography variant="h6" color="inherit">
-                    <AccountBoxIcon style={{ fontSize: 48 }} />
+                    <Tooltip title="Account Details" placement="bottom">
+                      <AccountBoxIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
                   </Typography>
                 </NavLink>
               ) : (
@@ -129,7 +140,9 @@ export default class NavBar extends Component {
                   to="/Announcements"
                 >
                   <Typography variant="h6" color="inherit">
-                    <NewReleasesIcon style={{ fontSize: 48 }} />
+                    <Tooltip title="Announcements" placement="bottom">
+                      <NewReleasesIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
                   </Typography>
                 </NavLink>
               ) : (
@@ -155,7 +168,7 @@ export default class NavBar extends Component {
                     Log In
                   </Button>
 
-                  <Tooltip
+                  <Tooltip2
                     placement="bottom"
                     tooltip="Would you like to Log in without creating an account?
                         Please use these credentials:
@@ -164,7 +177,7 @@ export default class NavBar extends Component {
                         "
                   >
                     <LiveHelpOutlinedIcon fontSize="large" />
-                  </Tooltip>
+                  </Tooltip2>
                 </div>
               )}
             </Toolbar>
