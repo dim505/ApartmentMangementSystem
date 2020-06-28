@@ -168,6 +168,10 @@ input:focus,
   color: red;
 }
 
+.GreenText {
+  color: green;
+}
+
 .PaymentSubmitBtn {
   padding-top: 12px !important;
 }

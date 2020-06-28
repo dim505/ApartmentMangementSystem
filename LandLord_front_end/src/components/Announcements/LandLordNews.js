@@ -35,7 +35,7 @@ export default class LandLordNews extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://localhost:5001/api/Announcements/GetNews",
+      "https://amsbackend.azurewebsites.net/api/Announcements/GetNews",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -99,7 +99,7 @@ export default class LandLordNews extends Component {
     this.CloseSaveWarnBox();
     //makes API to delete new item and gets new list
     await Axios.delete(
-      `https://localhost:5001/api/Announcements/DeleteNews/${Window.NewsToDel}`,
+      `https://amsbackend.azurewebsites.net/api/Announcements/DeleteNews/${Window.NewsToDel}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

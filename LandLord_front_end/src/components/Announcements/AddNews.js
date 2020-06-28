@@ -44,9 +44,12 @@ class AddNews extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     //makes api call  and sets state
-    var results = Axios.get("https://localhost:5001/api/property", {
-      headers: { Authorization: `bearer ${BearerToken}` },
-    }).then((results) => {
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/property",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) => {
       this.ApiCallResults(results);
     });
   };
@@ -96,7 +99,7 @@ class AddNews extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://localhost:5001/api/Announcements/AddNews",
+      "https://amsbackend.azurewebsites.net/api/Announcements/AddNews",
       MyData,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

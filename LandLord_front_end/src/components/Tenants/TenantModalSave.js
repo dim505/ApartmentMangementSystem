@@ -47,7 +47,7 @@ export default class TenantModalSave extends Component {
     console.log(Mydata);
     //makes API call
     var results = Axios.post(
-      "https://localhost:5001/api/tenant/UpdateTenant",
+      "https://amsbackend.azurewebsites.net/api/tenant/UpdateTenant",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -62,8 +62,9 @@ export default class TenantModalSave extends Component {
     if (
       !this.isEmpty(document.getElementById("name").value) &&
       !this.isEmpty(document.getElementById("email").value) &&
-      !this.isEmpty(document.getElementById("phone").value) &&
-      !this.isEmpty(document.getElementById("leaseDue").value)
+      !this.isEmpty(document.getElementById("phone").value.replace("+", "")) &&
+      !this.isEmpty(document.getElementById("leaseDue").value) &&
+      !this.isEmpty(document.getElementById("rentDue").value)
     ) {
       this.CloseSaveWarnBox();
       this.props.CloseModal();

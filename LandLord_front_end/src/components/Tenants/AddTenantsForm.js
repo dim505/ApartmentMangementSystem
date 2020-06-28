@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 import Axios from "axios";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { AsYouType } from "libphonenumber-js";
 
 //contains text fields needed to added tenants
 export default class AddTenantsForm extends Component {
@@ -35,9 +35,12 @@ export default class AddTenantsForm extends Component {
     //gets auth0 token
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes api call
-    var results = Axios.get("https://localhost:5001/api/property", {
-      headers: { Authorization: `bearer ${BearerToken}` },
-    }).then((results) =>
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/property",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then((results) =>
       this.setState({
         Properties: results.data,
         PropertyGuid: results.data[0].guid,
@@ -136,12 +139,19 @@ export default class AddTenantsForm extends Component {
                   ? "ShowRed"
                   : " "
               }
-              type="number"
+              type="tel"
+              maxlength="16"
               value={this.state.Phone}
-              onChange={(event) =>
-                this.handleChange({ Phone: event.target.value })
-              }
-              placeholder="Enter Phone Here"
+              onChange={(event) => {
+                let asYouType = new AsYouType();
+                asYouType.defaultCountry = "US";
+                asYouType.reset();
+
+                this.handleChange({
+                  Phone: asYouType.input(event.target.value),
+                });
+              }}
+              placeholder="Enter Phone Here Format: X-XXX-XXX-XXXX"
             />
           </Col>
         </Form.Group>
@@ -158,10 +168,10 @@ export default class AddTenantsForm extends Component {
                   : " "
               }
               type="number"
-              min={1}
+              min="1"
               value={this.state.RentDue}
               onChange={(event) =>
-                this.handleChange({ RentDue: event.target.value })
+                this.handleChange({ RentDue: Math.abs(event.target.value) })
               }
               placeholder="Enter Rent Due Amount Here"
             />

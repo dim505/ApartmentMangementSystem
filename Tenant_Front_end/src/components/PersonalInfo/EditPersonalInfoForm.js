@@ -2,11 +2,11 @@ import React from "react";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
-
+import MuiPhoneNumber from "material-ui-phone-number";
 import WebIcon from "@material-ui/icons/Web";
-
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
+import Tooltip from "@material-ui/core/Tooltip";
 
 //contains the textfields needed updated the tenants personal information
 export const EditPersonalInfoForm = (props) => {
@@ -42,41 +42,62 @@ export const EditPersonalInfoForm = (props) => {
         helperText={touched.Name ? errors.Name : ""}
         error={touched.Name && Boolean(errors.Name)}
       />
-
-      <TextField
-        id="Email"
-        value={Email}
-        name="Email"
-        label="Email"
-        inputProps={{ className: "DisabledTextfield" }}
-        disabled
-        fullWidth
-        onChange={change.bind(null, "Email")}
-        helperText={touched.Email ? errors.Email : ""}
-        error={touched.Email && Boolean(errors.Email)}
-      />
-      <TextField
+      <Tooltip
+        title={
+          <span className={"StyleToolTip"}>
+            "Sorry! can't chance your email"
+          </span>
+        }
+        placement="top"
+      >
+        <TextField
+          id="Email"
+          value={Email}
+          name="Email"
+          label="Email"
+          inputProps={{ className: "DisabledTextfield" }}
+          disabled
+          fullWidth
+          onChange={change.bind(null, "Email")}
+          helperText={touched.Email ? errors.Email : ""}
+          error={touched.Email && Boolean(errors.Email)}
+        />
+      </Tooltip>
+      <MuiPhoneNumber
         id="PhoneNumber"
         name="PhoneNumber"
         label="Phone Number"
-        type="number"
         fullWidth
         value={PhoneNumber}
-        onChange={change.bind(null, "PhoneNumber")}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        defaultCountry="us"
+        onChange={(e) => {
+          setFieldValue("PhoneNumber", e.replace("+", ""));
+          setFieldTouched("PhoneNumber", true, false);
+        }}
         helperText={touched.PhoneNumber ? errors.PhoneNumber : ""}
         error={touched.PhoneNumber && Boolean(errors.PhoneNumber)}
       />
-
-      <TextField
-        disabled
-        inputProps={{ className: "DisabledTextfield" }}
-        id="file"
-        name="file"
-        label="Profile Image"
-        fullWidth
-        value={file}
-      />
-
+      <Tooltip
+        title={
+          <span className={"StyleToolTip"}>
+            "Please click browse to change profile picuture"
+          </span>
+        }
+        placement="top"
+      >
+        <TextField
+          disabled
+          inputProps={{ className: "DisabledTextfield" }}
+          id="file"
+          name="file"
+          label="Profile Image"
+          fullWidth
+          value={file}
+        />
+      </Tooltip>
       <Grid container spacing={0}>
         <Grid item xs={6}>
           <Button

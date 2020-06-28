@@ -43,7 +43,7 @@ class UpdateNews extends Component {
     Mydata.Announcement.ID = this.props.PropNewsFiltered[0].id;
     //makes api call
     var Results = await Axios.post(
-      "https://localhost:5001/api/Announcements/UpdateNews",
+      "https://amsbackend.azurewebsites.net/api/Announcements/UpdateNews",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

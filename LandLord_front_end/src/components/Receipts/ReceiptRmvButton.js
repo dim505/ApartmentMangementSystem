@@ -22,9 +22,12 @@ export default class ReceiptRmvButton extends Component {
     this.CloseWarnBox();
     //makes the API call to delete selected receipt
     const BearerToken = await this.props.auth.getTokenSilently();
-    await Axios.delete(`https://localhost:5001/api/receipt/delete/${id}`, {
-      headers: { Authorization: `bearer ${BearerToken}` },
-    });
+    await Axios.delete(
+      `https://amsbackend.azurewebsites.net/api/receipt/delete/${id}`,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    );
     //refeshes main page again to get new list of receipts
     this.props.getReceipts();
     //opens "item removed" notification

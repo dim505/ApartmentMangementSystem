@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import Bounce from "react-reveal/Bounce";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
 
 //main parent that houses the add tenants page
 export default class AddTenants extends Component {
@@ -97,6 +98,7 @@ export default class AddTenants extends Component {
               </Button>
             </Link>
           </div>
+
           <AddTenantsForm
             UploadBtnCkcOnce={this.state.UploadBtnCkcOnce}
             onChanged={this.handleChange}

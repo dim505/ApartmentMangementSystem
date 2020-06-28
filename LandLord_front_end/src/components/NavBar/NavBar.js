@@ -17,6 +17,7 @@ import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import NewReleasesIcon from "@material-ui/icons/NewReleases";
 import Tooltip from "@material-ui/core/Tooltip";
+import ChatIcon from "@material-ui/icons/Chat";
 
 function HomeIcon(props) {
   return (
@@ -35,7 +36,7 @@ export default class NavBar extends Component {
   //logs user out of application
   Logout = () => {
     this.props.auth.logout({
-      returnTo: "http://localhost:3000/LogOutcallback",
+      returnTo: "https://amsfrontend.azurewebsites.net/LogOutcallback",
     });
   };
 
@@ -142,6 +143,23 @@ export default class NavBar extends Component {
                   <Typography variant="h6" color="inherit">
                     <Tooltip title="Announcements" placement="bottom">
                       <NewReleasesIcon style={{ fontSize: 48 }} />
+                    </Tooltip>
+                  </Typography>
+                </NavLink>
+              ) : (
+                <div></div>
+              )}
+
+              {this.props.authenticated ||
+              window.handleRedirectCallbackAlreadyCalled === 1 ? (
+                <NavLink
+                  className="navbar__link"
+                  activeClassName="navbar__link--active"
+                  to="/Messenger"
+                >
+                  <Typography variant="h6" color="inherit">
+                    <Tooltip title="Messanger" placement="bottom">
+                      <ChatIcon style={{ fontSize: 48 }} />
                     </Tooltip>
                   </Typography>
                 </NavLink>

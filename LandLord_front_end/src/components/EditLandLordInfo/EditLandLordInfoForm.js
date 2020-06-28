@@ -4,13 +4,12 @@ import TextField from "@material-ui/core/TextField";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 
 import WebIcon from "@material-ui/icons/Web";
-
+import MuiPhoneNumber from "material-ui-phone-number";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 
-
 //form that contains the necessary textfields to edit the landlord account information
-export const EditLandLordInfoForm = props => {
+export const EditLandLordInfoForm = (props) => {
   const {
     values: { Name, Email, PhoneNumber, file },
     errors,
@@ -19,12 +18,12 @@ export const EditLandLordInfoForm = props => {
     handleChange,
     isValid,
     setFieldTouched,
-    setFieldValue
+    setFieldValue,
   } = props;
 
-//handles the update in state for form and tracks if its touched 
+  //handles the update in state for form and tracks if its touched
   const change = (name, e) => {
-    e.persist();
+    //e.persist();
     handleChange(e);
     setFieldTouched(name, true, false);
   };
@@ -52,14 +51,21 @@ export const EditLandLordInfoForm = props => {
         helperText={touched.Email ? errors.Email : ""}
         error={touched.Email && Boolean(errors.Email)}
       />
-      <TextField
+
+      <MuiPhoneNumber
         id="PhoneNumber"
         name="PhoneNumber"
         label="Phone Number"
-        type="number"
         fullWidth
         value={PhoneNumber}
-        onChange={change.bind(null, "PhoneNumber")}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        defaultCountry="us"
+        onChange={(e) => {
+          setFieldValue("PhoneNumber", e.replace("+", ""));
+          setFieldTouched("PhoneNumber", true, false);
+        }}
         helperText={touched.PhoneNumber ? errors.PhoneNumber : ""}
         error={touched.PhoneNumber && Boolean(errors.PhoneNumber)}
       />
@@ -87,27 +93,29 @@ export const EditLandLordInfoForm = props => {
               type="file"
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
-              onChange={event => {
-                debugger
-				//checks if the uploaded file is valid 
-                if (event.currentTarget.files.length > 0 && event.currentTarget.files[0].size < 500000 && event.currentTarget.files[0] !== "undefined") {
-                  
-                
-                  
-                       
+              onChange={(event) => {
+                debugger;
+                //checks if the uploaded file is valid
+                if (
+                  event.currentTarget.files.length > 0 &&
+                  event.currentTarget.files[0].size < 500000 &&
+                  event.currentTarget.files[0] !== "undefined"
+                ) {
                   setFieldValue("file", event.currentTarget.files[0].name);
                   window.TenantPicture = event.target.files[0];
-                         
-				//lets user know file is too big 
-                 } else if (event.currentTarget.files.length > 0 && event.currentTarget.files[0] !== "undefined") {
-                    console.log(props)
-                   props.SetMessage("Please Upload a thumbnail file under 512 kb")
-                   props.OpenNoti()
-                   setFieldValue("file", "");
-                   
-                 } 
 
-                 
+                  //lets user know file is too big
+                } else if (
+                  event.currentTarget.files.length > 0 &&
+                  event.currentTarget.files[0] !== "undefined"
+                ) {
+                  console.log(props);
+                  props.SetMessage(
+                    "Please Upload a thumbnail file under 512 kb"
+                  );
+                  props.OpenNoti();
+                  setFieldValue("file", "");
+                }
               }}
             />
           </Button>

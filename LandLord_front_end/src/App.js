@@ -16,6 +16,9 @@ import EditLandLordInfo from "./components/EditLandLordInfo/EditLandLordInfo";
 import LandLordInfoCard from "./components/EditLandLordInfo/LandLordInfoCard";
 import LandLordNews from "./components/Announcements/LandLordNews";
 import AddNews from "./components/Announcements/AddNews";
+import Messenger from "./components/Messenger/Messenger";
+import Axios from "axios";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -23,15 +26,52 @@ class App extends Component {
     this.state = {
       authenticated: false,
       ShowBrowserNoti: false,
+      AccountDetails: [],
+      ProfilePictures: [],
     };
   }
 
   componentDidMount() {
     document.title = "AMS";
-	//checks if user is authenticated 
+    //checks if user is authenticated
     this.isUserAuthenticated();
+
+    if (
+      this.state.AccountDetails.length <= 0 &&
+      this.state.ProfilePictures.length <= 0
+    ) {
+      this.GetData();
+    }
   }
 
+  GetData = async () => {
+    //gets logged in user ID
+    const BearerToken = await this.props.auth.getTokenSilently();
+
+    //makes api call to get account details text and sets state
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountInfo",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then(async (results) => {
+      await this.setState({
+        AccountDetails: results.data,
+      });
+    });
+
+    //makes api call to get account photo  and sets state
+    var results = Axios.get(
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountPhotoInfo",
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
+    ).then(async (results) => {
+      await this.setState({
+        ProfilePictures: results.data,
+      });
+    });
+  };
   //checks to see if user is authenticated
   async isUserAuthenticated() {
     const isLoggedIn = await this.props.auth.isAuthenticated();
@@ -111,19 +151,36 @@ class App extends Component {
         </Route>
 
         <Route exact path="/AccountDetails">
-          <LandLordInfoCard auth={this.props.auth} />
+          <LandLordInfoCard
+            auth={this.props.auth}
+            AccountDetails={this.state.AccountDetails}
+            ProfilePictures={this.state.ProfilePictures}
+          />
         </Route>
 
         <Route exact path="/EditAccountDetails">
-          <EditLandLordInfo auth={this.props.auth} />
+          <EditLandLordInfo
+            auth={this.props.auth}
+            AccountDetails={this.state.AccountDetails}
+            ProfilePictures={this.state.ProfilePictures}
+            GetData={this.GetData}
+          />
         </Route>
 
         <Route exact path="/Announcements">
-          <LandLordNews auth={this.props.auth} />
+          <LandLordNews
+            auth={this.props.auth}
+            AccountDetails={this.state.AccountDetails}
+            ProfilePictures={this.state.ProfilePictures}
+          />
         </Route>
 
         <Route exact path="/AddNews">
           <AddNews auth={this.props.auth} />
+        </Route>
+
+        <Route exact path="/Messenger">
+          <Messenger auth={this.props.auth} />
         </Route>
 
         <Route

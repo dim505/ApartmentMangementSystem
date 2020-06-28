@@ -100,7 +100,7 @@ export default class PropertyUpdateModal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     var result = await Axios.get(
-      "https://localhost:5001/api/Property/GetSuggestedPropertiesAddress",
+      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
       {
         headers: { Authorization: `bearer ${BearerToken}` },
         params: {
@@ -147,7 +147,7 @@ export default class PropertyUpdateModal extends Component {
           document.getElementById("zipcode").value;
         //makes api call to get all properties
         var results = await Axios.get(
-          "https://localhost:5001/api/property/GetSuggestedPropertiesLatLng",
+          "https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
           {
             headers: { Authorization: `bearer ${BearerToken}` },
             params: {
@@ -177,7 +177,7 @@ export default class PropertyUpdateModal extends Component {
 
         //makes API call to update text portion of the reciept
         var Results = await Axios.post(
-          "https://localhost:5001/api/property/UpdateProperty",
+          "https://amsbackend.azurewebsites.net/api/property/UpdateProperty",
           Mydata,
           {
             headers: { Authorization: `bearer ${BearerToken}` },
@@ -365,6 +365,12 @@ export default class PropertyUpdateModal extends Component {
                             InputLabelProps={{
                               shrink: true,
                             }}
+                            onChange={(event) => {
+                              document.getElementById("unit").value = Math.abs(
+                                event.target.value
+                              );
+                            }}
+                            InputProps={{ inputProps: { min: 1 } }}
                           />
                         </TableCell>
                         <TableCell align="right">
@@ -376,6 +382,12 @@ export default class PropertyUpdateModal extends Component {
                             InputLabelProps={{
                               shrink: true,
                             }}
+                            onChange={(event) => {
+                              document.getElementById(
+                                "yearlyInsurance"
+                              ).value = Math.abs(event.target.value);
+                            }}
+                            InputProps={{ inputProps: { min: 1 } }}
                           />
                         </TableCell>
 
@@ -388,6 +400,12 @@ export default class PropertyUpdateModal extends Component {
                             InputLabelProps={{
                               shrink: true,
                             }}
+                            onChange={(event) => {
+                              document.getElementById("tax").value = Math.abs(
+                                event.target.value
+                              );
+                            }}
+                            InputProps={{ inputProps: { min: 1 } }}
                           />
                         </TableCell>
 

@@ -17,7 +17,6 @@ import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
 import Axios from "axios";
 
-
 //this component contains the payment history in detail
 export default class PaymentHistory extends Component {
   state = {
@@ -27,33 +26,31 @@ export default class PaymentHistory extends Component {
     OpnModal: "",
   };
 
-
-	//opens make payment modal
+  //opens make payment modal
   OpnModal = () => {
     this.setState({
       OpnModal: true,
     });
   };
-	//closes make payment modal
+  //closes make payment modal
   CloseModal = () => {
     this.setState({
       OpnModal: false,
     });
   };
-	//function open alert notification
+  //function open alert notification
   OpenNoti = (message) => {
     this.setState({
       OpenNoti: true,
       Message: message,
     });
   };
-	//function closes alert notification
+  //function closes alert notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
-
 
   render() {
     return (
@@ -64,23 +61,36 @@ export default class PaymentHistory extends Component {
           </Button>
         </Link>
         <Paper classes={{ root: "CardFormStyle" }} elevation={10}>
-          <Grid container>
-            <Grid item xs={9}>
-              <Typography variant="h4">
-                Total Due is{" "}
-                <span className="RedText">
-                  {" "}
-                  ${this.props.PaymentInfoCard[0].rentDue}{" "}
-                </span>{" "}
-              </Typography>
-              <Typography variant="body2">Rent Due</Typography>
+          {this.props.PaymentInfoCard[0].rentDue > 0 ? (
+            <Grid container>
+              <Grid item xs={9}>
+                <Typography variant="h4">
+                  Total Due is{" "}
+                  <span className="RedText">
+                    {" "}
+                    ${this.props.PaymentInfoCard[0].rentDue}{" "}
+                  </span>{" "}
+                </Typography>
+                <Typography variant="body2">Rent Due</Typography>
+              </Grid>
+              <Grid container item xs={3} justify="flex-end">
+                <Button variant="outlined" onClick={this.OpnModal}>
+                  Pay Now
+                </Button>
+              </Grid>
             </Grid>
-            <Grid container item xs={3} justify="flex-end">
-              <Button variant="outlined" onClick={this.OpnModal}>
-                Pay Now
-              </Button>
-            </Grid>
-          </Grid>
+          ) : (
+            <Typography align="center" variant="h4" gutterBottom>
+              You have a credit of
+              <span className="GreenText">
+                {" "}
+                ${this.props.PaymentInfoCard[0].rentDue.replace(
+                  "-",
+                  ""
+                )}.00{" "}
+              </span>
+            </Typography>
+          )}
 
           <Paper classes={{ root: "PayHistTitle" }} elevation={5}>
             {" "}

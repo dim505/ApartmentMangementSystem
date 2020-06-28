@@ -20,7 +20,7 @@ const validationSchema = Yup.object({
   Email: Yup.string("Enter your email")
     .required("Email is required")
     .email("Enter a valid Email"),
-  PhoneNumber: Yup.number().required("Enter your Phone Number"),
+  PhoneNumber: Yup.string().required("Enter your Phone Number").min(16),
 });
 
 //parent component contains a form that is used to update the tenants information

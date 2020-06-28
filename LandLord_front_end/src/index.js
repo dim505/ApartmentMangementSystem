@@ -11,7 +11,7 @@ const auth0 = async () =>
     domain: "dev-5wttvoce.auth0.com",
     client_id: "xJ48BWaU5z5q31hoKaBgv7Izq7UIJAXA",
     //Redirect URL when authenication suceeds
-    redirect_uri: "http://localhost:3000/callback",
+    redirect_uri: "https://amsfrontend.azurewebsites.net/callback",
     audience: "https://ReactAmsApi.com",
   });
 

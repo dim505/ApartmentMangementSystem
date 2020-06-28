@@ -51,7 +51,7 @@ export default class AddPropertySubmitButton extends Component {
 
       //makes api call to get all properties
       var results = await Axios.get(
-        "https://localhost:5001/api/property/GetSuggestedPropertiesLatLng",
+        "https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
         {
           headers: { Authorization: `bearer ${BearerToken}` },
           params: {
@@ -79,7 +79,7 @@ export default class AddPropertySubmitButton extends Component {
 
       //makes api call
       var Results = await Axios.post(
-        "https://localhost:5001/api/Property/AddProperty",
+        "https://amsbackend.azurewebsites.net/api/Property/AddProperty",
         Mydata,
         {
           headers: { Authorization: `bearer ${BearerToken}` },

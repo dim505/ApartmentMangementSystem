@@ -7,7 +7,6 @@ import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
-import Axios from "axios";
 import Fade from "react-reveal/Fade";
 
 //component acts as a parent for the Personal info card
@@ -20,60 +19,21 @@ export default class PersonalInfoCard extends Component {
       PhoneNumber: "911-4535353",
       Image: "",
     },
-    AccountDetails: [],
-    ProfilePictures: [],
   };
 
-  //gets account details and photo data
   componentDidMount() {
-    if (
-      this.state.AccountDetails.length <= 0 &&
-      this.state.ProfilePictures.length <= 0
-    ) {
-      this.GetData();
-    }
+    //this formats the format so It can be used in the browser
+    this.FormatImage();
   }
-
-  GetData = async () => {
-    //gets logged in user ID
-    const BearerToken = await this.props.auth.getTokenSilently();
-
-    //makes api call to get account details text and sets state
-    var results = Axios.get(
-      "https://localhost:5001/api/AccountDetails/GetAccountInfo",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) => {
-      this.setState({
-        AccountDetails: results.data,
-      });
-    });
-
-    //makes api call to get account photo  and sets state
-    var results = Axios.get(
-      "https://localhost:5001/api/AccountDetails/GetAccountPhotoInfo",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then(async (results) => {
-      await this.setState({
-        ProfilePictures: results.data,
-      });
-      //this formats the format so It can be used in the browser
-      this.FormatImage();
-    });
-  };
 
   //this formats the format so It can be used in the browser
   FormatImage(ProfilePictures) {
-    debugger;
     var objectURL = this.CreateImageUrl(
-      this.state.ProfilePictures[0].image,
-      this.state.ProfilePictures[0].contentType
+      this.props.ProfilePictures[0].image,
+      this.props.ProfilePictures[0].contentType
     );
     this.setState({ Image: objectURL });
-    Window.ProfileImageName = this.state.ProfilePictures[0].filename;
+    Window.ProfileImageName = this.props.ProfilePictures[0].filename;
   }
 
   //converts string from data bases to an array buffer
@@ -93,7 +53,7 @@ export default class PersonalInfoCard extends Component {
   }
 
   render() {
-    window.AccountDetails = this.state.AccountDetails;
+    window.AccountDetails = this.props.AccountDetails;
     return (
       <Fade top>
         <Card classes={{ root: "CardHeight" }}>
@@ -109,7 +69,7 @@ export default class PersonalInfoCard extends Component {
             <Typography variant="body2" component="p">
               <Avatar alt="" src={this.state.Image} />
 
-              {this.state.AccountDetails.length <= 0 ? (
+              {this.props.AccountDetails.length <= 0 ? (
                 <b>
                   {" "}
                   <p>No data found</p>{" "}
@@ -117,9 +77,9 @@ export default class PersonalInfoCard extends Component {
               ) : (
                 <div>
                   <b>
-                    <p> {this.state.AccountDetails[0].name}</p>
-                    <p>{this.state.AccountDetails[0].email} </p>
-                    <p>{this.state.AccountDetails[0].phoneNumber} </p>
+                    <p> {this.props.AccountDetails[0].name}</p>
+                    <p>{this.props.AccountDetails[0].email} </p>
+                    <p>{this.props.AccountDetails[0].phoneNumber} </p>
                   </b>
                 </div>
               )}

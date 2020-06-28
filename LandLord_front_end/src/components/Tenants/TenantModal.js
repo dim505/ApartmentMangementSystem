@@ -98,10 +98,15 @@ export default class TenantModal extends Component {
                             label="Tenant Rent"
                             type="number"
                             defaultValue={Tenant.rentDueEaMon}
+                            onChange={(event) => {
+                              document.getElementById(
+                                "rentDue"
+                              ).value = Math.abs(event.target.value);
+                            }}
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            InputProps={{ inputProps: { min: 0 } }}
+                            InputProps={{ inputProps: { min: 1 } }}
                           />
                         </TableCell>
                         <TableCell align="right">

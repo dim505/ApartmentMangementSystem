@@ -20,7 +20,9 @@ const validationSchema = Yup.object({
   Email: Yup.string("Enter your email")
     .required("Email is required")
     .email("Enter a valid Email"),
-  PhoneNumber: Yup.number().required("Enter your Phone Number"),
+  PhoneNumber: Yup.string("Enter a Phone Number")
+    .required("Phone Number is required")
+    .min(16),
 });
 
 class EditLandLordInfo extends Component {
@@ -56,7 +58,7 @@ class EditLandLordInfo extends Component {
     //makes api call to update image if an image has been uploaded
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://localhost:5001/api/AccountDetails/Add_Update_LandLord_Image`;
+      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -76,7 +78,7 @@ class EditLandLordInfo extends Component {
 
     //makes API call to update text portion of account details
     var Results = await Axios.post(
-      "https://localhost:5001/api/AccountDetails/Add_Update_LandLordInfo",
+      "https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLordInfo",
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -98,13 +100,13 @@ class EditLandLordInfo extends Component {
   };
   //function used to open notification alert
   OpenNoti = () => {
-    debugger;
     this.setState({
       OpenNoti: true,
     });
   };
   //this sets message for notification alert
   SetMessage = (message) => {
+    this.props.GetData();
     this.setState({
       Message: message,
     });
@@ -118,10 +120,10 @@ class EditLandLordInfo extends Component {
 
   render() {
     const values = {
-      Name: window.AccountDetails[0].name,
-      Email: window.AccountDetails[0].email,
-      PhoneNumber: window.AccountDetails[0].phoneNumber,
-      file: Window.ProfileImageName,
+      Name: this.props.AccountDetails[0].name,
+      Email: this.props.AccountDetails[0].email,
+      PhoneNumber: this.props.AccountDetails[0].phoneNumber,
+      file: this.props.ProfilePictures[0].filename,
     };
     return (
       <Fade top>
@@ -139,6 +141,7 @@ class EditLandLordInfo extends Component {
               Edit Land Lord Details
             </Typography>
             <Formik
+              enableReinitialize={true}
               initialValues={values}
               onSubmit={this.submitValues}
               validationSchema={validationSchema}
