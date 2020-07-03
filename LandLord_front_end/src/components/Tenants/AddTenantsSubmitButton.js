@@ -2,25 +2,11 @@ import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import Axios from "axios";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 //contains submit button and code to add tenant to DB
 export default class AddTenantsSubmitButton extends Component {
-  state = { TenantUploadedNoti: false, TenantUploadedNotiFailed: false };
-
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
-
-  //function generates a GUID
-  uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
+  state = { OpenNoti: false, Message: "" };
 
   //function submit tenant to database
   submit = async (e) => {
@@ -29,14 +15,14 @@ export default class AddTenantsSubmitButton extends Component {
     this.props.UploadSubmitCheck();
     //checks if forms are empty
     if (
-      !this.isEmpty(this.props.Tenants.Name) &&
-      !this.isEmpty(this.props.Tenants.Email) &&
-      !this.isEmpty(this.props.Tenants.Phone) &&
-      !this.isEmpty(this.props.Tenants.LeaseDue) &&
-      !this.isEmpty(this.props.Tenants.RentDue)
+      !isEmpty(this.props.Tenants.Name) &&
+      !isEmpty(this.props.Tenants.Email) &&
+      !isEmpty(this.props.Tenants.Phone) &&
+      !isEmpty(this.props.Tenants.LeaseDue) &&
+      !isEmpty(this.props.Tenants.RentDue)
     ) {
       //gets GUID
-      var TenGuid = this.uuidv4();
+      var TenGuid = uuidv4();
       //builds out tenant object
       var Mydata = {};
       //gets Auth0 ID
@@ -47,7 +33,7 @@ export default class AddTenantsSubmitButton extends Component {
 
       //makes api call
       var AddRecResults = Axios.post(
-        "https://amsbackend.azurewebsites.net/api/Tenant/AddTenant",
+        `${process.env.REACT_APP_BackEndUrl}/api/Tenant/AddTenant`,
         Mydata,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
@@ -55,59 +41,46 @@ export default class AddTenantsSubmitButton extends Component {
       )
         .catch(async (AddRecResults) => {
           if (AddRecResults !== undefined) {
-            await this.setState({ TenantUploadedNotiFailed: true });
+            await this.OpenNoti(
+              "Duplicate Email. Please Choose Another Email."
+            );
           }
         })
 
         .then((AddRecResults) => {
-          if (this.state.TenantUploadedNotiFailed === false) {
+          if (this.state.OpenNoti === false) {
             //opens Tenant was Uploaded successfully Notification
-            this.setState({ TenantUploadedNoti: true });
+            this.OpenNoti("Tenant Added");
             this.props.ClearAddTenantsFormState();
           }
         });
     }
   };
-  //closes Tenant was Uploaded successfully Notification
-  CloseTenantUploadedNoti() {
-    this.setState({ TenantUploadedNoti: false });
-  }
 
-  //closes Tenant was Uploaded successfully Notification
-  CloseTenantUploadedNotiFailed() {
-    this.setState({ TenantUploadedNotiFailed: false });
-  }
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
+  };
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
+  };
 
   render() {
     return (
       <div>
         <div className="SnackbarClass">
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.TenantUploadedNoti}
-            onClose={() => this.CloseTenantUploadedNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={<span id="message-id">Tenant Added</span>}
-          />
-        </div>
-
-        <div className="SnackbarClass">
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.TenantUploadedNotiFailed}
-            onClose={() => this.CloseTenantUploadedNotiFailed()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={
-              <span id="message-id">
-                Duplicate Email. Please Choose Another Email.
-              </span>
-            }
+          <SnackBar
+            position="bottom"
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
           />
         </div>
 

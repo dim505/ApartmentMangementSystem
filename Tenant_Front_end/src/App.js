@@ -16,7 +16,9 @@ import NotLoggedIn from "./components/Home/NotLoggedIn";
 import Snackbar from "@material-ui/core/Snackbar";
 import "./App.css";
 import PaymentPortal from "./components/PaymentHistory/PaymentPortal";
-import SnackBar from "./components/SnackBar";
+import SnackBar from "./components/Shared/SnackBar";
+import TenChat from "./components/TenantChat/TenChat";
+import "react-chat-widget/lib/styles.css";
 
 //gets app data upon load
 class App extends Component {
@@ -38,6 +40,9 @@ class App extends Component {
 
   //sets title, get data, check if visiting user is authenticated
   componentDidMount() {
+    console.log(process.env.REACT_APP_FrontEndSiteURL);
+    console.log(process.env.REACT_APP_BackEndUrl);
+
     document.title = "AMS";
     this.isUserAuthenticated();
     this.GetData();
@@ -55,7 +60,7 @@ class App extends Component {
   GetPaymentInfo = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      `https://amsbackend.azurewebsites.net/api/Payment/GetWhenRentDue/${this.state.results[0].email}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/Payment/GetWhenRentDue/${this.state.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -66,7 +71,7 @@ class App extends Component {
     );
 
     var results2 = Axios.get(
-      `https://amsbackend.azurewebsites.net/api/Payment/GetPaymentHistory/${this.state.results[0].email}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/Payment/GetPaymentHistory/${this.state.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -89,7 +94,7 @@ class App extends Component {
 
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/TenHome/GetAccountDetails",
+      `${process.env.REACT_APP_BackEndUrl}/api/TenHome/GetAccountDetails`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -100,7 +105,7 @@ class App extends Component {
     );
     //makes 2nd api call to get profile photos
     var results2 = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/TenHome/GetProfilePhoto",
+      `${process.env.REACT_APP_BackEndUrl}/api/TenHome/GetProfilePhoto`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -190,6 +195,7 @@ class App extends Component {
                   GetPaymentInfo={this.GetPaymentInfo}
                 />
               </Route>
+              <TenChat />
             </Fade>
           </div>
         ) : (

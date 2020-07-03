@@ -23,7 +23,10 @@ export default class PersonalInfoCard extends Component {
 
   componentDidMount() {
     //this formats the format so It can be used in the browser
-    this.FormatImage();
+
+    if (this.props.ProfilePictures.length > 0) {
+      this.FormatImage();
+    }
   }
 
   //this formats the format so It can be used in the browser
@@ -53,7 +56,6 @@ export default class PersonalInfoCard extends Component {
   }
 
   render() {
-    window.AccountDetails = this.props.AccountDetails;
     return (
       <Fade top>
         <Card classes={{ root: "CardHeight" }}>

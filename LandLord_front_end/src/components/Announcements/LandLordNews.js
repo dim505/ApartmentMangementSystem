@@ -3,8 +3,8 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 import Axios from "axios";
 import AnnonModal from "./AnnonModal";
 import UpdateNews from "./UpdateNews";
@@ -35,7 +35,7 @@ export default class LandLordNews extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Announcements/GetNews",
+      `${process.env.REACT_APP_BackEndUrl}/api/Announcements/GetNews`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -99,7 +99,7 @@ export default class LandLordNews extends Component {
     this.CloseSaveWarnBox();
     //makes API to delete new item and gets new list
     await Axios.delete(
-      `https://amsbackend.azurewebsites.net/api/Announcements/DeleteNews/${Window.NewsToDel}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/Announcements/DeleteNews/${Window.NewsToDel}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -171,6 +171,7 @@ export default class LandLordNews extends Component {
           )}
 
           <SnackBar
+            position="top"
             OpenNoti={this.state.OpenNoti}
             CloseNoti={this.CloseNoti}
             message={this.state.Message}

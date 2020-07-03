@@ -11,7 +11,7 @@ import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import Flip from "react-reveal/Flip";
 import ApartmentIcon from "@material-ui/icons/Apartment";
 import Button from "@material-ui/core/Button";
-import Tooltip2 from "../Tooltip";
+import Tooltip2 from "../shared/Tooltip";
 import LiveHelpOutlinedIcon from "@material-ui/icons/LiveHelpOutlined";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
@@ -36,7 +36,7 @@ export default class NavBar extends Component {
   //logs user out of application
   Logout = () => {
     this.props.auth.logout({
-      returnTo: "https://amsfrontend.azurewebsites.net/LogOutcallback",
+      returnTo: `${process.env.REACT_APP_FrontEndSiteURL}/LogOutcallback`,
     });
   };
 

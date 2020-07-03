@@ -4,11 +4,12 @@ import Bounce from "react-reveal/Bounce";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
 import AddPropertyForm from "./AddPropertyForm";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import AddPropertySubmitButton from "./AddPropertySubmitButton";
 import Grid from "@material-ui/core/Grid";
 import AddPropertyAddressSuggest from "./AddPropertyAddressSuggest";
 import Axios from "axios";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //parent component contains  form component and submit button component
 export default class AddProperty extends Component {
@@ -33,10 +34,11 @@ export default class AddProperty extends Component {
       ZipCode: "",
     },
     UploadBtnCkcOnce: false,
-    FillFormsNoti: false,
+    OpenNoti: false,
+    Message: "",
     SuggestedAddresses: [],
     SuggAddrChecked: false,
-    CheckSuggAddrNoti: false,
+
     ClearAddPropertyFormState: false,
   };
 
@@ -104,7 +106,7 @@ export default class AddProperty extends Component {
     //makes the API call to gets the suggestions
 
     var result = await Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
+      `${process.env.REACT_APP_BackEndUrl}/api/Property/GetSuggestedPropertiesAddress`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
         params: {
@@ -117,51 +119,51 @@ export default class AddProperty extends Component {
       this.setState({ SuggestedAddresses: result.data.suggestions });
     });
   };
-  //function to test if any of the forms are empty
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
+
   //This does some checks and sets the appropiate flags if the forms are empty when trying to submit
   UploadSubmitCheck = async () => {
     if (!this.state.SuggAddrChecked) {
       this.setState({
         UploadBtnCkcOnce: true,
-        CheckSuggAddrNoti: true,
       });
+      this.OpenNoti("Please Check off a Suggested Address");
     } else {
       //checks if forms are empty then reset state accordly
       if (
-        !this.isEmpty(this.state.property.Unit) &&
-        !this.isEmpty(this.state.property.YearlyInsurance) &&
-        !this.isEmpty(this.state.property.Tax)
+        !isEmpty(this.state.property.Unit) &&
+        !isEmpty(this.state.property.YearlyInsurance) &&
+        !isEmpty(this.state.property.Tax)
       ) {
         await this.setState({
           UploadBtnCkcOnce: false,
-          FillFormsNoti: false,
         });
+
+        this.CloseNoti();
       } else {
         //UploadBtnCkcOnce : checks if upload button clicked once
         //FillFormsNoti: opens notification tell user to fill in blank forms
         await this.setState({
           UploadBtnCkcOnce: true,
-          FillFormsNoti: true,
         });
+        this.OpenNoti("Please Fill Out the Forms in red");
       }
     }
   };
 
-  //closes fill empty forms notification t
-  CloseFillFormsNoti() {
+  //function used to open notification alert
+  OpenNoti = (message) => {
     this.setState({
-      FillFormsNoti: false,
+      OpenNoti: true,
+      Message: message,
     });
-  }
-  //closes the "Please Check off a Suggested Address " notification
-  CloseCheckSuggAddrNoti() {
+  };
+
+  //function used to close notification alert
+  CloseNoti = () => {
     this.setState({
-      CheckSuggAddrNoti: false,
+      OpenNoti: false,
     });
-  }
+  };
 
   //clears the state for everything
   ClearState = () => {
@@ -182,10 +184,10 @@ export default class AddProperty extends Component {
         ZipCode: "",
       },
       UploadBtnCkcOnce: false,
-      FillFormsNoti: false,
+
       SuggestedAddresses: [],
       SuggAddrChecked: false,
-      CheckSuggAddrNoti: false,
+
       ClearAddPropertyFormState: true,
     });
     window.SuggestedAddress = [];
@@ -195,30 +197,11 @@ export default class AddProperty extends Component {
     return (
       <div>
         <div className="SnackbarClass">
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.FillFormsNoti}
-            onClose={() => this.CloseFillFormsNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={
-              <span id="message-id">Please Fill Out the Forms in red</span>
-            }
-          />
-
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.CheckSuggAddrNoti}
-            onClose={() => this.CloseCheckSuggAddrNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={
-              <span id="message-id">Please Check off a Suggested Address </span>
-            }
+          <SnackBar
+            position="bottom"
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
           />
         </div>
 

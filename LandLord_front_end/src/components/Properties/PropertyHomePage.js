@@ -12,7 +12,7 @@ import Axios from "axios";
 import Box from "@material-ui/core/Box";
 import Flip from "react-reveal/Flip";
 import PropertyRemoveButton from "./PropertyRemoveButton";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import PropertyUpdateModal from "./PropertyUpdateModal";
 import Fade from "react-reveal/Fade";
 import Bounce from "react-reveal/Bounce";
@@ -34,7 +34,8 @@ export default class PropertyHomePage extends Component {
       },
     ],
     ShowPropertyDetails: false,
-    OpenPropertyRmvNoti: false,
+    OpenNoti: false,
+    Message: "",
     PropertyToShow: "",
     OpnModal: false,
   };
@@ -52,7 +53,7 @@ export default class PropertyHomePage extends Component {
     setTimeout(() => {
       //makes api call to get all properties
       var results = Axios.get(
-        "https://amsbackend.azurewebsites.net/api/property",
+        `${process.env.REACT_APP_BackEndUrl}/api/property`,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
         }
@@ -92,14 +93,19 @@ export default class PropertyHomePage extends Component {
     }
   }
 
-  //opens "property was removed" notification
-  OpenPropertyRmvNoti = () => {
-    this.setState({ OpenPropertyRmvNoti: true });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
 
-  //closes "property was removed" notification
-  ClosePropertyRmvNoti = () => {
-    this.setState({ OpenPropertyRmvNoti: false });
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
 
   //opens modal used to update property info
@@ -128,16 +134,7 @@ export default class PropertyHomePage extends Component {
             </Link>
           </Grid>
         </Grid>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          key={{ vertical: "top", horizontal: "center" }}
-          open={this.state.OpenPropertyRmvNoti}
-          onClose={() => this.ClosePropertyRmvNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={<span id="message-id">Property Removed</span>}
-        />
+
         <PropertyUpdateModal
           PropertiesFiltered={this.state.PropertiesFiltered}
           OpnModal={this.state.OpnModal}
@@ -185,7 +182,7 @@ export default class PropertyHomePage extends Component {
                     </Button>
                     <PropertyRemoveButton
                       GetProperties={this.GetProperties}
-                      OpenPropertyRmvNoti={this.OpenPropertyRmvNoti}
+                      OpenPropertyRmvNoti={this.OpenNoti}
                       guid={Property.guid}
                       auth={this.props.auth}
                     />

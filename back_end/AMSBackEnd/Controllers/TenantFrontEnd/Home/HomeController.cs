@@ -15,6 +15,12 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using Twilio;
+using Twilio.Jwt.AccessToken;
+using Twilio.Rest.Notify.V1.Service;
+using Twilio.Rest.Sync.V1;
+ 
+
 
 
 //this controller is responsible for getting all the information about the home page 
@@ -25,9 +31,12 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
     public class TenHomeController : ControllerBase
     {
 
+
+       // private readonly ITokenGenerator _tokenGenerator;
         private readonly IConfiguration _config;
-        public TenHomeController(IConfiguration config) {
+        public TenHomeController(IConfiguration config /*, ITokenGenerator tokenGenerator*/) {
             _config = config;
+            //_tokenGenerator = tokenGenerator;
 
         }
 
@@ -286,7 +295,24 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
+        /*
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult GetToken([FromBody] JObject data)
+        {
+            GetToken getToken = data["GetToken"].ToObject<GetToken>();
+            if (getToken.device == null || getToken.TenGuid == null)
+            {
+                return null;
 
+            }
+            var token = _tokenGenerator.Generate(getToken.TenGuid, getToken.device);
+            return Ok(token);
+
+        }
+
+
+        */
 
     }
 }

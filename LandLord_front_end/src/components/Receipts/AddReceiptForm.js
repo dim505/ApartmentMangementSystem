@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //contains the textfields for the add receipt form
 export default class AddReceiptForm extends Component {
@@ -19,11 +20,6 @@ export default class AddReceiptForm extends Component {
     });
   };
 
-  //function tests fields for emptiness
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
-
   // as a user types into the text fields, it updates the state with each letter and triggers the parent components to update state too
   handleChange(newState) {
     this.setState(newState, () => this.props.onChanged(this.state));
@@ -39,7 +35,7 @@ export default class AddReceiptForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Date)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Date)
                   ? "ShowRed"
                   : " "
               }
@@ -60,7 +56,7 @@ export default class AddReceiptForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Store)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Store)
                   ? "ShowRed"
                   : " "
               }
@@ -81,7 +77,7 @@ export default class AddReceiptForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Tax)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Tax)
                   ? "ShowRed"
                   : " "
               }
@@ -103,8 +99,7 @@ export default class AddReceiptForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce &&
-                this.isEmpty(this.state.TotalAmount)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.TotalAmount)
                   ? "ShowRed"
                   : " "
               }

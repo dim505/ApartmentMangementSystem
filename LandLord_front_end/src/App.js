@@ -10,7 +10,7 @@ import AddProperty from "./components/Properties/AddProperty";
 import { Route } from "react-router-dom";
 import Callback from "./components/LogIn/Callback";
 import LogOutcallback from "./components/LogIn/LogOutcallback";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "./components/shared/SnackBar";
 import "./App.css";
 import EditLandLordInfo from "./components/EditLandLordInfo/EditLandLordInfo";
 import LandLordInfoCard from "./components/EditLandLordInfo/LandLordInfoCard";
@@ -25,7 +25,8 @@ class App extends Component {
 
     this.state = {
       authenticated: false,
-      ShowBrowserNoti: false,
+      OpenNoti: false,
+      Message: "",
       AccountDetails: [],
       ProfilePictures: [],
     };
@@ -35,6 +36,7 @@ class App extends Component {
     document.title = "AMS";
     //checks if user is authenticated
     this.isUserAuthenticated();
+    console.log(process.env.REACT_APP_FrontEndSiteURL);
 
     if (
       this.state.AccountDetails.length <= 0 &&
@@ -50,7 +52,7 @@ class App extends Component {
 
     //makes api call to get account details text and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountInfo",
+      `${process.env.REACT_APP_BackEndUrl}/api/AccountDetails/GetAccountInfo`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -62,7 +64,7 @@ class App extends Component {
 
     //makes api call to get account photo  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/GetAccountPhotoInfo",
+      `${process.env.REACT_APP_BackEndUrl}/api/AccountDetails/GetAccountPhotoInfo`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -78,41 +80,38 @@ class App extends Component {
     this.setState({ authenticated: isLoggedIn });
   }
 
-  //opens browser support notitication
-  OpenShowBrowserNoti = () => {
-    this.setState({ ShowBrowserNoti: true });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
 
-  //closes browser support notitication
-  CloseShowBrowserNoti = () => {
-    this.setState({ ShowBrowserNoti: false });
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
 
   render() {
     if (
       sessionStorage.getItem("AppLoadedOnce") !== "true" &&
-      this.state.ShowBrowserNoti === false
+      this.state.OpenNoti === false
     ) {
       sessionStorage.setItem("AppLoadedOnce", true);
-      this.setState({ ShowBrowserNoti: true });
+      this.OpenNoti(
+        "Please note only Edge and Chrome are currently supported. You might run into UI issues with other browsers. ***not mobile optimized**"
+      );
     }
     return (
       <div>
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.ShowBrowserNoti}
-          onClose={() => this.CloseShowBrowserNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={
-            <span id="message-id">
-              Please note only Edge and Chrome are currently supported. You
-              might run into UI issues with other browsers. ***not mobile
-              optimized**
-            </span>
-          }
+        <SnackBar
+          position="bottom"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
         />
 
         <NavBar

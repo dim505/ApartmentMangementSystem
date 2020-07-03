@@ -5,10 +5,10 @@ import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 
-//declares rules for validating textfields 
+//declares rules for validating textfields
 const validationSchema = Yup.object({
   Subject: Yup.string("Enter a Subject").required("Subject is Required"),
   Message: Yup.string("Enter a Message").required("Message is Required"),
@@ -22,10 +22,11 @@ class ViewNews extends Component {
       properties: [{ id: 1, Address: "12 verde Drive Greenfield MA" }],
       OpenNoti: false,
       Message: "",
+	  OpnSaveWarningBox: false
     };
   }
 
-//opens warning box when submit is clicked 
+  //opens warning box when submit is clicked
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
@@ -33,30 +34,30 @@ class ViewNews extends Component {
     //;
   };
 
-//if user clicks yes, it makes api call to add news 
+  //if user clicks yes, it makes api call to add news
   Save = () => {
-	  //closes warning dialog
+    //closes warning dialog
     this.CloseSaveWarnBox();
-	//resets form
+    //resets form
     window.resetForm({});
-	//opens this was successful notification 
+    //opens this was successful notification
     this.OpenNoti();
   };
 
-//function used to open warning box 
+  //function used to open warning box
   OpenSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: true,
     });
   };
-  //function used to close warning box 
+  //function used to close warning box
   CloseSaveWarnBox = () => {
     this.setState({
       OpnSaveWarningBox: false,
     });
   };
 
-//function used to open notification alert
+  //function used to open notification alert
   OpenNoti = () => {
     this.setState({
       OpenNoti: true,
@@ -64,7 +65,7 @@ class ViewNews extends Component {
     });
   };
 
-//function used to close notification alert
+  //function used to close notification alert
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
@@ -72,7 +73,7 @@ class ViewNews extends Component {
   };
   render() {
     debugger;
-	//builds out address from API call results 
+    //builds out address from API call results
     var Address =
       this.props.PropNewsFiltered[0].street +
       " " +

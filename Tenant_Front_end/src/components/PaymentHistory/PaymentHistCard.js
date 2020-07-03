@@ -34,7 +34,7 @@ export default class PaymentHistCard extends Component {
   GetData = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      `https://amsbackend.azurewebsites.net/api/Payment/GetPaymentHistoryInfoCard/${this.props.results[0].email}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/Payment/GetPaymentHistoryInfoCard/${this.props.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

@@ -5,8 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 import Axios from "axios";
 
 //declares rules for validating textfields
@@ -43,7 +43,7 @@ class UpdateNews extends Component {
     Mydata.Announcement.ID = this.props.PropNewsFiltered[0].id;
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Announcements/UpdateNews",
+      `${process.env.REACT_APP_BackEndUrl}/api/Announcements/UpdateNews`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

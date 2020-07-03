@@ -11,7 +11,7 @@ const auth0 = async () =>
     domain: "dev-5wttvoce.auth0.com",
     client_id: "xJ48BWaU5z5q31hoKaBgv7Izq7UIJAXA",
     //Redirect URL when authenication suceeds
-    redirect_uri: "https://amsfrontend.azurewebsites.net/callback",
+    redirect_uri: `${process.env.REACT_APP_FrontEndSiteURL}/callback`,
     audience: "https://ReactAmsApi.com",
   });
 
@@ -23,5 +23,3 @@ auth0().then((auth) => {
     document.getElementById("root")
   );
 });
-
-//https://stackoverflow.com/questions/51391051/call-child-component-function-from-parent

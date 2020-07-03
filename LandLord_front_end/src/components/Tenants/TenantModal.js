@@ -11,35 +11,37 @@ import Modal from "@material-ui/core/Modal";
 import TextField from "@material-ui/core/TextField";
 import TenantModalSave from "./TenantModalSave";
 import Fade from "@material-ui/core/Fade";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import MuiPhoneNumber from "material-ui-phone-number";
 
 //component contains update modal
 export default class TenantModal extends Component {
-  state = { OpenTenantSaveNoti: false };
+  state = { OpenNoti: false, Message: "" };
 
-  //opens Tenant was Saved Notification
-  OpenTenantSaveNoti = () => {
-    this.setState({ OpenTenantSaveNoti: true });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
-  //closes Tenant was Saved Notification
-  CloseTenantSaveNoti = () => {
-    this.setState({ OpenTenantSaveNoti: false });
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
 
   render() {
     var MinDate = new Date().toISOString().split("T")[0];
     return (
       <div>
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.OpenTenantSaveNoti}
-          onClose={() => this.CloseTenantSaveNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={<span id="message-id">Tenants Has Been Updated </span>}
+        <SnackBar
+          position="bottom"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
         />
 
         <Modal
@@ -67,7 +69,7 @@ export default class TenantModal extends Component {
                       <TableCell>
                         {" "}
                         <TenantModalSave
-                          OpenTenantSaveNoti={this.OpenTenantSaveNoti}
+                          OpenTenantSaveNoti={this.OpenNoti}
                           CloseModal={this.props.CloseModal}
                           TenantsFiltered={this.props.TenantsFiltered}
                           CloseTenantList={this.props.CloseTenantList}

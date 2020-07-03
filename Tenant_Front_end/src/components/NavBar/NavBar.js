@@ -32,7 +32,7 @@ export default class NavBar extends Component {
   //logs user out of application
   Logout = () => {
     this.props.auth.logout({
-      returnTo: "http://localhost:3000",
+      returnTo: `${process.env.REACT_APP_FrontEndSiteURL}`,
     });
   };
 

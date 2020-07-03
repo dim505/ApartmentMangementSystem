@@ -1,27 +1,13 @@
 import React, { Component } from "react";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import Button from "@material-ui/core/Button";
 import Axios from "axios";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //child component of add property page - contains submit button and action to add property
 export default class AddPropertySubmitButton extends Component {
-  state = { SubmitSuccessNoti: false };
+  state = { OpenNoti: false, Message: "" };
 
-  //GENERATES A NEW UNIQUE id FOR PROPERTY
-  uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
-  //FUNCTION TO CHECK IF FORM IS EMPTY
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
   //SUBMIT post api call to create property
   async submit() {
     //this does addition checks in the parent component
@@ -30,14 +16,14 @@ export default class AddPropertySubmitButton extends Component {
     //checks if all fields in the add property form are filled
     if (
       this.props.SuggAddrChecked &&
-      !this.isEmpty(this.props.property.Unit) &&
-      !this.isEmpty(this.props.property.YearlyInsurance) &&
-      !this.isEmpty(this.props.property.Tax)
+      !isEmpty(this.props.property.Unit) &&
+      !isEmpty(this.props.property.YearlyInsurance) &&
+      !isEmpty(this.props.property.Tax)
     ) {
       const BearerToken = await this.props.auth.getTokenSilently();
 
       //generates ID for property
-      var Guid = this.uuidv4();
+      var Guid = uuidv4();
       //creates JSON Object
       var Mydata = {};
       var query =
@@ -51,7 +37,7 @@ export default class AddPropertySubmitButton extends Component {
 
       //makes api call to get all properties
       var results = await Axios.get(
-        "https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
+        `${process.env.REACT_APP_BackEndUrl}/api/property/GetSuggestedPropertiesLatLng`,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
           params: {
@@ -79,40 +65,47 @@ export default class AddPropertySubmitButton extends Component {
 
       //makes api call
       var Results = await Axios.post(
-        "https://amsbackend.azurewebsites.net/api/Property/AddProperty",
+        `${process.env.REACT_APP_BackEndUrl}/api/Property/AddProperty`,
         Mydata,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
         }
       ).then((Results) => console.log(Results));
       //opens upload success notification
-      this.setState({ SubmitSuccessNoti: true });
+      this.OpenNoti("Property Added");
       //clears state to clear out the forms
       this.props.ClearState();
       this.props.ClearAddPropertyFormState();
     } else {
       //sets upload success notification to false
-      this.setState({ SubmitSuccessNoti: false });
+      this.setState({ OpenNoti: false });
     }
   }
-  //function closes upload success notification
-  CloseSubmitSuccessNoti() {
-    this.setState({ SubmitSuccessNoti: false });
-  }
+
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
+  };
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
+  };
 
   render() {
     return (
       <div>
         <div className="SnackbarClass">
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.SubmitSuccessNoti}
-            onClose={() => this.CloseSubmitSuccessNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={<span id="message-id">Property Added</span>}
+          <SnackBar
+            position="bottom"
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
           />
         </div>
 

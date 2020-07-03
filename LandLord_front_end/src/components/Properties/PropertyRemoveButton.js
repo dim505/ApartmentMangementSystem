@@ -1,23 +1,19 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import Axios from "axios";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogBox from "../shared/DialogBox";
 
 //contains button and action used to remove a property from database
 export default class PropertyRemoveButton extends Component {
-  state = { OpnWarningBox: false };
+  state = { OpnSaveWarningBox: false };
 
   //opens the property was successfully removed notification
   OpenPropertyRmvNoti = async (id) => {
-    this.CloseWarnBox();
+    this.CloseSaveWarnBox();
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes the API call to delete selected receipt
     await Axios.delete(
-      `https://amsbackend.azurewebsites.net/api/property/delete/${id}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/property/delete/${id}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -25,49 +21,34 @@ export default class PropertyRemoveButton extends Component {
     //refeshes main page again to get new list of receipts
     this.props.GetProperties();
     //opens "item removed" notification
-    this.props.OpenPropertyRmvNoti();
+    this.props.OpenPropertyRmvNoti("Property Removed");
   };
-  //this closes are save warning dialog box
-  CloseWarnBox = () => {
-    this.setState({ OpnWarningBox: false });
+  //closes warning box
+  OpenSaveWarnBox = () => {
+    this.setState({
+      OpnSaveWarningBox: true,
+    });
   };
 
-  //opens the save warning dialog box
-  OpenWarnBox = () => {
-    this.setState({ OpnWarningBox: true });
+  //opens warningbox
+  CloseSaveWarnBox = () => {
+    this.setState({
+      OpnSaveWarningBox: false,
+    });
   };
 
   render() {
     return (
       <div>
-        <Dialog
-          open={this.state.OpnWarningBox}
-          onClose={() => this.CloseWarnBox()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"!!! WARNING !!!"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to remove Property??
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.CloseWarnBox()} color="primary">
-              NO
-            </Button>
-            <Button
-              onClick={() => this.OpenPropertyRmvNoti(this.props.guid)}
-              color="primary"
-              autoFocus
-            >
-              YES
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <DialogBox
+          OpnSaveWarningBox={this.state.OpnSaveWarningBox}
+          CloseSaveWarnBox={this.CloseSaveWarnBox}
+          Save={() => this.OpenPropertyRmvNoti(this.props.guid)}
+          message="Are you sure you want to save?"
+        />
 
         <Button
-          onClick={() => this.OpenWarnBox()}
+          onClick={() => this.OpenSaveWarnBox()}
           variant="outlined"
           color="secondary"
         >

@@ -12,11 +12,12 @@ import Box from "@material-ui/core/Box";
 import Flip from "react-reveal/Flip";
 import { Link } from "react-router-dom";
 import TenantRemoveButton from "./TenantRemoveButton";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import TenantModal from "./TenantModal";
 import Axios from "axios";
 import EditIcon from "@material-ui/icons/Edit";
 import Tooltip from "@material-ui/core/Tooltip";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //parent component that houses the tenant page
 export default class Tenants extends Component {
@@ -26,9 +27,9 @@ export default class Tenants extends Component {
     TenantsFiltered: [],
     ShowTenantList: false,
     PropertyToShow: "",
-    OpenTenantRmvNoti: false,
     OpnModal: false,
-    OpenTenantSaveNoti: false,
+    OpenNoti: false,
+    Message: "",
     ShowTenantToEdit: [
       {
         name: "Bob Smith",
@@ -51,7 +52,7 @@ export default class Tenants extends Component {
   GetProperties = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
+      `${process.env.REACT_APP_BackEndUrl}/api/property`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -67,7 +68,7 @@ export default class Tenants extends Component {
     console.log("call Made");
     const BearerToken = await this.props.auth.getTokenSilently();
     var results;
-    results = Axios.get("https://amsbackend.azurewebsites.net/api/tenant", {
+    results = Axios.get(`${process.env.REACT_APP_BackEndUrl}/api/tenant`, {
       headers: { Authorization: `bearer ${BearerToken}` },
     }).then((results) =>
       this.setState({
@@ -75,16 +76,7 @@ export default class Tenants extends Component {
       })
     );
   };
-  //generates ID
-  uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
+
   //used to filter tenants to show only tenants for one property when the more information button is clicked
   ShowTenants = (id) => {
     console.log(id);
@@ -126,14 +118,22 @@ export default class Tenants extends Component {
       ShowTenantList: false,
     });
   };
-  //function opens  the tenant was removed notification
-  OpenTenantRmvNoti = () => {
-    this.setState({ OpenTenantRmvNoti: true, ShowTenantList: false });
+
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
-  //function opens  the tenant was removed notification
-  CloseTenantRmvNoti = () => {
-    this.setState({ OpenTenantRmvNoti: false });
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
+
   //function opens the update tenant modal
   OpnModal = (tenGuid) => {
     this.ShowTenantToEdit(tenGuid);
@@ -182,7 +182,7 @@ export default class Tenants extends Component {
 
                 <Grid item>
                   <TenantRemoveButton
-                    OpenTenantRmvNoti={this.OpenTenantRmvNoti}
+                    OpenTenantRmvNoti={this.OpenNoti}
                     CloseTenantRmvNoti={this.CloseTenantRmvNoti}
                     guid={Tenant.tenGuid}
                     GetProperties={this.GetProperties}
@@ -201,15 +201,11 @@ export default class Tenants extends Component {
 
     return (
       <div>
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.OpenTenantRmvNoti}
-          onClose={() => this.CloseTenantRmvNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={<span id="message-id">Tenant Has Been Removed </span>}
+        <SnackBar
+          position="bottom"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
         />
 
         <TenantModal

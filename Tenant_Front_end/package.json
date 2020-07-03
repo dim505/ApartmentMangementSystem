@@ -21,6 +21,7 @@
     "material-ui-phone-number": "^2.2.6",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
+    "react-chat-widget": "^3.0.5",
     "react-dom": "^16.13.1",
     "react-dots-loader": "^1.1.4",
     "react-konva": "^16.13.0-0",
@@ -31,6 +32,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-stripe-elements": "^6.1.2",
+    "twilio-chat": "^3.4.0",
     "yup": "^0.28.5"
   },
   "scripts": {

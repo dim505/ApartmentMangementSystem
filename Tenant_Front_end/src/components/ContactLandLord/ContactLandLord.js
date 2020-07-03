@@ -5,7 +5,7 @@ import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import Axios from "axios";
-import DialogBox from "../DialogBox";
+import DialogBox from "../Shared/DialogBox";
 
 //rules that enforced data validation
 const validationSchema = Yup.object({
@@ -40,7 +40,7 @@ class ContactLandLord extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Tenhome/ContactLandLord",
+      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/ContactLandLord`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

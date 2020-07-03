@@ -1,28 +1,30 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-import Snackbar from "@material-ui/core/Snackbar";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 import Axios from "axios";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //contains save button for modal
 export default class TenantModalSave extends Component {
-  state = { OpnSaveWarningBox: false, OpenTenantFieldsEmptyNoti: false };
-  //closes warning save YES/no box
-  CloseSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: false });
+  state = {
+    OpenNoti: false,
+    Message: "",
+    OpnSaveWarningBox: false,
   };
-  //FUNCTION TO CHECK IF FORM IS EMPTY
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
 
-  //opens warning save YES/no box
+  //closes warning box
   OpenSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: true });
+    this.setState({
+      OpnSaveWarningBox: true,
+    });
+  };
+
+  //opens warningbox
+  CloseSaveWarnBox = () => {
+    this.setState({
+      OpnSaveWarningBox: false,
+    });
   };
 
   //function handles the updating of a tenant
@@ -47,7 +49,7 @@ export default class TenantModalSave extends Component {
     console.log(Mydata);
     //makes API call
     var results = Axios.post(
-      "https://amsbackend.azurewebsites.net/api/tenant/UpdateTenant",
+      `${process.env.REACT_APP_BackEndUrl}/api/tenant/UpdateTenant`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -60,80 +62,54 @@ export default class TenantModalSave extends Component {
   //opens Tenant was saved notification and closes modal/warning box
   OpenTenantSaveNoti = (e) => {
     if (
-      !this.isEmpty(document.getElementById("name").value) &&
-      !this.isEmpty(document.getElementById("email").value) &&
-      !this.isEmpty(document.getElementById("phone").value.replace("+", "")) &&
-      !this.isEmpty(document.getElementById("leaseDue").value) &&
-      !this.isEmpty(document.getElementById("rentDue").value)
+      !isEmpty(document.getElementById("name").value) &&
+      !isEmpty(document.getElementById("email").value) &&
+      !isEmpty(document.getElementById("phone").value.replace("+", "")) &&
+      !isEmpty(document.getElementById("leaseDue").value) &&
+      !isEmpty(document.getElementById("rentDue").value)
     ) {
       this.CloseSaveWarnBox();
       this.props.CloseModal();
       this.update(e);
-      this.props.OpenTenantSaveNoti();
+      this.props.OpenTenantSaveNoti("Tenants Has Been Updated");
       this.props.CloseTenantList();
     } else {
       this.CloseSaveWarnBox();
-      this.OpenTenantFieldsEmptyNoti();
+      this.OpenNoti(
+        "*** COULD NOT UPDATE!!! *** Please Sure make all fields are not Empty before saving"
+      );
     }
   };
 
-  //opens notification alert
-  OpenTenantFieldsEmptyNoti() {
+  //function used to open notification alert
+  OpenNoti = (message) => {
     this.setState({
-      OpenTenantFieldsEmptyNoti: true,
+      OpenNoti: true,
+      Message: message,
     });
-  }
-  //opens notification alert
-  CloseTenantFieldsEmptyNoti() {
+  };
+
+  //function used to close notification alert
+  CloseNoti = () => {
     this.setState({
-      OpenTenantFieldsEmptyNoti: false,
+      OpenNoti: false,
     });
-  }
+  };
 
   render() {
     return (
       <div>
-        <Dialog
-          open={this.state.OpnSaveWarningBox}
-          onClose={() => this.CloseSaveWarnBox()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"!!! WARNING !!!"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to save edited Tenants??
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.CloseSaveWarnBox()} color="primary">
-              NO
-            </Button>
-            <Button
-              onClick={(e) => this.OpenTenantSaveNoti(e)}
-              color="primary"
-              autoFocus
-            >
-              YES
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <DialogBox
+          OpnSaveWarningBox={this.state.OpnSaveWarningBox}
+          CloseSaveWarnBox={this.CloseSaveWarnBox}
+          Save={(e) => this.OpenTenantSaveNoti(e)}
+          message="Are you sure you want to save edited Tenants??"
+        />
 
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.OpenTenantFieldsEmptyNoti}
-          onClose={() => this.CloseTenantFieldsEmptyNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={
-            <span id="message-id">
-              {" "}
-              *** COULD NOT UPDATE!!! *** Please Sure make all fields are not
-              Empty before saving{" "}
-            </span>
-          }
+        <SnackBar
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
         />
 
         <Button

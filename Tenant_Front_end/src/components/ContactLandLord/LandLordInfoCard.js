@@ -7,7 +7,7 @@ import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
-import SnackBar from "../SnackBar";
+import SnackBar from "../Shared/SnackBar";
 import ContactLandLordModal from "./ContactLandLordModal";
 import Fade from "react-reveal/Fade";
 

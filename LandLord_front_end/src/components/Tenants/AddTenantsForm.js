@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
 import Axios from "axios";
 import { AsYouType } from "libphonenumber-js";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //contains text fields needed to added tenants
 export default class AddTenantsForm extends Component {
@@ -36,7 +37,7 @@ export default class AddTenantsForm extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes api call
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
+      `${process.env.REACT_APP_BackEndUrl}/api/property`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -48,10 +49,6 @@ export default class AddTenantsForm extends Component {
     );
   };
 
-  //function  used to check for empty fields
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
   //updates state on which property was selected from dropdown / triggers parent component to update too
   handleChangeDropdown = (event) => {
     this.setState({ PropertyGuid: event.target.value }, () =>
@@ -93,7 +90,7 @@ export default class AddTenantsForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Name)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Name)
                   ? "ShowRed"
                   : " "
               }
@@ -114,7 +111,7 @@ export default class AddTenantsForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Email)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Email)
                   ? "ShowRed"
                   : " "
               }
@@ -135,7 +132,7 @@ export default class AddTenantsForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Phone)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Phone)
                   ? "ShowRed"
                   : " "
               }
@@ -163,7 +160,7 @@ export default class AddTenantsForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.RentDue)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.RentDue)
                   ? "ShowRed"
                   : " "
               }
@@ -185,7 +182,7 @@ export default class AddTenantsForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.LeaseDue)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.LeaseDue)
                   ? "ShowRed"
                   : " "
               }

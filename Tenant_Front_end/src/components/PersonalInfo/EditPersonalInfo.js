@@ -5,8 +5,8 @@ import { EditPersonalInfoForm } from "./EditPersonalInfoForm";
 import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../Shared/SnackBar";
+import DialogBox from "../Shared/DialogBox";
 import BackspaceIcon from "@material-ui/icons/Backspace";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
@@ -60,7 +60,7 @@ class EditPersonalInfo extends Component {
     //checks to see if an image was uploaded then makes api call to upload image
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/Tenhome/AddTenantImage/${window.values.Email}`;
+      const AddImageUrl = `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -76,7 +76,7 @@ class EditPersonalInfo extends Component {
 
     //makes api call
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Tenhome/UpdateTenantInfo",
+      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/UpdateTenantInfo`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

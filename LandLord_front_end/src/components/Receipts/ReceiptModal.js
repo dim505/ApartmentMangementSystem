@@ -57,7 +57,7 @@ export default class ReceiptModal extends Component {
 
     //makes API call to update text portion of the reciept
     var AddRecResults = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/receipt/UpdateReceipt",
+      `${process.env.REACT_APP_BackEndUrl}/api/receipt/UpdateReceipt`,
 
       Mydata,
 
@@ -71,8 +71,8 @@ export default class ReceiptModal extends Component {
 
     //check to see if new file has been uploaded
     if (this.state.file !== null) {
-      //makes API call to update the imagehttps://amsbackend.azurewebsites.net
-      const url = `https://amsbackend.azurewebsites.net/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
+      //makes API call to update the image${process.env.REACT_APP_BackEndUrl}
+      const url = `${process.env.REACT_APP_BackEndUrl}/api/receipt/UpdateImage/${this.props.ReceiptFilterd[0].imageGuid}`;
 
       const formData = new FormData();
       formData.append("body", this.state.file);
@@ -137,7 +137,12 @@ export default class ReceiptModal extends Component {
                           type="number"
                           id="tax"
                           defaultValue={Receipt.tax}
-                          InputProps={{ inputProps: { min: 0 } }}
+                          onChange={(event) => {
+                            document.getElementById("tax").value = Math.abs(
+                              event.target.value
+                            );
+                          }}
+                          InputProps={{ inputProps: { min: 1 } }}
                         />
                       </TableCell>
                       <TableCell align="right">
@@ -146,7 +151,12 @@ export default class ReceiptModal extends Component {
                           type="number"
                           id="totalAmount"
                           defaultValue={Receipt.totalAmount}
-                          InputProps={{ inputProps: { min: 0 } }}
+                          onChange={(event) => {
+                            document.getElementById(
+                              "totalAmount"
+                            ).value = Math.abs(event.target.value);
+                          }}
+                          InputProps={{ inputProps: { min: 1 } }}
                         />
                       </TableCell>
                       <TableCell align="right">

@@ -6,49 +6,45 @@ import { injectStripe } from "react-stripe-elements";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Fade from "@material-ui/core/Fade";
 import NumberFormat from "react-number-format";
-
+import { uuidv4, isEmpty } from "../Shared/SharedFunctions";
 import Tooltip from "@material-ui/core/Tooltip";
 
-//this compoent contains the actual textfields needed to compete the rent payment 
+//this compoent contains the actual textfields needed to compete the rent payment
 class PaymentPortalForm extends Component {
-  state = { Name: "", AmtDue: 0, Email: "" };
+  state = { Name: "", AmtDue: 1, Email: "" };
 
-//reset values to default
+  //reset values to default
   componentWillUnmount() {
     window.SubmitButtonClicked = false;
   }
 
-//checks if field is empty 
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
-   //updates state as user types 
+  //updates state as user types
   handleChange = async (NewState) => {
     await this.setState(NewState);
     Window.PaymentPortalFormState = this.state;
   };
-  
-   //handles the submitting of data
+
+  //handles the submitting of data
   handleSubmit = async (e) => {
     e.preventDefault();
-	//checks that submit was clicked at least once 
+    //checks that submit was clicked at least once
     window.SubmitButtonClicked = true;
-//get token representing the customer creditcard 
+    //get token representing the customer creditcard
     let { token } = await this.props.stripe.createToken({
       name: this.state.Name,
     });
-	//checks if all the fields have a value 
+    //checks if all the fields have a value
     if (
-      !this.isEmpty(this.state.Name) &&
-      !this.isEmpty(this.state.AmtDue) &&
-      !this.isEmpty(this.state.Email) &&
-      !this.isEmpty(token)
+      !isEmpty(this.state.Name) &&
+      !isEmpty(this.state.AmtDue) &&
+      !isEmpty(this.state.Email) &&
+      !isEmpty(token)
     ) {
-		//opens warning dialog 
+      //opens warning dialog
       Window.PaymentPortalFormState.token = token.id;
       this.props.OpenSaveWarnBox();
     } else {
-		//opens warning notification 
+      //opens warning notification
       this.props.OpenNoti("Please fill out all forms in red");
     }
   };
@@ -62,11 +58,11 @@ class PaymentPortalForm extends Component {
           label="Name"
           value={this.state.Name || ""}
           helperText={
-            this.isEmpty(this.state.Name) && window.SubmitButtonClicked
+            isEmpty(this.state.Name) && window.SubmitButtonClicked
               ? "Enter Name"
               : ""
           }
-          error={window.SubmitButtonClicked && this.isEmpty(this.state.Name)}
+          error={window.SubmitButtonClicked && isEmpty(this.state.Name)}
           onChange={(event) => {
             this.handleChange({ Name: event.target.value });
           }}
@@ -79,11 +75,11 @@ class PaymentPortalForm extends Component {
           label="Email"
           value={this.state.Email || ""}
           helperText={
-            this.isEmpty(this.state.Email) && window.SubmitButtonClicked
+            isEmpty(this.state.Email) && window.SubmitButtonClicked
               ? "Enter Email"
               : ""
           }
-          error={window.SubmitButtonClicked && this.isEmpty(this.state.Email)}
+          error={window.SubmitButtonClicked && isEmpty(this.state.Email)}
           onChange={(event) => {
             this.handleChange({ Email: event.target.value });
           }}
@@ -98,14 +94,14 @@ class PaymentPortalForm extends Component {
           value={this.state.AmtDue}
           fullWidth
           helperText={
-            this.isEmpty(this.state.AmtDue) && window.SubmitButtonClicked
+            isEmpty(this.state.AmtDue) && window.SubmitButtonClicked
               ? "Enter Amount"
               : ""
           }
           InputProps={{
             inputProps: { min: 1, max: this.props.PaymentInfoCard[0].rentDue },
           }}
-          error={window.SubmitButtonClicked && this.isEmpty(this.state.AmtDue)}
+          error={window.SubmitButtonClicked && isEmpty(this.state.AmtDue)}
           onChange={(event) => {
             this.handleChange({ AmtDue: event.target.value });
           }}

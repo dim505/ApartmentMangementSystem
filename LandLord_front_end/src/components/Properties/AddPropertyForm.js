@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Form, Col, Row } from "react-bootstrap";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
-//contains the textfields for the add property form  
+//contains the textfields for the add property form
 export default class AddPropertyForm extends Component {
   state = {
     Street: "",
@@ -10,36 +11,28 @@ export default class AddPropertyForm extends Component {
     ZipCode: "",
     Unit: "",
     YearlyInsurance: "",
-    Tax: ""
+    Tax: "",
   };
 
-  //function to check for empty field 
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
-
   // as a user types into the text fields, it updates the state with each letter and triggers the parent components to update state too
-  handleChange = newState => {
+  handleChange = (newState) => {
     this.setState(newState, () => this.props.onChanged(this.state));
   };
 
-   //function clears all values from the forms 
+  //function clears all values from the forms
   ClearAddPropertyFormState() {
-   
-      this.setState({
-        Street: "",
-        City: "",
-        State: "",
-        ZipCode: "",
-        Unit: "",
-        YearlyInsurance: "",
-        Tax: ""
-      });
-    
+    this.setState({
+      Street: "",
+      City: "",
+      State: "",
+      ZipCode: "",
+      Unit: "",
+      YearlyInsurance: "",
+      Tax: "",
+    });
   }
 
   render() {
-    
     return (
       <div>
         <Form.Group as={Row}>
@@ -60,7 +53,7 @@ export default class AddPropertyForm extends Component {
                   ? this.props.SuggestedAddr.Street
                   : this.state.Street
               }
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ Street: event.target.value })
               }
               placeholder="Enter Street Here"
@@ -86,7 +79,7 @@ export default class AddPropertyForm extends Component {
                   ? this.props.SuggestedAddr.City
                   : this.state.City
               }
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ City: event.target.value })
               }
               placeholder="Enter City Here"
@@ -112,7 +105,7 @@ export default class AddPropertyForm extends Component {
                   ? this.props.SuggestedAddr.State
                   : this.state.State
               }
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ State: event.target.value })
               }
               placeholder="Enter State Here"
@@ -138,7 +131,7 @@ export default class AddPropertyForm extends Component {
                   ? this.props.SuggestedAddr.ZipCode
                   : this.state.ZipCode
               }
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ ZipCode: event.target.value })
               }
               placeholder="Enter Zipcode Here"
@@ -153,13 +146,13 @@ export default class AddPropertyForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Unit)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Unit)
                   ? "ShowRed"
                   : " "
               }
               type="text"
               value={this.state.Unit}
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ Unit: event.target.value })
               }
               placeholder="Enter Number of Units Here"
@@ -175,13 +168,13 @@ export default class AddPropertyForm extends Component {
             <Form.Control
               className={
                 this.props.UploadBtnCkcOnce &&
-                this.isEmpty(this.state.YearlyInsurance)
+                isEmpty(this.state.YearlyInsurance)
                   ? "ShowRed"
                   : " "
               }
               type="number"
               value={this.state.YearlyInsurance}
-              onChange={event =>
+              onChange={(event) =>
                 this.handleChange({ YearlyInsurance: event.target.value })
               }
               placeholder="Enter Yearly Insurance Here"
@@ -196,13 +189,15 @@ export default class AddPropertyForm extends Component {
           <Col sm="10">
             <Form.Control
               className={
-                this.props.UploadBtnCkcOnce && this.isEmpty(this.state.Tax)
+                this.props.UploadBtnCkcOnce && isEmpty(this.state.Tax)
                   ? "ShowRed"
                   : " "
               }
               type="number"
               value={this.state.Tax}
-              onChange={event => this.handleChange({ Tax: event.target.value })}
+              onChange={(event) =>
+                this.handleChange({ Tax: event.target.value })
+              }
               placeholder="Enter Property Tax Here"
             />
           </Col>
@@ -210,7 +205,4 @@ export default class AddPropertyForm extends Component {
       </div>
     );
   }
-
 }
-
-

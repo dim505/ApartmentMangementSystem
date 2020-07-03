@@ -6,8 +6,8 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import HomeIcon from "@material-ui/icons/Home";
-import SnackBar from "../SnackBar";
-import AnnonModal from "../AnnonModal";
+import SnackBar from "../Shared/SnackBar";
+import AnnonModal from "../Shared/AnnonModal";
 import PaymentPortalMainPage from "../PaymentHistory/PaymentPortalMainPage";
 import Axios from "axios";
 
@@ -50,36 +50,38 @@ export default class OutstandingBalanceInfoCard extends Component {
   };
 
   RenderPaymentInfo() {
-    if (this.props.PaymentInfoCard.length > 0) {
-      return (
-        <div>
-          <h1>
-            {" "}
-            <span className="GreenText">
-              ${this.props.PaymentInfoCard[0].rentDue.replace("-", "")}.00
-            </span>{" "}
-          </h1>
-          <p> Yay! You Have credit on your account!</p>
-        </div>
-      );
+    if (this.props.PaymentInfoCard.length !== 0) {
+      if (this.props.PaymentInfoCard[0].rentDue > 0) {
+        return (
+          <div>
+            <h1>
+              {" "}
+              <span className="RedText">
+                ${this.props.PaymentInfoCard[0].rentDue}.00
+              </span>{" "}
+            </h1>
+            <p> Due on {this.props.PaymentInfoCard[0].rentDueDate} </p>
+            <Button variant="outlined" onClick={this.OpnModal}>
+              {" "}
+              Pay Now
+            </Button>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <h1>
+              {" "}
+              <span className="GreenText">
+                ${this.props.PaymentInfoCard[0].rentDue.replace("-", "")}.00
+              </span>{" "}
+            </h1>
+            <p> Yay! You Have credit on your account!</p>
+          </div>
+        );
+      }
     } else if (this.props.PaymentInfoCard.length === 0) {
       return <p> No Rent Information found</p>;
-    } else {
-      return (
-        <div>
-          <h1>
-            {" "}
-            <span className="RedText">
-              ${this.props.PaymentInfoCard[0].rentDue}.00
-            </span>{" "}
-          </h1>
-          <p> Due on {this.props.PaymentInfoCard[0].rentDueDate} </p>
-          <Button variant="outlined" onClick={this.OpnModal}>
-            {" "}
-            Pay Now
-          </Button>
-        </div>
-      );
     }
   }
   render() {

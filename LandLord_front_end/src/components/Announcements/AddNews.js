@@ -5,8 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
@@ -45,7 +45,7 @@ class AddNews extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
+      `${process.env.REACT_APP_BackEndUrl}/api/property`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -99,7 +99,7 @@ class AddNews extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Announcements/AddNews",
+      `${process.env.REACT_APP_BackEndUrl}/api/Announcements/AddNews`,
       MyData,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -168,6 +168,7 @@ class AddNews extends Component {
             </Paper>
           </div>
           <SnackBar
+            position="bottom"
             OpenNoti={this.state.OpenNoti}
             CloseNoti={this.CloseNoti}
             message={this.state.Message}

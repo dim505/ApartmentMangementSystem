@@ -5,37 +5,22 @@ import Axios from "axios";
 import { post } from "axios";
 import WebIcon from "@material-ui/icons/Web";
 import { Form, Col, Row } from "react-bootstrap";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //contains upload file and submit receipt icon/action to upload receipt
 export default class UploadReceiptBtn extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ReceiptUploadedNoti: false,
+      OpenNoti: false,
+      Message: "",
       file: null,
       filepath: "",
       ProgessCircle: false,
-      ReceiptFileTooBigNoti: false,
     };
-  }
-
-  //generates a GUID
-  uuidv4() {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (
-      c
-    ) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  }
-
-  //function to check if something is empty
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
   }
 
   //handles the submitting of data
@@ -46,19 +31,19 @@ export default class UploadReceiptBtn extends Component {
 
     //checks if all the text fields are empty
     if (
-      !this.isEmpty(this.props.receipt.Date) &&
-      !this.isEmpty(this.props.receipt.Store) &&
-      !this.isEmpty(this.props.receipt.Tax) &&
-      !this.isEmpty(this.props.receipt.TotalAmount) &&
-      !this.isEmpty(this.state.filepath)
+      !isEmpty(this.props.receipt.Date) &&
+      !isEmpty(this.props.receipt.Store) &&
+      !isEmpty(this.props.receipt.Tax) &&
+      !isEmpty(this.props.receipt.TotalAmount) &&
+      !isEmpty(this.state.filepath)
     ) {
       this.setState({ ProgessCircle: true });
       //generates new GUID
-      var ImageGuid = this.uuidv4();
+      var ImageGuid = uuidv4();
       //gets Auth0 token
       const BearerToken = await this.props.auth.getTokenSilently();
       //defines URL
-      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/receipt/${ImageGuid}`;
+      const AddImageUrl = `${process.env.REACT_APP_BackEndUrl}/api/receipt/${ImageGuid}`;
       const formData = new FormData();
       formData.append("body", this.state.file);
       const config = {
@@ -80,13 +65,13 @@ export default class UploadReceiptBtn extends Component {
 
       //makes api call
       var AddRecResults = await Axios.post(
-        "https://amsbackend.azurewebsites.net/api/receipt/AddReceipt",
+        `${process.env.REACT_APP_BackEndUrl}/api/receipt/AddReceipt`,
         Mydata,
         {
           headers: { Authorization: `bearer ${BearerToken}` },
         }
       ).then(
-        (AddRecResults) => this.setState({ ReceiptUploadedNoti: true }),
+        (AddRecResults) => this.OpenNoti("Receipt Uploaded"),
         console.log(AddRecResults),
         this.props.ClearAddReceiptFormState()
       );
@@ -105,46 +90,34 @@ export default class UploadReceiptBtn extends Component {
       this.setState({ file: e.target.files[0], filepath: e.target.value });
     } else {
       //TURNS ON FILE TO BIG NOTIFICATION
-      this.setState({ ReceiptFileTooBigNoti: true });
+      this.OpenNoti("Please Upload an Image smaller than 1 MB");
     }
   }
-  //closes Receipt Uploaded successfully Notification
-  CloseReceiptUploadedNoti() {
-    this.setState({ ReceiptUploadedNoti: false });
-  }
 
-  CloseReceiptFileTooBigNoti() {
-    this.setState({ ReceiptFileTooBigNoti: false });
-  }
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
+  };
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
+  };
 
   render() {
     return (
       <div>
         <div className="SnackbarClass">
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.ReceiptUploadedNoti}
-            onClose={() => this.CloseReceiptUploadedNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={<span id="message-id">Receipt Uploaded</span>}
-          />
-
-          <Snackbar
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            key={{ vertical: "bottom", horizontal: "center" }}
-            open={this.state.ReceiptFileTooBigNoti}
-            onClose={() => this.CloseReceiptFileTooBigNoti()}
-            ContentProps={{
-              "aria-describedby": "message-id",
-            }}
-            message={
-              <span id="message-id">
-                Please Upload an Image smaller than 1 MB
-              </span>
-            }
+          <SnackBar
+            position="bottom"
+            OpenNoti={this.state.OpenNoti}
+            CloseNoti={this.CloseNoti}
+            message={this.state.Message}
           />
         </div>
         <form onSubmit={(e) => this.submit(e)}>
@@ -155,8 +128,7 @@ export default class UploadReceiptBtn extends Component {
             <Col sm="10">
               <Form.Control
                 className={
-                  this.props.UploadBtnCkcOnce &&
-                  this.isEmpty(this.state.filepath)
+                  this.props.UploadBtnCkcOnce && isEmpty(this.state.filepath)
                     ? "ShowRed"
                     : " "
                 }

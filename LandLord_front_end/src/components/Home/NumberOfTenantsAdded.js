@@ -1,4 +1,4 @@
-//https://github.com/fullstackreact/google-maps-react
+ 
 import React, { Component } from "react";
 import CanvasJSReact from "./GraphDepdency/canvasjs.react";
 import Axios from "axios";
@@ -24,7 +24,7 @@ export default class NumberOfTenantsAdded extends Component {
   GetData = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Home/NumOfTenEachMonth",
+      `${process.env.REACT_APP_BackEndUrl}/api/Home/NumOfTenEachMonth`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

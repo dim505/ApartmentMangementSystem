@@ -102,7 +102,7 @@ export default class MessageList extends Component {
 
     //makes api call to delete item
     let result = await Axios.post(
-      "https://webstorebackend.azurewebsites.net/api/cart/UpdateCart",
+     `${process.env.REACT_APP_BackEndUrl}/api/cart/UpdateCart`,
       Mydata
     )
       .then((result) => {})

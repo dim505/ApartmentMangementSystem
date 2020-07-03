@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import ReceiptMainTable from "./ReceiptMainTable";
 import ReceiptModal from "./ReceiptModal";
 import ReceiptViewOnlyModal from "./ReceiptViewOnlyModal";
@@ -16,8 +16,8 @@ export default class Receipt extends Component {
   state = {
     Receipts: [],
     ReceiptFilterd: [],
-    OpenItmRmvNoti: false,
-    OpenItemSavedNoti: false,
+    OpenNoti: false,
+    Message: "",
     OpnSaveWarningBox: false,
     OpnReceiptViewModal: false,
     ShowLoader: true,
@@ -32,12 +32,9 @@ export default class Receipt extends Component {
   //makes api call and sets state
   getReceipts = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
-    var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/receipt",
-      {
-        headers: { Authorization: `bearer ${BearerToken}` },
-      }
-    ).then((results) =>
+    var results = Axios.get(`${process.env.REACT_APP_BackEndUrl}/api/receipt`, {
+      headers: { Authorization: `bearer ${BearerToken}` },
+    }).then((results) =>
       this.setState({
         Receipts: results.data,
         ShowBody: true,
@@ -79,13 +76,19 @@ export default class Receipt extends Component {
     this.setState({ OpnReceiptViewModal: false });
   };
 
-  //this function opens the item has been removed notification
-  OpenItmRmvNoti = () => {
-    this.setState({ OpenItmRmvNoti: true });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
-  //this function closes the item has been removed notification
-  CloseItmRmvNoti = () => {
-    this.setState({ OpenItmRmvNoti: false });
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
 
   //this function closes the item has
@@ -99,13 +102,8 @@ export default class Receipt extends Component {
     //closes the "Do you want to save " dialog box and opens the "Item has been saved" notification
     this.setState({
       OpnSaveWarningBox: false,
-      OpenItemSavedNoti: true,
     });
-  };
-
-  //this function closes the "item has been updated notification"
-  CloseItemSavedSnkBar = () => {
-    this.setState({ OpenItemSavedNoti: false });
+    this.OpenNoti("Item Updated");
   };
 
   render() {
@@ -126,27 +124,11 @@ export default class Receipt extends Component {
           </Grid>
 
           <div className="SnackbarClass">
-            <Snackbar
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              key={{ vertical: "bottom", horizontal: "center" }}
-              open={this.state.OpenItemSavedNoti}
-              onClose={() => this.CloseItemSavedSnkBar()}
-              ContentProps={{
-                "aria-describedby": "message-id",
-              }}
-              message={<span id="message-id">Item Updated</span>}
-            />
-          </div>
-          <div className="SnackbarClass">
-            <Snackbar
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              key={{ vertical: "bottom", horizontal: "center" }}
-              open={this.state.OpenItmRmvNoti}
-              onClose={() => this.CloseItmRmvNoti()}
-              ContentProps={{
-                "aria-describedby": "message-id",
-              }}
-              message={<span id="message-id">Item Removed</span>}
+            <SnackBar
+              position="bottom"
+              OpenNoti={this.state.OpenNoti}
+              CloseNoti={this.CloseNoti}
+              message={this.state.Message}
             />
           </div>
         </Flip>
@@ -177,7 +159,7 @@ export default class Receipt extends Component {
                 OpenModal={this.OpenModal}
                 OpnReceiptViewModal={this.OpnReceiptViewModal}
                 Receipts={this.state.Receipts}
-                OpenItmRmvNoti={this.OpenItmRmvNoti}
+                OpenItmRmvNoti={this.OpenNoti}
                 getReceipts={this.getReceipts}
                 auth={this.props.auth}
               />

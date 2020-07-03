@@ -46,7 +46,7 @@ export default class Home_Dashboard extends Component {
   getReceipts = async () => {
     const BearerToken = await this.props.auth.getTokenSilently();
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Home/GetReceiptTotals",
+      `${process.env.REACT_APP_BackEndUrl}/api/Home/GetReceiptTotals`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -63,7 +63,7 @@ export default class Home_Dashboard extends Component {
 
     //makes api call  and sets state
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/property",
+      `${process.env.REACT_APP_BackEndUrl}/api/property`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

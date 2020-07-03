@@ -14,115 +14,94 @@ import NumericInput from "react-numeric-input";
 import ReceiptModalSave from "./ReceiptModalSave";
 import Fade from "@material-ui/core/Fade";
 import Button from "@material-ui/core/Button";
-import Tooltip from "../Tooltip";
+import Tooltip from "../shared/Tooltip";
 
-
-//this component contains the view only modal 
+//this component contains the view only modal
 export default class ReceiptViewOnlyModal extends Component {
-  state = { 
-     OpnModal: false, 
-     file: null,
-     filepath: null,
-     
-     
-    };
-
-
-
-
-
-    
-   
-  
+  state = {
+    OpnModal: false,
+    file: null,
+    filepath: null,
+  };
 
   render() {
     return (
-
-      
       <Modal
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         open={this.props.OpnReceiptViewModal}
         onClose={this.props.CloseReceiptViewModal}
       >
-
-<Fade in={this.props.OpnReceiptViewModal} timeout={500}>
-        <div className="ModalStyle">
-          <TableContainer component={Paper}>
-            <Table aria-label="spanning table">
-              <TableHead>
-                <TableRow>
-                  <Typography id="OrdSummTitle" variant="h4">
-                    View Receipt
-                  </Typography>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Date </TableCell>
-                  <TableCell>Store </TableCell>
-                  <TableCell>Tax </TableCell>
-                  <TableCell>Total Amount </TableCell>
-                  <TableCell>Image </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {this.props.ReceiptFilterd.map((Receipt => (
-                  <TableRow key={Receipt.id}>
-                    <TableCell align="right">
-                      <TextField
-                        
-                        id="date"
-                        type="date"
-                        value={Receipt.date}
-                        InputLabelProps={{
-                          shrink: true
-                        }}
-
-                      />
-                    </TableCell>
-                    <TableCell align="right">
-                     <TextField id="store"  type="text" value={Receipt.store} />
-                    </TableCell>
-                    <TableCell align="right">
-
-                    <TextField id="tax"  type="text"  value={Receipt.tax} />
-
-                    </TableCell>
-                    <TableCell align="right">
-
-                    <TextField id="tax"  type="text"  value={Receipt.totalAmount} />
-                    </TableCell>
-                    <TableCell align="right">
-                    
-
-                    <Tooltip
-                      placement="top"
-                      trigger="hover"
-                      tooltip="Please click image on Main table to view image"
-                    >
-                            <Button
-                              component="label"
-                              variant="contained"
-                              color="default"
-                              startIcon={<ImageIcon />}
-                            >
-
-                            </Button>
-                            </Tooltip>
-
-                        
-                    </TableCell>
-                    
+        <Fade in={this.props.OpnReceiptViewModal} timeout={500}>
+          <div className="ModalStyle">
+            <TableContainer component={Paper}>
+              <Table aria-label="spanning table">
+                <TableHead>
+                  <TableRow>
+                    <Typography id="OrdSummTitle" variant="h4">
+                      View Receipt
+                    </Typography>
                   </TableRow>
-                )))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
+                  <TableRow>
+                    <TableCell>Date </TableCell>
+                    <TableCell>Store </TableCell>
+                    <TableCell>Tax </TableCell>
+                    <TableCell>Total Amount </TableCell>
+                    <TableCell>Image </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {this.props.ReceiptFilterd.map((Receipt) => (
+                    <TableRow key={Receipt.id}>
+                      <TableCell align="right">
+                        <TextField
+                          id="date"
+                          type="date"
+                          value={Receipt.date}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField
+                          id="store"
+                          type="text"
+                          value={Receipt.store}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField id="tax" type="text" value={Receipt.tax} />
+                      </TableCell>
+                      <TableCell align="right">
+                        <TextField
+                          id="tax"
+                          type="text"
+                          value={Receipt.totalAmount}
+                        />
+                      </TableCell>
+                      <TableCell align="right">
+                        <Tooltip
+                          placement="top"
+                          trigger="hover"
+                          tooltip="Please click image on Main table to view image"
+                        >
+                          <Button
+                            component="label"
+                            variant="contained"
+                            color="default"
+                            startIcon={<ImageIcon />}
+                          ></Button>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </Fade>
       </Modal>
-      
     );
   }
 }
-
- 

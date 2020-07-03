@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Widget, addResponseMessage, addUserMessage } from "react-chat-widget";
 import Axios from "axios";
 import Chat from "twilio-chat";
-import SnackBar from "./SnackBar";
-import Image from "../Hotel.jpg";
+import SnackBar from "../Shared/SnackBar";
+import Image from "../Home/Hotel.jpg";
 
 export default class TenChat extends Component {
   constructor(props) {
@@ -12,7 +12,7 @@ export default class TenChat extends Component {
       Message: "",
       ChatMessages: [],
       OpenNoti: false,
-      QuickButtonClicked: true
+      QuickButtonClicked: true,
     };
   }
 
@@ -21,7 +21,7 @@ export default class TenChat extends Component {
     var Mydata = {};
     var GetToken = {
       device: "browser",
-      TenGuid: window.TenGuid
+      TenGuid: window.TenGuid,
     };
     Mydata.GetToken = GetToken;
     console.log(Mydata);
@@ -31,8 +31,8 @@ export default class TenChat extends Component {
       "https://webstorebackend.azurewebsites.net/api/cart/UpdateCart",
       Mydata
     )
-      .then(result => {})
-      .then(data => Chat.create(data.token))
+      .then((result) => {})
+      .then((data) => Chat.create(data.token))
       .then(this.setupChatClient)
       .catch(this.handleError);
   }
@@ -42,15 +42,15 @@ export default class TenChat extends Component {
     this.client = client;
     this.client
       .getChannelByUniqueName(channelName)
-      .then(channel => channel)
-      .catch(error => {
+      .then((channel) => channel)
+      .catch((error) => {
         if (error.body.code === 50300) {
           return this.client.createChannel({ uniqueName: channelName });
         } else {
           this.handleError(error);
         }
       })
-      .then(channel => {
+      .then((channel) => {
         this.channel = channel;
         return this.channel.join().catch(() => {});
       })
@@ -60,17 +60,17 @@ export default class TenChat extends Component {
       .catch(this.handleError);
   }
 
-  OpenNoti = message => {
+  OpenNoti = (message) => {
     debugger;
     this.setState({
       OpenNoti: true,
-      Message: message
+      Message: message,
     });
   };
 
   CloseNoti = () => {
     this.setState({
-      OpenNoti: false
+      OpenNoti: false,
     });
   };
 
@@ -78,13 +78,13 @@ export default class TenChat extends Component {
     this.OpenNoti("Chat failed to Load :C");
   };
 
-  handleNewUserMessage = messageText => {
+  handleNewUserMessage = (messageText) => {
     console.log(messageText);
     var UserMessage = {};
     UserMessage.TenGuid = window.TenGuid;
     UserMessage.message = messageText;
-    this.setState(prevState => ({
-      ChatMessages: [...prevState.ChatMessages, UserMessage]
+    this.setState((prevState) => ({
+      ChatMessages: [...prevState.ChatMessages, UserMessage],
     }));
     console.log(this.state.ChatMessages);
 

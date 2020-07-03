@@ -183,3 +183,30 @@ input:focus,
 .DisabledTextfield {
   color: #707070 !important;
 }
+
+.rcw-launcher {
+  background-color: grey !important;
+}
+
+.rcw-conversation-container .rcw-header {
+  background-color: grey !important;
+}
+
+.rcw-conversation-container .rcw-close-button {
+  background-color: grey !important;
+}
+
+@media only screen and (max-width: 800px) {
+  .widget .rcw-widget-container {
+    height: 10vh;
+    width: 5%;
+  }
+}
+
+@media only screen and (min-width: 801px) {
+  .widget .rcw-widget-container {
+    max-width: "370px";
+    height: "";
+    width: "90vw";
+  }
+}

@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
 import MenuItem from "@material-ui/core/MenuItem";
 
-import DialogBox from "../DialogBox";
+import DialogBox from "../Shared/DialogBox";
 import Axios from "axios";
 import { Elements } from "react-stripe-elements";
 
@@ -42,7 +42,7 @@ class PaymentPortal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
     //makes API call
     var results = Axios.post(
-      "https://amsbackend.azurewebsites.net/api/Payment/ChargeRents",
+      `${process.env.REACT_APP_BackEndUrl}/api/Payment/ChargeRents`,
       MyData,
       {
         headers: { Authorization: `bearer ${BearerToken}` },

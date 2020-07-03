@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Typography from "@material-ui/core/Typography";
 import ErrorCode from "./ErrorCode.png";
-import Tooltip from "../Tooltip";
+import Tooltip from "../Shared/Tooltip";
 import LiveHelpOutlinedIcon from "@material-ui/icons/LiveHelpOutlined";
 import Button from "@material-ui/core/Button";
 import Image from "react-bootstrap/Image";

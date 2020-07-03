@@ -46,7 +46,7 @@ export default class QuickFacts extends Component {
 
     //makes api call
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/YearlyPropExp",
+      `${process.env.REACT_APP_BackEndUrl}/api/home/YearlyPropExp`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -69,7 +69,7 @@ export default class QuickFacts extends Component {
 
     //makes api call
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/NumberOFTenants",
+      `${process.env.REACT_APP_BackEndUrl}/api/home/NumberOFTenants`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
@@ -92,7 +92,7 @@ export default class QuickFacts extends Component {
 
     //makes api call
     var results = Axios.get(
-      "https://amsbackend.azurewebsites.net/api/home/PropertyStats",
+      `${process.env.REACT_APP_BackEndUrl}/api/home/PropertyStats`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

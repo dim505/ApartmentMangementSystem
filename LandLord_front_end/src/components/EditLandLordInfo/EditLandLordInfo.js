@@ -5,8 +5,8 @@ import { EditLandLordInfoForm } from "./EditLandLordInfoForm";
 import Paper from "@material-ui/core/Paper";
 import * as Yup from "yup";
 import Typography from "@material-ui/core/Typography";
-import SnackBar from "../SnackBar";
-import DialogBox from "../DialogBox";
+import SnackBar from "../shared/SnackBar";
+import DialogBox from "../shared/DialogBox";
 import Axios from "axios";
 import { post } from "axios";
 import { Link } from "react-router-dom";
@@ -58,7 +58,7 @@ class EditLandLordInfo extends Component {
     //makes api call to update image if an image has been uploaded
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
       console.log(window.values);
-      const AddImageUrl = `https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLord_Image`;
+      const AddImageUrl = `${process.env.REACT_APP_BackEndUrl}/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
       const config = {
@@ -78,12 +78,12 @@ class EditLandLordInfo extends Component {
 
     //makes API call to update text portion of account details
     var Results = await Axios.post(
-      "https://amsbackend.azurewebsites.net/api/AccountDetails/Add_Update_LandLordInfo",
+      `${process.env.REACT_APP_BackEndUrl}/api/AccountDetails/Add_Update_LandLordInfo`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
-    ).then(this.OpenNoti(), this.SetMessage("Update was sucessful"));
+    ).then(this.OpenNoti("Update was sucessful"));
   };
 
   //function used to open warning box
@@ -99,18 +99,14 @@ class EditLandLordInfo extends Component {
     });
   };
   //function used to open notification alert
-  OpenNoti = () => {
+  OpenNoti = (message) => {
     this.setState({
       OpenNoti: true,
-    });
-  };
-  //this sets message for notification alert
-  SetMessage = (message) => {
-    this.props.GetData();
-    this.setState({
       Message: message,
     });
+    setTimeout(() => this.props.GetData(), 500);
   };
+
   //function used to close notification alert
   CloseNoti = () => {
     this.setState({
@@ -119,11 +115,20 @@ class EditLandLordInfo extends Component {
   };
 
   render() {
+    var IsAcctDetEmpty;
+    this.props.AccountDetails.length > 0
+      ? (IsAcctDetEmpty = false)
+      : (IsAcctDetEmpty = true);
     const values = {
-      Name: this.props.AccountDetails[0].name,
-      Email: this.props.AccountDetails[0].email,
-      PhoneNumber: this.props.AccountDetails[0].phoneNumber,
-      file: this.props.ProfilePictures[0].filename,
+      Name: IsAcctDetEmpty ? "" : this.props.AccountDetails[0].name,
+      Email: IsAcctDetEmpty ? "" : this.props.AccountDetails[0].email,
+      PhoneNumber: IsAcctDetEmpty
+        ? ""
+        : this.props.AccountDetails[0].phoneNumber,
+      file:
+        this.props.ProfilePictures.length <= 0
+          ? ""
+          : this.props.ProfilePictures[0].filename,
     };
     return (
       <Fade top>
@@ -155,6 +160,7 @@ class EditLandLordInfo extends Component {
             />
           </Paper>
           <SnackBar
+            position="bottom"
             OpenNoti={this.state.OpenNoti}
             CloseNoti={this.CloseNoti}
             message={this.state.Message}

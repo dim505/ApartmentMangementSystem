@@ -38,7 +38,7 @@ export default class NewsCard extends Component {
     window.NewsApiCallMade = true;
     //makes api call  and sets state
     var results = Axios.get(
-      `https://amsbackend.azurewebsites.net/api/TenHome/GetNews/${this.props.results[0].email}`,
+      `${process.env.REACT_APP_BackEndUrl}/api/TenHome/GetNews/${this.props.results[0].email}`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }

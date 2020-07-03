@@ -1,104 +1,74 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Snackbar from "@material-ui/core/Snackbar";
-
-//this function contains the receipt modal save button and warning dialog box 
+import DialogBox from "../shared/DialogBox";
+import SnackBar from "../shared/SnackBar";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
+//this function contains the receipt modal save button and warning dialog box
 export default class ReceiptModalSave extends Component {
-  state = { OpnSaveWarningBox: false,
-    OpenReceiptFieldsEmptyNoti: false };
+  state = { OpnSaveWarningBox: false, OpenNoti: false, Message: "" };
 
-	//this function closes the save warning box
-  CloseSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: false });
-  };
-	//this function opens the save warning box 
+  //function used to open warning box
   OpenSaveWarnBox = () => {
-    this.setState({ OpnSaveWarningBox: true });
+    this.setState({
+      OpnSaveWarningBox: true,
+    });
+  };
+  //function used to close warning box
+  CloseSaveWarnBox = () => {
+    this.setState({
+      OpnSaveWarningBox: false,
+    });
   };
 
-  //this function closes the save warning box
-  OpenReceiptFieldsEmptyNoti = () => {
-    this.setState({ OpenReceiptFieldsEmptyNoti: true });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
-  //this function opens the save warning box 
-  CloseReceiptFieldsEmptyNoti = () => {
-    this.setState({ OpenReceiptFieldsEmptyNoti: false });
+
+  //function used to close notification alert
+  CloseNoti = () => {
+    this.setState({
+      OpenNoti: false,
+    });
   };
 
-
-  isEmpty(str) {
-    return (!str || /^\s*$/.test(str));
-  }
-
-	//this function invokes another function to trigger the action of updating of data to server 
+  //this function invokes another function to trigger the action of updating of data to server
   Save = (e) => {
-
-
-   if (
-    !this.isEmpty(document.getElementById("store").value) &&
-
-   !this.isEmpty(document.getElementById("date").value) &&
-   !this.isEmpty(document.getElementById("tax").value) &&
-   !this.isEmpty(document.getElementById("totalAmount").value)
-   ) {
-    this.props.Update(e);
-
-   } else {
-    this.CloseSaveWarnBox()
-    this.OpenReceiptFieldsEmptyNoti()
-
-
-
-   }
-
-
-    
-  }
+    if (
+      !isEmpty(document.getElementById("store").value) &&
+      !isEmpty(document.getElementById("date").value) &&
+      !isEmpty(document.getElementById("tax").value) &&
+      !isEmpty(document.getElementById("totalAmount").value)
+    ) {
+      this.props.Update(e);
+    } else {
+      this.CloseSaveWarnBox();
+      this.OpenNoti(
+        "*** COULD NOT UPDATE!!! ***  Please Sure make all fields are not Empty before saving"
+      );
+    }
+  };
 
   render() {
     return (
       <div>
-        <Dialog
-          open={this.state.OpnSaveWarningBox}
-          onClose={() => this.CloseSaveWarnBox()}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">{"!!! WARNING !!!"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Are you sure you want to save edited Receipt??
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => this.CloseSaveWarnBox()} color="primary">
-              NO
-            </Button>
-            <Button
-              onClick={(e) => this.Save(e)}
-              color="primary"
-              autoFocus
-            >
-              YES
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-          key={{ vertical: "bottom", horizontal: "center" }}
-          open={this.state.OpenReceiptFieldsEmptyNoti}
-          onClose={() => this.CloseReceiptFieldsEmptyNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id"
-          }}
-          message={<span id="message-id">*** COULD NOT UPDATE!!! ***  Please Sure make all fields are not Empty before saving </span>}
+        <DialogBox
+          OpnSaveWarningBox={this.state.OpnSaveWarningBox}
+          CloseSaveWarnBox={this.CloseSaveWarnBox}
+          Save={this.Save}
+          message="Are you sure you want to save edited Receipt??"
         />
+
+        <SnackBar
+          position="bottom"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
+        />
+
         <Button
           onClick={() => this.OpenSaveWarnBox()}
           variant="outlined"

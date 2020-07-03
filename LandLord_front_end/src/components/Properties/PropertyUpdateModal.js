@@ -12,22 +12,22 @@ import TextField from "@material-ui/core/TextField";
 import TenantModalSave from "./TenantModalSave";
 import Fade from "@material-ui/core/Fade";
 import Axios from "axios";
-import Snackbar from "@material-ui/core/Snackbar";
+import SnackBar from "../shared/SnackBar";
 import PropertySuggaddrUpdateModal from "./PropertySuggaddrUpdateModal";
+import { uuidv4, isEmpty } from "../shared/SharedFunctions";
 
 //contains modal used to update a single property
 export default class PropertyUpdateModal extends Component {
   state = {
     OpnModal: false,
-    OpenPropertySavedNoti: false,
+    OpenNoti: false,
+    Message: "",
     SuggAddrChecked: false,
     SuggestedAddresses: "",
     Street: "",
     City: "",
     State: "",
     ZipCode: "",
-    CheckSuggAddrNoti: false,
-    PropertyFieldEmptyNoti: false,
   };
 
   //tracks whether a checkbox is activly being checked
@@ -100,7 +100,7 @@ export default class PropertyUpdateModal extends Component {
     const BearerToken = await this.props.auth.getTokenSilently();
 
     var result = await Axios.get(
-      "https://amsbackend.azurewebsites.net/api/Property/GetSuggestedPropertiesAddress",
+      `${process.env.REACT_APP_BackEndUrl}/api/Property/GetSuggestedPropertiesAddress`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
         params: {
@@ -114,17 +114,12 @@ export default class PropertyUpdateModal extends Component {
     });
   };
 
-  //FUNCTION TO CHECK IF FORM IS EMPTY
-  isEmpty(str) {
-    return !str || /^\s*$/.test(str);
-  }
-
   //function function handles the calling of the Update API to update the receipt
   Update = async (e) => {
     if (
-      !this.isEmpty(document.getElementById("unit").value) &&
-      !this.isEmpty(document.getElementById("yearlyInsurance").value) &&
-      !this.isEmpty(document.getElementById("tax").value)
+      !isEmpty(document.getElementById("unit").value) &&
+      !isEmpty(document.getElementById("yearlyInsurance").value) &&
+      !isEmpty(document.getElementById("tax").value)
     ) {
       if (
         (this.props.PropertiesFiltered[0].street === this.state.Street &&
@@ -147,7 +142,7 @@ export default class PropertyUpdateModal extends Component {
           document.getElementById("zipcode").value;
         //makes api call to get all properties
         var results = await Axios.get(
-          "https://amsbackend.azurewebsites.net/api/property/GetSuggestedPropertiesLatLng",
+          `${process.env.REACT_APP_BackEndUrl}/api/property/GetSuggestedPropertiesLatLng`,
           {
             headers: { Authorization: `bearer ${BearerToken}` },
             params: {
@@ -177,7 +172,7 @@ export default class PropertyUpdateModal extends Component {
 
         //makes API call to update text portion of the reciept
         var Results = await Axios.post(
-          "https://amsbackend.azurewebsites.net/api/property/UpdateProperty",
+          `${process.env.REACT_APP_BackEndUrl}/api/property/UpdateProperty`,
           Mydata,
           {
             headers: { Authorization: `bearer ${BearerToken}` },
@@ -185,7 +180,8 @@ export default class PropertyUpdateModal extends Component {
         ).then(
           (Results) => this.props.CloseModal(),
           this.setState({
-            OpenPropertySavedNoti: true,
+            OpenNoti: true,
+            Message: "Property Updated",
             SuggAddrChecked: false,
           }),
           console.log(Results),
@@ -193,83 +189,41 @@ export default class PropertyUpdateModal extends Component {
         );
       } else {
         this.props.CloseModal();
-        this.setState({
-          CheckSuggAddrNoti: true,
-        });
+        this.OpenNoti(
+          "*** COULD NOT UPDATE!!! *** Please Check off a Suggested Property if you change the address"
+        );
       }
     } else {
       this.props.CloseModal();
-      this.setState({ PropertyFieldEmptyNoti: true });
+      this.OpenNoti(
+        "*** COULD NOT UPDATE!!! *** Please leave no field empty before saving"
+      );
     }
   };
 
-  //opens property saved notification
-  OpenPropertySavedNoti = () => {
-    this.setState({ OpenPropertySavedNoti: true });
-  };
-  //closes property saved notification
-  ClosePropertySavedNoti = () => {
-    this.setState({ OpenPropertySavedNoti: false });
+  //function used to open notification alert
+  OpenNoti = (message) => {
+    this.setState({
+      OpenNoti: true,
+      Message: message,
+    });
   };
 
-  //closes the "Please Check off a Suggested Address " notification
-  CloseCheckSuggAddrNoti() {
+  //function used to close notification alert
+  CloseNoti = () => {
     this.setState({
-      CheckSuggAddrNoti: false,
+      OpenNoti: false,
     });
-  }
-
-  //closes the "Please Check off a Suggested Address " notification
-  ClosePropertyFieldEmptyNoti() {
-    this.setState({
-      PropertyFieldEmptyNoti: false,
-    });
-  }
+  };
 
   render() {
     return (
       <div>
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          key={{ vertical: "top", horizontal: "center" }}
-          open={this.state.OpenPropertySavedNoti}
-          onClose={() => this.ClosePropertySavedNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={<span id="message-id">Property Updated</span>}
-        />
-
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          key={{ vertical: "top", horizontal: "center" }}
-          open={this.state.CheckSuggAddrNoti}
-          onClose={() => this.CloseCheckSuggAddrNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={
-            <span id="message-id">
-              *** COULD NOT UPDATE!!! *** Please Check off a Suggested Property
-              if you change the address
-            </span>
-          }
-        />
-
-        <Snackbar
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          key={{ vertical: "top", horizontal: "center" }}
-          open={this.state.PropertyFieldEmptyNoti}
-          onClose={() => this.ClosePropertyFieldEmptyNoti()}
-          ContentProps={{
-            "aria-describedby": "message-id",
-          }}
-          message={
-            <span id="message-id">
-              *** COULD NOT UPDATE!!! *** Please leave no field empty before
-              saving
-            </span>
-          }
+        <SnackBar
+          position="top"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
         />
 
         <Modal
