@@ -40,9 +40,6 @@ class App extends Component {
 
   //sets title, get data, check if visiting user is authenticated
   componentDidMount() {
-    console.log(process.env.REACT_APP_FrontEndSiteURL);
-    console.log(process.env.REACT_APP_BackEndUrl);
-
     document.title = "AMS";
     this.isUserAuthenticated();
     this.GetData();
@@ -195,7 +192,7 @@ class App extends Component {
                   GetPaymentInfo={this.GetPaymentInfo}
                 />
               </Route>
-              <TenChat />
+              <TenChat results={this.state.results} />
             </Fade>
           </div>
         ) : (

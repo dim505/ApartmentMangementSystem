@@ -17,32 +17,54 @@ export default class TenChat extends Component {
   }
 
   async componentDidMount() {
+    // Detect all clicks on the document
+    document.addEventListener(
+      "click",
+      function (event) {
+        // If the click happened inside the modal, do nothing
+        if (event.target.closest(".rcw-close-button")) return;
+        window.ClickOpen = false;
+      },
+      false
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.results.length > 0 && window.ApiCallAlreadyMade !== true) {
+      this.GetChatData();
+    }
+  }
+
+  async GetChatData() {
+    window.ApiCallAlreadyMade = true;
     window.ClickOpen = false;
     var Mydata = {};
     var GetToken = {
       device: "browser",
-      TenGuid: window.TenGuid,
+      TenGuid: this.props.results[0].tenGuid,
     };
     Mydata.GetToken = GetToken;
-    console.log(Mydata);
 
     //makes api call to delete item
     let result = await Axios.post(
-      "https://webstorebackend.azurewebsites.net/api/cart/UpdateCart",
+      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata
     )
-      .then((result) => {})
-      .then((data) => Chat.create(data.token))
-      .then(this.setupChatClient)
-      .catch(this.handleError);
+      .then(async (result) => this.setupChatClient(result))
+      .catch(/*this.handleError */);
   }
+  async setupChatClient(result) {
+    var client = await Chat.create(result.data);
 
-  setupChatClient(client) {
-    var channelName = window.TenGuid + "-" + window.LandLordGuid;
+    var channelName =
+      this.props.results[0].tenGuid +
+      "-" +
+      this.props.results[0].landLordAuth0ID;
     this.client = client;
     this.client
       .getChannelByUniqueName(channelName)
-      .then((channel) => channel)
+      .then((channel) => (this.channel = channel))
+
       .catch((error) => {
         if (error.body.code === 50300) {
           return this.client.createChannel({ uniqueName: channelName });
@@ -51,11 +73,14 @@ export default class TenChat extends Component {
         }
       })
       .then((channel) => {
-        this.channel = channel;
+        this.channel
+          .getMessages()
+          .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
       .then(() => {
-        // Success!
+        //;
+        console.log("Success");
       })
       .catch(this.handleError);
   }
@@ -78,24 +103,26 @@ export default class TenChat extends Component {
     this.OpenNoti("Chat failed to Load :C");
   };
 
+  LoadMessages = (messages) => {};
+
   handleNewUserMessage = (messageText) => {
-    console.log(messageText);
     var UserMessage = {};
     UserMessage.TenGuid = window.TenGuid;
     UserMessage.message = messageText;
+
+    this.channel.sendMessage(messageText);
     this.setState((prevState) => ({
       ChatMessages: [...prevState.ChatMessages, UserMessage],
     }));
-    console.log(this.state.ChatMessages);
 
     // addResponseMessage(message);
   };
 
-  handleClick = async () => {
+  handleClick = async (e) => {
     debugger;
 
     console.log(window.ClickOpen);
-    window.ClickOpen = !window.ClickOpen;
+    window.ClickOpen = true;
     var WidgetDiv = document.getElementsByClassName("rcw-widget-container")[0];
     if (
       document.getElementById("root").offsetWidth < 800 &&

@@ -36,8 +36,6 @@ class EditPersonalInfo extends Component {
 
   //function that handles intial click of submit button
   submitValues = (values, { resetForm }) => {
-    //gets values from form
-    console.log(window.LandLordPicture);
     window.values = values;
     //gets function to reset form
     window.resetForm = resetForm;
@@ -59,7 +57,6 @@ class EditPersonalInfo extends Component {
 
     //checks to see if an image was uploaded then makes api call to upload image
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
-      console.log(window.values);
       const AddImageUrl = `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/AddTenantImage/${window.values.Email}`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
@@ -71,7 +68,6 @@ class EditPersonalInfo extends Component {
       };
       //makes API call to update image
       var results = await post(AddImageUrl, formData, config);
-      console.log(results);
     }
 
     //makes api call

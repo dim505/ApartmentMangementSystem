@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using AMSBackEnd.Model;
 using AMSBackEnd.Model.TenantFrontEnd;
 using Dapper;
 using Microsoft.AspNetCore.Http;
@@ -32,11 +33,11 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
     {
 
 
-       // private readonly ITokenGenerator _tokenGenerator;
+        private readonly ITokenGenerator _tokenGenerator;
         private readonly IConfiguration _config;
-        public TenHomeController(IConfiguration config /*, ITokenGenerator tokenGenerator*/) {
+        public TenHomeController(IConfiguration config, ITokenGenerator tokenGenerator) {
             _config = config;
-            //_tokenGenerator = tokenGenerator;
+            _tokenGenerator = tokenGenerator;
 
         }
 
@@ -89,7 +90,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 			//Nows since it got the Tenants email it will get the information for the home page such as address,landlord info, and tenant info
             using (IDbConnection db = new SqlConnection(connStr))
             {
-                HomePageInfo = db.Query<TenantHomePage>("select ten.tenGuid, ten.Name,ten.Phone, ten.Email, LandAcctDeet.Name as LandLordName," +
+                HomePageInfo = db.Query<TenantHomePage>("select ten.tenGuid, ten.Name,ten.Phone, ten.Email, LandAcctDeet.Auth0ID as LandLordAuth0ID, LandAcctDeet.Name as LandLordName," +
                     " LandAcctDeet.Email as LandLordEmail, LandAcctDeet.PhoneNumber as LandLordPhoneNumber, prop.Street, prop.State, " +
                     "prop.City, prop.ZipCode from tenants ten inner join Properties prop on ten.guid = prop.Guid inner join LandLordAccountDetails " +
                     "LandAcctDeet on prop.Auth0ID = LandAcctDeet.Auth0ID where ten.Email = @email",
@@ -295,7 +296,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
-        /*
+        
         [HttpPost]
         [Route("[action]")]
         public IActionResult GetToken([FromBody] JObject data)
@@ -307,12 +308,12 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
             }
             var token = _tokenGenerator.Generate(getToken.TenGuid, getToken.device);
-            return Ok(token);
+                return Ok(token);
 
         }
 
 
-        */
+        
 
     }
 }

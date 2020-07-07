@@ -127,7 +127,6 @@ export const EditPersonalInfoForm = (props) => {
                   event.currentTarget.files.length > 0 &&
                   event.currentTarget.files[0] !== "undefined"
                 ) {
-                  console.log(props);
                   props.SetMessage(
                     "Please Upload a thumbnail file under 512 kb"
                   );

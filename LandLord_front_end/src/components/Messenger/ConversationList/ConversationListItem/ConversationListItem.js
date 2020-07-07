@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./ConversationListItem.css";
 
 export default class ConversationListItem extends Component {
-  HandleConversationClick = name => {
+  HandleConversationClick = (name) => {
     this.props.HandleConversationClick(name);
   };
 
@@ -21,10 +21,7 @@ export default class ConversationListItem extends Component {
           alt="conversation"
         />
         <div className="conversation-info">
-          <h1 className="conversation-title">{this.props.data.name}</h1>
-          <p className="conversation-snippet">
-            {this.props.data.text.substring(0, 45)}.....
-          </p>
+          <h5 className="conversation-title">{this.props.data.name}</h5>
         </div>
       </div>
     );

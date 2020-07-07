@@ -12,6 +12,8 @@ namespace AMSBackEnd.Model.TenantFrontEnd
         public string Phone { get; set; }
         public string Email { get; set; }
 
+        public string LandLordAuth0ID { get; set; }
+
         public string LandLordName { get; set; }
         public string LandLordEmail { get; set; }
         public string LandLordPhoneNumber { get; set; }
