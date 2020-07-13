@@ -19,19 +19,18 @@ export default class Messenger extends React.Component {
 
   render() {
     return (
-      <Fade top>
-        <div className="messenger">
-          <div className="scrollable sidebar">
-            <ConversationList
-              HandleConversationClick={this.HandleConversationClick}
-            />
-          </div>
-
-          <div className="scrollable content">
-            <MessageList ConvoSelected={this.state.ConvoSelected} />
-          </div>
+      <div className="messenger">
+        <div className="scrollable sidebar">
+          <ConversationList
+            auth={this.props.auth}
+            HandleConversationClick={this.HandleConversationClick}
+          />
         </div>
-      </Fade>
+
+        <div className="scrollable content">
+          <MessageList ConvoSelected={this.state.ConvoSelected} />
+        </div>
+      </div>
     );
   }
 }

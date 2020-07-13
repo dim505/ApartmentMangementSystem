@@ -90,34 +90,43 @@ export default class MessageList extends Component {
     };
   }
 
-  //makes aPI call to get data for selected conversation
-  async componentDidMount() {
+  componentDidUpdate(prevProps) {
+    /*  if (this.props.results.length > 0 && window.ApiCallAlreadyMade !== true) {
+      this.GetChatData();
+    } */
+  }
+
+  async GetChatData() {
+    window.ApiCallAlreadyMade = true;
+    window.ClickOpen = false;
     var Mydata = {};
     var GetToken = {
       device: "browser",
-      TenGuid: window.TenGuid,
+      TenGuid: this.props.results[0].tenGuid,
     };
     Mydata.GetToken = GetToken;
-    console.log(Mydata);
 
     //makes api call to delete item
     let result = await Axios.post(
-     `${process.env.REACT_APP_BackEndUrl}/api/cart/UpdateCart`,
+      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata
     )
-      .then((result) => {})
-      .then((data) => Chat.create(data.token))
-      .then(this.setupChatClient)
-      .catch(this.handleError);
+      .then(async (result) => this.setupChatClient(result))
+      .catch(/*this.handleError */);
   }
 
-  //sets up chat channel
-  setupChatClient(client) {
-    var channelName = window.TenGuid + "-" + window.LandLordGuid;
+  async setupChatClient(result) {
+    var client = await Chat.create(result.data);
+
+    var channelName =
+      this.props.results[0].tenGuid +
+      "-" +
+      this.props.results[0].landLordAuth0ID;
     this.client = client;
     this.client
       .getChannelByUniqueName(channelName)
-      .then((channel) => channel)
+      .then((channel) => (this.channel = channel))
+
       .catch((error) => {
         if (error.body.code === 50300) {
           return this.client.createChannel({ uniqueName: channelName });
@@ -126,14 +135,23 @@ export default class MessageList extends Component {
         }
       })
       .then((channel) => {
-        this.channel = channel;
+        this.channel
+          .getMessages()
+          .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
       .then(() => {
-        // Success!
+        //;
+        console.log("Success");
       })
       .catch(this.handleError);
   }
+
+  handleError = () => {
+    this.OpenNoti("Chat failed to Load :C");
+  };
+
+  LoadMessages = (messages) => {};
 
   OpenNoti = (message) => {
     debugger;

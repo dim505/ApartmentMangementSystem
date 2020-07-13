@@ -57,7 +57,7 @@ namespace AMSBackEnd.Controllers
             List<TenantMainPageModel> tenants = new List<TenantMainPageModel>();
             using (IDbConnection db = new SqlConnection(connStr)) {
 
-                var SqlStr = @"select * from tenants where Auth0ID = @LoginUserIdentifier";
+                var SqlStr = @"select * from tenants where LandLordAuth0ID = @LoginUserIdentifier";
                 tenants = db.Query<TenantMainPageModel>(SqlStr, new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }).ToList();
                 
 
@@ -93,7 +93,7 @@ namespace AMSBackEnd.Controllers
 		                                Phone = @Phone,
 		                                LeaseDue = @LeaseDue,
                                         RentDueEaMon = @RentDue
-	                          where tenGuid = @tenGuid and Auth0ID = @LoginUserIdentifier ";
+	                          where tenGuid = @tenGuid and LandLordAuth0ID = @LoginUserIdentifier ";
                 var result = db.Execute(SqlStr, new
                 {
                     Name = updateTenant.name,
@@ -152,17 +152,15 @@ namespace AMSBackEnd.Controllers
 
             if (tenantCheckEmails.Count >= 1)
             {
-
                 return NotFound("duplicate email");
-
             }
             else
             {
                 using (IDbConnection db2 = new SqlConnection(connStr))
                 {
                    var SqlStr = @"insert into tenants (Name, Email, 
-                Phone, LeaseDue, guid, tenGuid,Auth0ID,DateAdded,RentDueEaMon) 
-                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded, @RentDueEaMon)";
+                Phone, LeaseDue, guid, tenGuid,LandLordAuth0ID,DateAdded,RentDueEaMon, TenAuth0ID) 
+                values (@Name, @Email, @Phone,@LeaseDue,@guid,@tenGuid,@LoginUserIdentifier,@DateAdded, @RentDueEaMon,@TenAuth0ID)";
                     var result = db2.Execute(SqlStr, new
                     {
                         Name = tenant.Name,
@@ -173,7 +171,9 @@ namespace AMSBackEnd.Controllers
                         tenGuid = tenant.tenGuid,
                         LoginUserIdentifier = LoginUserIdentifier,
                         RentDueEaMon = tenant.RentDue,
-                        DateAdded = DateAdded
+                        DateAdded = DateAdded,
+                        TenAuth0ID = ""
+
                     });
 
                     return Ok();
@@ -206,7 +206,7 @@ namespace AMSBackEnd.Controllers
             }
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             using (IDbConnection db = new SqlConnection(connStr)) {
-                var SqlStr = "delete from tenants where tenGuid=@guid and Auth0ID = @LoginUserIdentifier";
+                var SqlStr = "delete from tenants where tenGuid=@guid and LandLordAuth0ID = @LoginUserIdentifier";
                 var result = db.Execute(SqlStr, new
                 {
 

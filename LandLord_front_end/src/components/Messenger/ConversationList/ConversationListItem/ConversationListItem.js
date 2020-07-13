@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./ConversationListItem.css";
+import Avatar from "@material-ui/core/Avatar";
 
 export default class ConversationListItem extends Component {
   HandleConversationClick = (name) => {
@@ -9,17 +10,19 @@ export default class ConversationListItem extends Component {
   render() {
     return (
       <div
+        Key={this.props.data.Auth0ID}
         onClick={() => this.HandleConversationClick(this.props.data.name)}
         className={`conversation-list-item ${
           this.props.ConvoSelected === this.props.data.name ? " selected" : ""
         }
     `}
       >
-        <img
-          className="conversation-photo"
+        <Avatar
+          classes={{ root: "AvatarStyle" }}
+          alt={this.props.data.name}
           src={this.props.data.photo}
-          alt="conversation"
         />
+
         <div className="conversation-info">
           <h5 className="conversation-title">{this.props.data.name}</h5>
         </div>

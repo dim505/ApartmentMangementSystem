@@ -87,9 +87,33 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             var connStr = _config["ConnectionStrings:DefaultConnection"];
 
             List<TenantHomePage> HomePageInfo = new List<TenantHomePage>();
-			//Nows since it got the Tenants email it will get the information for the home page such as address,landlord info, and tenant info
+            List<UpdateTenAuth0ID> updateTenAuth0ID = new List<UpdateTenAuth0ID>();
+            //Nows since it got the Tenants email it will get the information for the home page such as address,landlord info, and tenant info
             using (IDbConnection db = new SqlConnection(connStr))
             {
+                updateTenAuth0ID = db.Query<UpdateTenAuth0ID>("select isNUll(TenAuth0ID,1) as IsAuth0IDNull from tenants where email = @email and TenAuth0ID is null",
+    new { email = new DbString { Value = Useremail, IsFixedLength = false, IsAnsi = true } }
+    ).ToList();
+                 
+                if (updateTenAuth0ID.Count > 0) {
+                    var SqlStr = @"Update tenants 
+                                set TenAuth0ID =  @TenAuth0ID
+                               
+                            where Email = @Email";
+                    var result = db.Execute(SqlStr,
+                        new
+                        {
+                            TenAuth0ID = LoginUserIdentifier,
+                            Email = Useremail
+                        });
+
+                }
+ 
+
+
+
+
+
                 HomePageInfo = db.Query<TenantHomePage>("select ten.tenGuid, ten.Name,ten.Phone, ten.Email, LandAcctDeet.Auth0ID as LandLordAuth0ID, LandAcctDeet.Name as LandLordName," +
                     " LandAcctDeet.Email as LandLordEmail, LandAcctDeet.PhoneNumber as LandLordPhoneNumber, prop.Street, prop.State, " +
                     "prop.City, prop.ZipCode from tenants ten inner join Properties prop on ten.guid = prop.Guid inner join LandLordAccountDetails " +
@@ -186,7 +210,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             {
                 List<ImageCount> imageCounts = new List<ImageCount>();
                 var SqlStr = @"Select count(*) as count from 
-                                        TenantImage where Auth0ID = @Auth0ID";
+                                        TenantImage where TenAuth0ID = @Auth0ID";
 
                 imageCounts = db.Query<ImageCount>(SqlStr, 
                     new { Auth0ID = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true  } }

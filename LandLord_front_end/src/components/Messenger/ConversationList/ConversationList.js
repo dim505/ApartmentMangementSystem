@@ -1,16 +1,15 @@
 import React from "react";
-
 import ConversationSearch from "./ConversationSearch/ConversationSearch";
 import ConversationListItem from "./ConversationListItem/ConversationListItem";
 import Toolbar from "./Toolbar";
-
 import axios from "axios";
+import { FormatImage } from "../../shared/SharedFunctions";
 
 export default class ConversationList extends React.Component {
   state = {
     FilteredConversations: [],
     InitialConversations: [],
-    ConvoSelected: ""
+    ConvoSelected: "",
   };
 
   //gets consersations for the side bar on the left
@@ -21,54 +20,79 @@ export default class ConversationList extends React.Component {
   }
 
   // Api call that gets the conversation data
-  getConversations = () => {
-    axios.get("https://randomuser.me/api/?results=20").then(response => {
-      let newConversations = response.data.results.map(result => {
-        return {
-          photo: result.picture.large,
-          name: `${result.name.first} ${result.name.last}`,
-          text:
-            "Hello world! This is a long message that needs to be truncated."
-        };
+  getConversations = async () => {
+    const BearerToken = await this.props.auth.getTokenSilently();
+    var TenPic = [];
+    axios
+      .get(`${process.env.REACT_APP_BackEndUrl}/api/Message/GetTenantsInfo`, {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      })
+      .then(async (response) => {
+        await this.setState({
+          InitialConversations: response.data,
+          FilteredConversations: response.data,
+        });
+
+        var MyData = {};
+        var emails = "";
+        this.state.InitialConversations.map((conversation) => {
+          emails += conversation.email + ", ";
+        });
+
+        MyData.emails = emails;
+
+        axios
+          .get(
+            `${process.env.REACT_APP_BackEndUrl}/api/Message/GetTenantProfileImages/${emails}`,
+            {
+              headers: { Authorization: `bearer ${BearerToken}` },
+            }
+          )
+          .then(async (response) => {
+            TenPic = response.data;
+            var PhotoURLs = [];
+            var PhotoURLs = TenPic.map((photo) => {
+              var objectURL = FormatImage(photo.image, photo.contentType);
+
+              return [{ Auth0ID: photo.auth0ID, objectURL: objectURL }];
+            });
+
+            var InitialConversations = [];
+            this.state.InitialConversations.map((conversation) => {
+              PhotoURLs.map((PhotoUrl) => {
+                debugger;
+                if (PhotoUrl[0].Auth0ID === conversation.tenAuth0ID) {
+                  conversation.photo = PhotoUrl[0].objectURL;
+                  InitialConversations.push(conversation);
+                }
+              });
+
+              if (conversation.photo === "") {
+                InitialConversations.push(conversation);
+              }
+            });
+            debugger;
+            await this.setState({
+              InitialConversations: InitialConversations,
+              FilteredConversations: InitialConversations,
+            });
+          });
       });
-      this.setState({
-        InitialConversations: newConversations,
-        FilteredConversations: newConversations
-      });
-    });
   };
 
   //loads new conversation in the conversation window on the right
-  HandleConversationClick = name => {
+  HandleConversationClick = (name) => {
     console.log(name);
     this.setState({ ConvoSelected: name });
     this.props.HandleConversationClick(name);
   };
 
-  /* //function used to produce product filtered list 
-filterList = (SearchTextBoxVal) => {
-	  //makes a copy of the products list
-      let products = this.state.IntialProducts
-	  //returns all products that match the search phrase 
-      products = products.filter ( 
-          (product) => { return product.name.toLowerCase().search(SearchTextBoxVal.toString().toLowerCase()) !== -1}
-        
-
-      )
-	  //sets state of products to be displayed 
-      this.setState({products:products})
-       
-
-
-
-}*/
-
   //filters the list of people who are typed in the  search people search bar
-  HandlePeopleSearch = e => {
+  HandlePeopleSearch = (e) => {
     debugger;
     let conversations = this.state.InitialConversations;
 
-    conversations = conversations.filter(conversation => {
+    conversations = conversations.filter((conversation) => {
       return (
         conversation.name.toLowerCase().search(e.target.value.toLowerCase()) !==
         -1
@@ -76,12 +100,11 @@ filterList = (SearchTextBoxVal) => {
     });
 
     this.setState({
-      FilteredConversations: conversations
+      FilteredConversations: conversations,
     });
     console.log(conversations);
   };
   render() {
-    debugger;
     return (
       <div className="conversation-list">
         <Toolbar title="Messenger" />
@@ -89,7 +112,7 @@ filterList = (SearchTextBoxVal) => {
         {this.state.FilteredConversations.length === 0 ? (
           <p> No people were found </p>
         ) : (
-          this.state.FilteredConversations.map(conversation => (
+          this.state.FilteredConversations.map((conversation) => (
             <ConversationListItem
               key={conversation.name}
               id={conversation.name}

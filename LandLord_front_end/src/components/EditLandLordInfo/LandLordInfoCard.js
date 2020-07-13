@@ -8,6 +8,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
 import Fade from "react-reveal/Fade";
+import { FormatImage } from "../shared/SharedFunctions";
 
 //component acts as a parent for the Personal info card
 export default class PersonalInfoCard extends Component {
@@ -25,34 +26,12 @@ export default class PersonalInfoCard extends Component {
     //this formats the format so It can be used in the browser
 
     if (this.props.ProfilePictures.length > 0) {
-      this.FormatImage();
+      var objectURL = FormatImage(
+        this.props.ProfilePictures[0].image,
+        this.props.ProfilePictures[0].contentType
+      );
+      this.setState({ Image: objectURL });
     }
-  }
-
-  //this formats the format so It can be used in the browser
-  FormatImage(ProfilePictures) {
-    var objectURL = this.CreateImageUrl(
-      this.props.ProfilePictures[0].image,
-      this.props.ProfilePictures[0].contentType
-    );
-    this.setState({ Image: objectURL });
-    Window.ProfileImageName = this.props.ProfilePictures[0].filename;
-  }
-
-  //converts string from data bases to an array buffer
-  base64ToArrayBuffer(base64) {
-    const binaryString = window.atob(base64); // Comment this if not using base64
-    const bytes = new Uint8Array(binaryString.length);
-    return bytes.map((byte, i) => binaryString.charCodeAt(i));
-  }
-
-  //this function creates a URl to view the image
-  CreateImageUrl(ImageStr, ImageType) {
-    const data = ImageStr;
-    const arrayBuffer = this.base64ToArrayBuffer(data);
-    const blob = new Blob([arrayBuffer], { type: ImageType });
-    const objectURL = URL.createObjectURL(blob);
-    return objectURL;
   }
 
   render() {

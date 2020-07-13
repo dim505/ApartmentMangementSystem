@@ -8,7 +8,7 @@ import HomeIcon from "@material-ui/icons/Home";
 import Avatar from "@material-ui/core/Avatar";
 import { Link } from "react-router-dom";
 import SentimentVeryDissatisfiedIcon from "@material-ui/icons/SentimentVeryDissatisfied";
-
+import { FormatImage } from "../Shared/SharedFunctions";
 
 //parent component that displays the tenants information and a profile picture
 export default class PersonalInfoCard extends Component {
@@ -23,44 +23,27 @@ export default class PersonalInfoCard extends Component {
     Image: "",
   };
 
-  //formats image if pictures are retrived
-  componentDidMount() {
-    if (this.props.ProfilePictures.length > 0) {
-      this.FormatImage();
-    }
-  }
   //checks to format image with each render
   componentDidUpdate(prevProps) {
     if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
-      this.FormatImage();
+      var objectURL = FormatImage(
+        this.props.ProfilePictures[0].tenimage,
+        this.props.ProfilePictures[0].tencontentType
+      );
+      this.setState({ Image: objectURL });
     }
   }
 
-  //function used to Format image
-
-  FormatImage() {
-    var objectURL = this.CreateImageUrl(
-      this.props.ProfilePictures[0].tenimage,
-      this.props.ProfilePictures[0].tencontentType
-    );
-    this.setState({ Image: objectURL });
-    Window.ProfileImageName = this.props.ProfilePictures[0].tenfilename;
-  }
-
-  //converts string from data bases to an array buffer
-  base64ToArrayBuffer(base64) {
-    const binaryString = window.atob(base64); // Comment this if not using base64
-    const bytes = new Uint8Array(binaryString.length);
-    return bytes.map((byte, i) => binaryString.charCodeAt(i));
-  }
-
-  //this function creates a URl to view the image
-  CreateImageUrl(ImageStr, ImageType) {
-    const data = ImageStr;
-    const arrayBuffer = this.base64ToArrayBuffer(data);
-    const blob = new Blob([arrayBuffer], { type: ImageType });
-    const objectURL = URL.createObjectURL(blob);
-    return objectURL;
+  //formats  image if pictures are retrived
+  async componentDidMount() {
+    //this formats the format so It can be used in the browser
+    if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
+      var objectURL = FormatImage(
+        this.props.ProfilePictures[0].tenimage,
+        this.props.ProfilePictures[0].tencontentType
+      );
+      this.setState({ Image: objectURL });
+    }
   }
 
   render() {

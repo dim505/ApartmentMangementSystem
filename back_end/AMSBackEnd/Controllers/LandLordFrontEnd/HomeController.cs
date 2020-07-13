@@ -113,7 +113,7 @@ namespace AMSBackEnd.Controllers
             {
                 numberOFTenants = db.Query<NumberOFTenants>("select " +
                     "count(*) as [NumberOFTenants] from tenants" +
-                    " where Auth0ID = @LoginUserIdentifier",
+                    " where LandLordAuth0ID = @LoginUserIdentifier",
                     new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }
                     ).ToList();
             }
@@ -151,7 +151,7 @@ namespace AMSBackEnd.Controllers
             return Ok(propertyStats);
         }
 
-		//gets info for one of the quick facts cards 
+		//gets info for one of the graphs 
         [Route("[action]")]
         public IActionResult NumOfTenEachMonth()
         {
@@ -175,7 +175,7 @@ namespace AMSBackEnd.Controllers
                 NumOfTenPerMonth = db.Query<NumOfTenPerMonth>("select " +
                     "LEFT(DateAdded,7) + '-30' as Date, count(*) as " +
                     "NumOfTenPerMonth from tenants " +
-                    "where Auth0ID = @LoginUserIdentifier " +
+                    "where LandLordAuth0ID = @LoginUserIdentifier " +
                     "group by LEFT(DateAdded, 7)",
                     new { LoginUserIdentifier = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }
                     ).ToList();

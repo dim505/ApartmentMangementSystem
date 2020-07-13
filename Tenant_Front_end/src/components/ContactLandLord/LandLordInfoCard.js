@@ -10,6 +10,11 @@ import { Link } from "react-router-dom";
 import SnackBar from "../Shared/SnackBar";
 import ContactLandLordModal from "./ContactLandLordModal";
 import Fade from "react-reveal/Fade";
+import {
+  FormatImage,
+  base64ToArrayBuffer,
+  CreateImageUrl,
+} from "../Shared/SharedFunctions";
 
 export default class LandLordInfoCard extends Component {
   state = {
@@ -23,66 +28,48 @@ export default class LandLordInfoCard extends Component {
     Image: "",
   };
 
-	//formats image if pictures are retrived 
   componentDidMount() {
+    //this formats the format so It can be used in the browser
+
     if (this.props.ProfilePictures.length > 0) {
-      this.FormatImage();
+      var objectURL = FormatImage(
+        this.props.ProfilePictures[0].landimage,
+        this.props.ProfilePictures[0].landcontentType
+      );
+      this.setState({ Image: objectURL });
     }
   }
 
-	//checks to format image with each render 
+  //checks to format image with each render
   componentDidUpdate(prevProps) {
     if (this.props.ProfilePictures.length > 0 && this.state.Image === "") {
-      this.FormatImage();
+      var objectURL = FormatImage(
+        this.props.ProfilePictures[0].landimage,
+        this.props.ProfilePictures[0].landcontentType
+      );
+      this.setState({ Image: objectURL });
     }
   }
 
-
-//opens notification
+  //opens notification
   OpenNoti = () => {
     this.setState({ OpenNoti: true, Message: "Message was successfully sent" });
   };
-//closes notification
+  //closes notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
 
-	//function used to Format image 
-  FormatImage() {
-    var objectURL = this.CreateImageUrl(
-      this.props.ProfilePictures[0].landimage,
-      this.props.ProfilePictures[0].landcontentType
-    );
-    this.setState({ Image: objectURL });
-    Window.ProfileImageName = this.props.ProfilePictures[0].landfilename;
-  }
-
-  //converts string from data bases to an array buffer
-  base64ToArrayBuffer(base64) {
-    const binaryString = window.atob(base64); // Comment this if not using base64
-    const bytes = new Uint8Array(binaryString.length);
-    return bytes.map((byte, i) => binaryString.charCodeAt(i));
-  }
-
-  //this function creates a URl to view the image
-  CreateImageUrl(ImageStr, ImageType) {
-    const data = ImageStr;
-    const arrayBuffer = this.base64ToArrayBuffer(data);
-    const blob = new Blob([arrayBuffer], { type: ImageType });
-    const objectURL = URL.createObjectURL(blob);
-    return objectURL;
-  }
-
-	//opens modal 
+  //opens modal
   OpenModal = () => {
     this.setState({
       OpnModal: true,
     });
   };
-  
-	//closes modal 
+
+  //closes modal
   CloseModal = () => {
     this.setState({
       OpnModal: false,

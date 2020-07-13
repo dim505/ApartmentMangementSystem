@@ -22,9 +22,12 @@ export default class TenantRemoveButton extends Component {
   OpenItmRmvNoti = (guid) => {
     this.RemoveTenant(guid);
     this.CloseSaveWarnBox();
+    this.props.CloseTenantList();
     this.props.OpenNoti("Tenant Has Been Removed");
     this.props.GetProperties();
-    this.props.GetTenants();
+    setTimeout(() => {
+      this.props.GetTenants();
+    }, 500);
   };
 
   //closes warning box

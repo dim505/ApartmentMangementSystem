@@ -182,12 +182,13 @@ export default class Tenants extends Component {
 
                 <Grid item>
                   <TenantRemoveButton
-                    OpenTenantRmvNoti={this.OpenNoti}
-                    CloseTenantRmvNoti={this.CloseTenantRmvNoti}
+                    OpenNoti={this.OpenNoti}
+                    CloseNoti={this.CloseNoti}
                     guid={Tenant.tenGuid}
                     GetProperties={this.GetProperties}
                     GetTenants={this.GetTenants}
                     auth={this.props.auth}
+                    CloseTenantList={this.CloseTenantList}
                   />
                 </Grid>
               </Grid>
