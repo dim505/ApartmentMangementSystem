@@ -20,6 +20,7 @@ const validationSchema = Yup.object({
   HouseSelect: Yup.string("").required("Please Select a House"),
 });
 
+//component contains textfields/submit button to add a new item
 class AddNews extends Component {
   constructor(props) {
     super(props);
@@ -91,7 +92,7 @@ class AddNews extends Component {
     window.resetForm({});
     //opens this was successful notification
     this.OpenNoti();
-    console.log(window.values);
+
     //builds out object
     var MyData = {};
     MyData.Announcement = window.values;

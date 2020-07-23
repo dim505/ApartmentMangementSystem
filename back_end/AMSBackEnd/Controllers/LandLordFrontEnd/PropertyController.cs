@@ -1,24 +1,23 @@
-﻿using System;
+﻿using AMSBackEnd.Model;
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model;
+using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
+
 using Dapper;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Cors;
+using RestSharp;
 using System.Net.Http;
 using System.Net;
-using RestSharp;
-
+using Microsoft.AspNetCore.Authorization;
 //PropertyController is responsible for all action methods related to the property page 
 namespace AMSBackEnd.Controllers
 {
@@ -48,7 +47,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -63,7 +62,7 @@ namespace AMSBackEnd.Controllers
         (Street,City,State,ZipCode,Unit,YearlyInsurance,Tax,Guid,Auth0ID, lat, lng,DateAdded) values
         (@Street,@City,@State,@ZipCode,@Unit,@YearlyInsurance,@Tax,@Guid,
         @LoginUserIdentifier,@lat,@lng,@DateAdded)";
-        var result = db.Execute(SqlStr, new
+                var result = db.Execute(SqlStr, new
                 {
                     Street = propertyModel.Street,
                     City = propertyModel.City,
@@ -77,9 +76,9 @@ namespace AMSBackEnd.Controllers
                     lat = propertyModel.Lat,
                     lng = propertyModel.Lng,
                     DateAdded = DateAdded
-        }
+                }
 
-                    );
+                            );
 
             }
             return Ok();
@@ -98,7 +97,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -133,7 +132,7 @@ namespace AMSBackEnd.Controllers
                     LoginUserIdentifier = LoginUserIdentifier,
                     lat = propertyModel.Lat,
                     lng = propertyModel.Lng
-                    
+
                 });
                 return Ok();
             }
@@ -152,7 +151,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -181,7 +180,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -201,7 +200,7 @@ namespace AMSBackEnd.Controllers
 
 
 
-                 SqlStr = @"Delete from Properties
+                SqlStr = @"Delete from Properties
                                     where Guid = @Guid and Auth0ID = @LoginUserIdentifier";
                 db.Execute(SqlStr, new
                 {
@@ -216,7 +215,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
-	    //end used to return auto suggested addresses to the client / hide API key in the backend 
+        //end used to return auto suggested addresses to the client / hide API key in the backend 
         [HttpGet]
         [Route("[action]")]
         public String GetSuggestedPropertiesAddress(string query)
@@ -258,7 +257,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
-		// used to get a Lat and Lng of a selected suggested property
+        // used to get a Lat and Lng of a selected suggested property
         [HttpGet]
         [Route("[action]")]
         public String GetSuggestedPropertiesLatLng(string query)
@@ -267,7 +266,7 @@ namespace AMSBackEnd.Controllers
             var BaseUrl = "https://geocode.search.hereapi.com/v1/geocode";
             var apiKey = _config["SuggAddrApiKey"];
             var query2 = query.Replace(" ", "+");
-            var urlParameters = "?apiKey=" + apiKey + "&q=" + query2; 
+            var urlParameters = "?apiKey=" + apiKey + "&q=" + query2;
             var url = BaseUrl + urlParameters;
             using (var client = new HttpClient())
             {

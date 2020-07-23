@@ -67,7 +67,6 @@ class UpdateNews extends Component {
   };
 
   render() {
-    debugger;
     var Address =
       this.props.PropNewsFiltered[0].street +
       " " +

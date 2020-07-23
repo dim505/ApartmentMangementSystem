@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebApplication3.Modal
+﻿namespace WebApplication3.Modal
 {
+    //used in controller Message, end point - GetTenantsInfo , gets the information for the messanger page about the tenants 
+
     public class TenantInfo
     {
 
@@ -12,13 +9,11 @@ namespace WebApplication3.Modal
         public string Name { get; set; }
         public string Email { get; set; }
         public string TenAuth0ID { get; set; }
+        public string LandLordAuth0ID { get; set; }
         public string photo { get; set; }
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string ZipCode { get; set; }
+        public string Address { get; set; }
 
-        
+
 
 
 

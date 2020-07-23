@@ -8,12 +8,21 @@ import Fade from "react-reveal/Fade";
 export default class Messenger extends React.Component {
   state = {
     ConvoSelected: "",
+    tenGuid: "",
+    InitialConversations: [],
   };
 
   //this tracks what conversation is being selected
-  HandleConversationClick = (ConvoSelected) => {
+  HandleConversationClick = (ConvoSelected, tenGuid) => {
     this.setState({
       ConvoSelected: ConvoSelected,
+      tenGuid: tenGuid,
+    });
+  };
+
+  UpdateConvoList = (InitialConversations) => {
+    this.setState({
+      InitialConversations: InitialConversations,
     });
   };
 
@@ -24,11 +33,16 @@ export default class Messenger extends React.Component {
           <ConversationList
             auth={this.props.auth}
             HandleConversationClick={this.HandleConversationClick}
+            UpdateConvoList={this.UpdateConvoList}
           />
         </div>
 
         <div className="scrollable content">
-          <MessageList ConvoSelected={this.state.ConvoSelected} />
+          <MessageList
+            ConvoSelected={this.state.ConvoSelected}
+            tenGuid={this.state.tenGuid}
+            InitialConversations={this.state.InitialConversations}
+          />
         </div>
       </div>
     );

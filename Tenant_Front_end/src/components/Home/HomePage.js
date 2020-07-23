@@ -15,9 +15,11 @@ import NewsCard from "../news/NewsCard";
 import OutstandingBalanceInfoCard from "../OutstandingBalance/OutstandingBalanceInfoCard";
 import PaymentHistCard from "../PaymentHistory/PaymentHistCard";
 
+
+
+//contains all the components that the user sees when a user logs in 
 export default class HomePage extends Component {
   //this component contains all the child components of the home page
-
   render() {
     return (
       <div>

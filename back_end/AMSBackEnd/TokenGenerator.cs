@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using System;
- 
+
 using System.Collections.Generic;
 using Twilio.Jwt.AccessToken;
 
 namespace AMSBackEnd
+//generates the access token for the front end 
 {
 
 
@@ -23,7 +25,7 @@ namespace AMSBackEnd
             _config = config;
 
         }
-            public string Generate(string identity, string endpointId)
+        public string Generate(string identity, string endpointId)
         {
             var grants = new HashSet<IGrant>
             {

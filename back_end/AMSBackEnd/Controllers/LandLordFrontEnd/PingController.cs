@@ -1,10 +1,14 @@
-﻿using System;
+﻿using AMSBackEnd.Model;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model;
+using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
+
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,7 +52,7 @@ namespace AMSBackEnd.Controllers
         }
 
 
- 
+
 
 
 

@@ -6,122 +6,89 @@ import Message from "./Message";
 import moment from "moment";
 import Axios from "axios";
 import SendIcon from "@material-ui/icons/Send";
-
+import LinearProgress from "@material-ui/core/LinearProgress";
 import "./MessageList.css";
+import Fade from "react-reveal/Fade";
+import Typography from "@material-ui/core/Typography";
 
-const MY_USER_ID = "apple";
-
+//parent that contains all the messages for the selected conversation
 export default class MessageList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      Messages: [
-        {
-          id: 1,
-          author: "apple",
-          message:
-            "Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 2,
-          author: "orange",
-          message:
-            "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 3,
-          author: "orange",
-          message:
-            "Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 4,
-          author: "apple",
-          message:
-            "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 5,
-          author: "apple",
-          message:
-            "Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 6,
-          author: "apple",
-          message:
-            "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 7,
-          author: "orange",
-          message:
-            "Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 8,
-          author: "orange",
-          message:
-            "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 9,
-          author: "apple",
-          message:
-            "Hello world! This is a long message that will hopefully get wrapped by our message bubble component! We will see how well it works.",
-          timestamp: new Date().getTime(),
-        },
-        {
-          id: 10,
-          author: "orange",
-          message:
-            "It looks like it wraps exactly as it is supposed to. Lets see what a reply looks like!",
-          timestamp: new Date().getTime(),
-        },
-      ],
-    };
+    this.state = { Messages: [], ShowLoader: false };
   }
 
-  componentDidUpdate(prevProps) {
-    /*  if (this.props.results.length > 0 && window.ApiCallAlreadyMade !== true) {
+  componentDidMount() {
+    window.address = " ";
+    window.ApiCallAlreadyMade = false;
+    window.MY_USER_ID = "";
+
+    window.addEventListener("scroll", this.HandleScroll, true);
+  }
+
+  HandleScroll = async () => {
+    var ChannelMessageCount = await this.channel.getMessagesCount();
+    var index = ChannelMessageCount - this.state.Messages.length;
+
+    var Element = document.getElementsByClassName("scrollable content");
+    if (
+      Element[0].scrollTop === 0 &&
+      ChannelMessageCount !== this.state.Messages.length
+    ) {
+      this.channel
+        .getMessages(60, index)
+        .then((messages) => this.LoadMessages(messages));
+    }
+  };
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.HandleScroll);
+  }
+  async componentDidUpdate(prevProps) {
+    if (prevProps.tenGuid !== this.props.tenGuid && this.props.tenGuid !== "") {
+      await this.CallLoader("open");
       this.GetChatData();
-    } */
+    }
   }
 
+  CallLoader = async (action) => {
+    if (action === "open") {
+      await this.setState({
+        ShowLoader: true,
+        Messages: [],
+      });
+    } else {
+      await this.setState({
+        ShowLoader: false,
+      });
+    }
+  };
+  //this gets access token be to authenticated by the twillo servers
   async GetChatData() {
-    window.ApiCallAlreadyMade = true;
     window.ClickOpen = false;
     var Mydata = {};
     var GetToken = {
       device: "browser",
-      TenGuid: this.props.results[0].tenGuid,
+      TenGuid: this.props.InitialConversations[0].landLordAuth0ID,
     };
     Mydata.GetToken = GetToken;
-
-    //makes api call to delete item
+    window.MY_USER_ID = this.props.InitialConversations[0].landLordAuth0ID;
     let result = await Axios.post(
       `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata
     )
       .then(async (result) => this.setupChatClient(result))
-      .catch(/*this.handleError */);
+      .catch(this.handleError);
   }
 
+  //this functions set up twillo chat client and get data from twillo servers
   async setupChatClient(result) {
     var client = await Chat.create(result.data);
 
     var channelName =
-      this.props.results[0].tenGuid +
+      this.props.tenGuid +
       "-" +
-      this.props.results[0].landLordAuth0ID;
+      this.props.InitialConversations[0].landLordAuth0ID;
     this.client = client;
     this.client
       .getChannelByUniqueName(channelName)
@@ -136,7 +103,7 @@ export default class MessageList extends Component {
       })
       .then((channel) => {
         this.channel
-          .getMessages()
+          .getMessages(1000)
           .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
@@ -147,45 +114,57 @@ export default class MessageList extends Component {
       .catch(this.handleError);
   }
 
+  //notifies user when it cant load chat data
   handleError = () => {
     this.OpenNoti("Chat failed to Load :C");
   };
 
-  LoadMessages = (messages) => {};
+  LoadMessages = async (messages) => {
+    var MessageArray = [];
+    console.log(messages);
+    messages.items.map((message) => {
+      var MessageObj = {
+        id: message.state.index,
+        author: message.state.author,
+        message: message.state.body,
+        timestamp: message.state.dateUpdated,
+      };
 
+      MessageArray.push(MessageObj);
+    });
+
+    await this.setState((prevState) => ({
+      Messages:
+        prevState.Messages.length <= 0 && prevState.ShowLoader === true
+          ? [...MessageArray, ...prevState.Messages]
+          : MessageArray,
+    }));
+
+    this.renderMessages();
+    var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
+    ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
+    this.CallLoader();
+  };
+
+  //function responsible for opening up the snack bar notification
   OpenNoti = (message) => {
-    debugger;
     this.setState({
       OpenNoti: true,
       Message: message,
     });
   };
 
+  //function responsible for closing the snack bar notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
 
-  handleError = () => {
-    this.OpenNoti("Chat failed to Load :C");
-  };
-
   //adds new message to message list
-  handleNewUserMessage = (messageText) => {
-    console.log(messageText);
-    var UserMessage = {};
-    UserMessage.TenGuid = window.TenGuid;
-    UserMessage.message = messageText;
-    this.setState((prevState) => ({
-      ChatMessages: [...prevState.ChatMessages, UserMessage],
-    }));
-    console.log(this.state.ChatMessages);
 
-    // addResponseMessage(message);
-  };
-
-  //buidsl out message list from data
+  //builds out message list from data
   renderMessages = () => {
     let i = 0;
     let messageCount = this.state.Messages.length;
@@ -195,7 +174,7 @@ export default class MessageList extends Component {
       let previous = this.state.Messages[i - 1];
       let current = this.state.Messages[i];
       let next = this.state.Messages[i + 1];
-      let isMine = current.author === MY_USER_ID;
+      let isMine = current.author === window.MY_USER_ID;
       let currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
@@ -254,45 +233,73 @@ export default class MessageList extends Component {
     }
   };
 
-  UpdateMessage = async () => {
-    console.log(document.getElementsByClassName("compose-input")[0].value);
-    debugger;
+  //updates the message list after the user hits enter to submit the message
+  UpdateMessage = async (messages) => {
     await this.setState((prevState) => ({
       Messages: [
         ...prevState.Messages,
         {
-          id: 11,
-          author: "orange",
-          message: /*"BTMIEMAA", */ document.getElementsByClassName(
-            "compose-input"
-          )[0].value,
+          id: this.state.Messages.length + 1,
+          author: window.MY_USER_ID,
+          message: document.getElementsByClassName("compose-input")[0].value,
           timestamp: new Date().getTime(),
         },
       ],
     }));
+
+    this.channel.sendMessage(
+      document.getElementsByClassName("compose-input")[0].value
+    );
     document.getElementsByClassName("compose-input")[0].value = "";
     this.renderMessages();
     var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
     ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
   };
 
+  ShowMessages = () => {
+    if (this.props.tenGuid !== "") {
+      return (
+        <React.Fragment>
+          <Fade bottom opposite when={!this.state.ShowLoader}>
+            <div className="message-list-container">
+              {this.renderMessages()}
+            </div>
+          </Fade>
+          <div className="compose">
+            <input
+              onKeyPress={this.handleOnKeyPress}
+              type="text"
+              className="compose-input"
+              placeholder="Type a message"
+            />
+
+            <SendIcon onClick={this.UpdateMessage} style={{ fontSize: 36 }} />
+          </div>
+        </React.Fragment>
+      );
+    } else if (this.state.Messages.length <= 0 && this.props.tenGuid !== "") {
+      return (
+        <Typography classes={{ root: "CenterText" }} variant="h3" gutterBottom>
+          No conversations found. Type Away!!!
+        </Typography>
+      );
+    } else {
+      return (
+        <Typography classes={{ root: "CenterText" }} variant="h3" gutterBottom>
+          Please select a consersation
+        </Typography>
+      );
+    }
+  };
+
   render() {
     return (
       <div className="message-list">
-        <Toolbar title={this.props.ConvoSelected + " Boston MA)"} />
-
-        <div className="message-list-container">{this.renderMessages()}</div>
-
-        <div className="compose">
-          <input
-            onKeyPress={this.handleOnKeyPress}
-            type="text"
-            className="compose-input"
-            placeholder="Type a message"
-          />
-
-          <SendIcon onClick={this.UpdateMessage} style={{ fontSize: 36 }} />
-        </div>
+        <Toolbar title={this.props.ConvoSelected + window.address} />
+        <Fade top opposite when={this.state.ShowLoader}>
+          <LinearProgress />
+        </Fade>
+        {this.ShowMessages()}
       </div>
     );
   }

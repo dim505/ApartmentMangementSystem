@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-//used to populate graph that shows amount of money spent each month (receipts) - home page
+﻿//used to populate graph that shows amount of money spent each month (receipts) - home page
 namespace AMSBackEnd.Model
 {
     public class ReceiptExpenseGraph

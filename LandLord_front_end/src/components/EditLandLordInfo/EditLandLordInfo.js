@@ -44,7 +44,7 @@ class EditLandLordInfo extends Component {
   submitValues = (values, { resetForm }) => {
     window.values = values;
     window.resetForm = resetForm;
-    console.log(window.LandLordPicture);
+
     this.OpenSaveWarnBox();
     //;
   };
@@ -57,7 +57,6 @@ class EditLandLordInfo extends Component {
 
     //makes api call to update image if an image has been uploaded
     if (window.values.file !== "" && window.TenantPicture !== undefined) {
-      console.log(window.values);
       const AddImageUrl = `${process.env.REACT_APP_BackEndUrl}/api/AccountDetails/Add_Update_LandLord_Image`;
       const formData = new FormData();
       formData.append("body", window.TenantPicture);
@@ -69,7 +68,6 @@ class EditLandLordInfo extends Component {
       };
 
       var results = await post(AddImageUrl, formData, config);
-      console.log(results);
     }
 
     //builds out object

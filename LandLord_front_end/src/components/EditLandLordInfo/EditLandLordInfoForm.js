@@ -94,7 +94,6 @@ export const EditLandLordInfoForm = (props) => {
               accept="image/png, image/jpeg"
               style={{ display: "none" }}
               onChange={(event) => {
-                debugger;
                 //checks if the uploaded file is valid
                 if (
                   event.currentTarget.files.length > 0 &&

@@ -7,9 +7,8 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
-
-//form that contains the necessary textfields to update a news item 
-export const UpdateNewsForm = props => {
+//form that contains the necessary textfields to update a news item
+export const UpdateNewsForm = (props) => {
   const {
     values: { Subject, Message, House },
     errors,
@@ -18,16 +17,15 @@ export const UpdateNewsForm = props => {
     isValid,
     setFieldTouched,
     handleSubmit,
-    resetForm
+    resetForm,
   } = props;
-//handles the update in state for form and tracks if its touched 
+  //handles the update in state for form and tracks if its touched
   const change = (name, e) => {
-    debugger;
     e.persist();
     handleChange(e);
     setFieldTouched(name, true, false);
   };
-  debugger;
+
   return (
     <form onSubmit={handleSubmit}>
       <TextField

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebApplication3.Modal
+﻿namespace WebApplication3.Modal
 {
-	//used in Announcements controller, GetNews endpoint. Gets all news for Landlord to manage
+    //used in Announcements controller, GetNews endpoint. Gets all news for Landlord to manage
     public class GetAnnouncement
     {
 
@@ -22,7 +17,7 @@ namespace WebApplication3.Modal
         public string State { get; set; }
 
         public string ZipCode { get; set; }
- 
+
 
     }
 }

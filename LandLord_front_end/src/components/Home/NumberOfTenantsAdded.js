@@ -6,6 +6,8 @@ import Axios from "axios";
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart2 = CanvasJSReact.CanvasJSChart;
 
+
+// component containts the chart that contains the number added per month 
 export default class NumberOfTenantsAdded extends Component {
   constructor(props) {
     super(props);

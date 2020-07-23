@@ -11,6 +11,7 @@ export default class AddReceiptForm extends Component {
     TotalAmount: "",
   };
 
+	//resets the state of the form 
   ClearAddReceiptFormState = () => {
     this.setState({
       Date: "",

@@ -22,7 +22,7 @@ class ViewNews extends Component {
       properties: [{ id: 1, Address: "12 verde Drive Greenfield MA" }],
       OpenNoti: false,
       Message: "",
-	  OpnSaveWarningBox: false
+      OpnSaveWarningBox: false,
     };
   }
 
@@ -72,7 +72,6 @@ class ViewNews extends Component {
     });
   };
   render() {
-    debugger;
     //builds out address from API call results
     var Address =
       this.props.PropNewsFiltered[0].street +

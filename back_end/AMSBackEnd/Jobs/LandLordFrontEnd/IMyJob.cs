@@ -1,23 +1,24 @@
-﻿
-using Hangfire;
+﻿using Hangfire;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
+
 namespace AMSBackEnd.Jobs
 {
-    interface IMyJob
+    internal interface IMyJob
     {
         Task RunAtTimeOf(DateTime now);
     }
 
-	//this is just a test job 
+    //this is just a test job 
     public class MyJob : IMyJob
     {
 
 
         private readonly ILogger<MyJob> _Logger;
 
-        public MyJob(ILogger<MyJob> logger) {
+        public MyJob(ILogger<MyJob> logger)
+        {
 
             _Logger = logger;
         }
@@ -33,7 +34,7 @@ namespace AMSBackEnd.Jobs
             _Logger.LogInformation("My Job Starts");
 
             _Logger.LogInformation("My Job End");
-        
+
         }
 
 

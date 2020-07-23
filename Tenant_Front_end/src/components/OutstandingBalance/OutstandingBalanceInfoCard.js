@@ -48,7 +48,9 @@ export default class OutstandingBalanceInfoCard extends Component {
       OpenNoti: false,
     });
   };
-
+  
+  
+	//returns the a different payment info depending on the balance of rent paid 
   RenderPaymentInfo() {
     if (this.props.PaymentInfoCard.length !== 0) {
       if (this.props.PaymentInfoCard[0].rentDue > 0) {

@@ -1,20 +1,18 @@
-﻿using Dapper;
+﻿using AMSBackEnd.Model;
+using Dapper;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
-
-using System.Data.SqlClient;
-using AMSBackEnd.Model;
-
 namespace AMSBackEnd.Jobs
 {
-    interface Inter_LeaseDateSendText
+    internal interface Inter_LeaseDateSendText
     {
         void SendText();
 
@@ -22,7 +20,7 @@ namespace AMSBackEnd.Jobs
 
 
 
-	//this job is the same as the email job, its figures out which tenants are about to expire and send a text to the land lord 
+    //this job is the same as the email job, its figures out which tenants are about to expire and send a text to the land lord 
     public class LeaseDateSendText : Inter_LeaseDateSendText
     {
 
@@ -75,7 +73,7 @@ namespace AMSBackEnd.Jobs
                         body: StrList
                     );
 
-              
+
             }
 
         }

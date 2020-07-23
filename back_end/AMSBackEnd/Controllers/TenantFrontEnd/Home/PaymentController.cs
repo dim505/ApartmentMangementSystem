@@ -1,45 +1,48 @@
-﻿using System;
+﻿using AMSBackEnd.Model.TenantFrontEnd;
+using WebApplication3.Modal;
+
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model.TenantFrontEnd;
+using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
+
 using Dapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using RestSharp;
 using Stripe;
-using WebApplication3.Modal;
 
 namespace WebApplication3.Controllers
 {
 
 
- 
-	 //this controller is responsible for dealing with the payment information and charging of the the tenant 
+
+    //this controller is responsible for dealing with the payment information and charging of the the tenant 
     [Route("api/[controller]")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
 
         private readonly IConfiguration _config;
-        public PaymentController(IConfiguration config) {
+        public PaymentController(IConfiguration config)
+        {
             _config = config;
 
         }
 
 
-		//this will get the payment history of a tenant for the payment history page
+        //this will get the payment history of a tenant for the payment history page
         [HttpGet]
         [Route("[action]/{email}")]
-        public IActionResult GetPaymentHistory([FromRoute] string Email) {
+        public IActionResult GetPaymentHistory([FromRoute] string Email)
+        {
             var LoginUserIdentifier = "";
 
             try
@@ -60,7 +63,8 @@ namespace WebApplication3.Controllers
             rent.AmountPaid from tenants ten inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @Email
             order by convert(datetime, rent.DatePaid, 120) desc
 ";
-            using (IDbConnection db = new SqlConnection(connStr)) {
+            using (IDbConnection db = new SqlConnection(connStr))
+            {
                 paymentHistories = db.Query<PaymentHistory>(SqlStr,
                     new { Email = new DbString { Value = Email, IsFixedLength = false, IsAnsi = true } }).ToList();
             }
@@ -146,7 +150,7 @@ namespace WebApplication3.Controllers
         }
 
 
-		//this endpoint is responsible for charging the customers credit card for the rent 
+        //this endpoint is responsible for charging the customers credit card for the rent 
         [HttpPost]
         [Route("[action]")]
         public IActionResult ChargeRents([FromBody] JObject data)
@@ -180,8 +184,8 @@ namespace WebApplication3.Controllers
 
             }
         }
-			//function used to charge the customer 
-            private void ChargeCustomer(string paymentToken, decimal RentTotal, string email)
+        //function used to charge the customer 
+        private void ChargeCustomer(string paymentToken, decimal RentTotal, string email)
         {
             //defined api key  to identify one self to strip 
             StripeConfiguration.ApiKey = "sk_test_wGglOzyHYIB92w1Pv5LAUtTD00pF5tUIbg";
@@ -210,5 +214,5 @@ namespace WebApplication3.Controllers
 
 
 
-    
+
 }

@@ -24,7 +24,7 @@
 
 .ProgessCircle {
   display: inline;
-  float: right;
+
   position: absolute;
 }
 
@@ -56,7 +56,7 @@
   margin-top: 25px;
 }
 
-.CheckOutSecc {
+.CenterText {
   text-align: center;
 }
 
@@ -211,4 +211,3 @@
 .MuiSnackbarContent-message {
   margin: auto;
 }
-

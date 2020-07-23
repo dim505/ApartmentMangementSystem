@@ -5,6 +5,7 @@ import Toolbar from "./Toolbar";
 import axios from "axios";
 import { FormatImage } from "../../shared/SharedFunctions";
 
+//contains all the conversations that belongs to the landlord. One convo for each tenant
 export default class ConversationList extends React.Component {
   state = {
     FilteredConversations: [],
@@ -60,7 +61,6 @@ export default class ConversationList extends React.Component {
             var InitialConversations = [];
             this.state.InitialConversations.map((conversation) => {
               PhotoURLs.map((PhotoUrl) => {
-                debugger;
                 if (PhotoUrl[0].Auth0ID === conversation.tenAuth0ID) {
                   conversation.photo = PhotoUrl[0].objectURL;
                   InitialConversations.push(conversation);
@@ -71,25 +71,27 @@ export default class ConversationList extends React.Component {
                 InitialConversations.push(conversation);
               }
             });
-            debugger;
+
             await this.setState({
               InitialConversations: InitialConversations,
               FilteredConversations: InitialConversations,
             });
+
+            this.props.UpdateConvoList(InitialConversations);
           });
       });
   };
 
   //loads new conversation in the conversation window on the right
-  HandleConversationClick = (name) => {
+  HandleConversationClick = (name, address, tenGuid) => {
+    window.address = " (" + address + ")";
     console.log(name);
     this.setState({ ConvoSelected: name });
-    this.props.HandleConversationClick(name);
+    this.props.HandleConversationClick(name, tenGuid);
   };
 
   //filters the list of people who are typed in the  search people search bar
   HandlePeopleSearch = (e) => {
-    debugger;
     let conversations = this.state.InitialConversations;
 
     conversations = conversations.filter((conversation) => {

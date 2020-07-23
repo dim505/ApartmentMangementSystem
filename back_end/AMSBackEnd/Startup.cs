@@ -1,3 +1,5 @@
+using AMSBackEnd.Jobs;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using AMSBackEnd.Jobs;
 
+
 namespace AMSBackEnd
 {
     public class Startup
@@ -30,7 +33,8 @@ namespace AMSBackEnd
         {
             Configuration = configuration;
         }
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+        private readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -51,10 +55,10 @@ namespace AMSBackEnd
                     builder.AllowAnyOrigin()
                                         .AllowAnyHeader()
                                         .AllowAnyMethod();
-                                       
+
                 });
             });
-            
+
 
             services.AddMvc().AddNewtonsoftJson();
             services.AddControllers();
@@ -98,7 +102,7 @@ namespace AMSBackEnd
             // Add the processing server as IHostedService
             services.AddHangfireServer();
 
-            
+
 
 
         }
@@ -119,7 +123,7 @@ namespace AMSBackEnd
             }
 
 
-           
+
 
 
             app.UseRouting();
@@ -141,7 +145,7 @@ namespace AMSBackEnd
                 endpoints.MapControllers();
             });
 
-            
+
 
         }
     }

@@ -16,6 +16,8 @@ import {
   CreateImageUrl,
 } from "../Shared/SharedFunctions";
 
+
+//contains landlord contact information 
 export default class LandLordInfoCard extends Component {
   state = {
     LandLordInformation: {

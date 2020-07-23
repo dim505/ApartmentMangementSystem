@@ -16,6 +16,8 @@ export default class NotLoggedIn extends Component {
   render() {
     return (
       <div className="ErrorPageStyle">
+        <Typography variant="h4">TENANT LOG IN PORTAL</Typography>
+
         <Typography variant="h6" gutterBottom>
           OPPS!! LOOKS LIKE YOU ARE NOT LOGGED IN
         </Typography>

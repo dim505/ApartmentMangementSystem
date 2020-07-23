@@ -2,16 +2,26 @@ import React, { Component } from "react";
 import "./ConversationListItem.css";
 import Avatar from "@material-ui/core/Avatar";
 
+//contains a single profile picture and a name for each conversation
 export default class ConversationListItem extends Component {
-  HandleConversationClick = (name) => {
-    this.props.HandleConversationClick(name);
+  componentDidMount() {}
+
+  //updates who is selected
+  HandleConversationClick = (name, address, tenGuid) => {
+    this.props.HandleConversationClick(name, address, tenGuid);
   };
 
   render() {
     return (
       <div
-        Key={this.props.data.Auth0ID}
-        onClick={() => this.HandleConversationClick(this.props.data.name)}
+        Key={this.props.data.tenGuid}
+        onClick={() =>
+          this.HandleConversationClick(
+            this.props.data.name,
+            this.props.data.address,
+            this.props.data.tenGuid
+          )
+        }
         className={`conversation-list-item ${
           this.props.ConvoSelected === this.props.data.name ? " selected" : ""
         }

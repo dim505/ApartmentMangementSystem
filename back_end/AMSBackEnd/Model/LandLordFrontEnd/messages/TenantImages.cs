@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿
+//used by Message controller - end point : GetTenantProfileImages gets all the profile images for the the conversation list 
 namespace WebApplication3.Modal
 {
     public class TenantImages

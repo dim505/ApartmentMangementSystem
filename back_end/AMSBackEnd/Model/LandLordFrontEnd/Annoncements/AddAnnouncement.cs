@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WebApplication3.Modal
+﻿namespace WebApplication3.Modal
 {
     public class AddAnnouncement
     {
-		//controller Announcements Endpoint AddAnnouncement, added to add news article to db 
+        //controller Announcements Endpoint AddAnnouncement, added to add news article to db 
         public int ID { get; set; }
 
         public string HouseSelect { get; set; }

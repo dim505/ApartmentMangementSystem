@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AMSBackEnd.Model;
+using AMSBackEnd.Model.home;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -30,7 +32,7 @@ namespace AMSBackEnd.Controllers
             _config = config;
         }
 
-		//get Receipt Totals for the Monthly expenses graph 
+        //get Receipt Totals for the Monthly expenses graph 
         [Route("[action]")]
         public IActionResult GetReceiptTotals()
         {
@@ -41,7 +43,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -60,7 +62,7 @@ namespace AMSBackEnd.Controllers
             return Ok(ReceiptTotal);
         }
 
-		//gets info for one of the quick facts cards 
+        //gets info for one of the quick facts cards 
         [Route("[action]")]
         public IActionResult YearlyPropExp()
         {
@@ -71,7 +73,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -90,7 +92,7 @@ namespace AMSBackEnd.Controllers
             return Ok(YearlyPropExp);
         }
 
-	     //gets info for one of the quick facts cards 
+        //gets info for one of the quick facts cards 
         [Route("[action]")]
         public IActionResult NumberOFTenants()
         {
@@ -101,7 +103,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -119,8 +121,8 @@ namespace AMSBackEnd.Controllers
             }
             return Ok(numberOFTenants);
         }
-			
-		//gets info for one of the quick facts cards 
+
+        //gets info for one of the quick facts cards 
         [Route("[action]")]
         public IActionResult PropertyStats()
         {
@@ -131,7 +133,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -151,7 +153,7 @@ namespace AMSBackEnd.Controllers
             return Ok(propertyStats);
         }
 
-		//gets info for one of the graphs 
+        //gets info for one of the graphs 
         [Route("[action]")]
         public IActionResult NumOfTenEachMonth()
         {
@@ -162,7 +164,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 
@@ -195,7 +197,7 @@ namespace AMSBackEnd.Controllers
                 //gets the login token from Auth0
                 LoginUserIdentifier = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 LoginUserIdentifier = "";
 

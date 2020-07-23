@@ -13,6 +13,8 @@ const validationSchema = Yup.object({
   Message: Yup.string("Enter a Message").required("Message is Required"),
 });
 
+
+//form used to contact landlord with an email (subject and message)
 class ContactLandLord extends Component {
   constructor(props) {
     super(props);

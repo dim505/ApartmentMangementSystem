@@ -56,7 +56,6 @@ export default class PropertyUpdateModal extends Component {
 
   //updates suggested address if another suggested address checkbox is checked
   UpdateSuggAddr = async () => {
-    debugger;
     if (window.SuggestedAddress[0].address.houseNumber === undefined) {
       window.SuggestedAddress[0].address.houseNumber = "";
     }

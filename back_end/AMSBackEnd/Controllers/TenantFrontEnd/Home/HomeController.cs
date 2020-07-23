@@ -1,4 +1,7 @@
-﻿using System;
+﻿using AMSBackEnd.Model;
+using AMSBackEnd.Model.TenantFrontEnd;
+
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -6,21 +9,16 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model;
-using AMSBackEnd.Model.TenantFrontEnd;
+
+
 using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using SendGrid;
 using SendGrid.Helpers.Mail;
-using Twilio;
-using Twilio.Jwt.AccessToken;
-using Twilio.Rest.Notify.V1.Service;
-using Twilio.Rest.Sync.V1;
- 
+using SendGrid;
 
 
 
@@ -35,13 +33,14 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IConfiguration _config;
-        public TenHomeController(IConfiguration config, ITokenGenerator tokenGenerator) {
+        public TenHomeController(IConfiguration config, ITokenGenerator tokenGenerator)
+        {
             _config = config;
             _tokenGenerator = tokenGenerator;
 
         }
 
-		//this endpoint gets all the account details of the home page 
+        //this endpoint gets all the account details of the home page 
         [Route("GetAccountDetails")]
         public IActionResult GetAccountDetails(string email)
         {
@@ -58,8 +57,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
                 LoginUserIdentifier = "";
 
             }
-	
-			//making API call to get temp token to be able to interact with Auth0 Management API 
+
+            //making API call to get temp token to be able to interact with Auth0 Management API 
             var client = new RestClient("https://dev-5wttvoce.auth0.com/oauth/token");
             var request = new RestRequest(Method.POST);
             request.AddHeader("content-type", "application/json");
@@ -75,7 +74,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
             var GetUserEmailUrl = "https://dev-5wttvoce.auth0.com/api/v2/users/" + LoginUserIdentifier;
 
-			//making api call to get Auth0 email from Auth0ID
+            //making api call to get Auth0 email from Auth0ID
             client = new RestClient(GetUserEmailUrl);
             request = new RestRequest(Method.GET);
             request.AddHeader("authorization", HeaderString);
@@ -92,10 +91,11 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 updateTenAuth0ID = db.Query<UpdateTenAuth0ID>("select isNUll(TenAuth0ID,1) as IsAuth0IDNull from tenants where email = @email and TenAuth0ID is null",
-    new { email = new DbString { Value = Useremail, IsFixedLength = false, IsAnsi = true } }
-    ).ToList();
-                 
-                if (updateTenAuth0ID.Count > 0) {
+                    new { email = new DbString { Value = Useremail, IsFixedLength = false, IsAnsi = true } }
+                    ).ToList();
+
+                if (updateTenAuth0ID.Count > 0)
+                {
                     var SqlStr = @"Update tenants 
                                 set TenAuth0ID =  @TenAuth0ID
                                
@@ -108,7 +108,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
                         });
 
                 }
- 
+
 
 
 
@@ -126,10 +126,11 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
         }
 
 
-		//this endpoint sends a message to the landlord from the tenant via email 
+        //this endpoint sends a message to the landlord from the tenant via email 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult ContactLandLord([FromBody] JObject data) {
+        public IActionResult ContactLandLord([FromBody] JObject data)
+        {
             var ConnStr = _config["ConnectionStrings:DefaultConnection"];
             SendMessage sendMessage = data["message"].ToObject<SendMessage>();
             var apiKey = _config["SendMailApiKey"];
@@ -138,8 +139,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             {
                 From = new EmailAddress("sendemailams@gmail.com", "Email Service"),
                 Subject = "TENANT MESSAGE: " + sendMessage.Subject,
-                 
-                HtmlContent = "<strong> Message sent from " + sendMessage.FromEmail  + "</br>"+ sendMessage.Message + " </strong>"
+
+                HtmlContent = "<strong> Message sent from " + sendMessage.FromEmail + "</br>" + sendMessage.Message + " </strong>"
             };
             msg.AddTo(new EmailAddress(sendMessage.ToEmail, ""));
             var response = client.SendEmailAsync(msg);
@@ -147,10 +148,11 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
-		//THIS ENDpoint is responsible for updating the tenants personal information 
+        //THIS ENDpoint is responsible for updating the tenants personal information 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult UpdateTenantInfo([FromBody] JObject data) {
+        public IActionResult UpdateTenantInfo([FromBody] JObject data)
+        {
 
             var LoginUserIdentifier = "";
             try
@@ -164,7 +166,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             }
             var ConnStr = _config["ConnectionStrings:DefaultConnection"];
             UpdateTenantInfo updateTenantInfo = data["tenant"].ToObject<UpdateTenantInfo>();
-            using (IDbConnection db = new SqlConnection(ConnStr)) {
+            using (IDbConnection db = new SqlConnection(ConnStr))
+            {
                 var SqlStr = @"Update tenants 
                                 set Name = @Name, 
                                     Phone = @PhoneNumber
@@ -182,7 +185,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             }
         }
 
-		//this endpoint is responsible for updating/adding the tenants profile image 
+        //this endpoint is responsible for updating/adding the tenants profile image 
         [HttpPost]
         [Route("[action]/{email}")]
         public async Task<IActionResult> AddTenantImage(string email, [FromForm] IFormFile body)
@@ -201,7 +204,8 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             byte[] filesBytes;
-            using (var memoryStream = new MemoryStream()) {
+            using (var memoryStream = new MemoryStream())
+            {
                 await body.CopyToAsync(memoryStream);
                 filesBytes = memoryStream.ToArray();
             }
@@ -212,13 +216,14 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
                 var SqlStr = @"Select count(*) as count from 
                                         TenantImage where TenAuth0ID = @Auth0ID";
 
-                imageCounts = db.Query<ImageCount>(SqlStr, 
-                    new { Auth0ID = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true  } }
-                    
+                imageCounts = db.Query<ImageCount>(SqlStr,
+                    new { Auth0ID = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }
+
                     ).ToList();
 
 
-                if (imageCounts[0].count == 0) {
+                if (imageCounts[0].count == 0)
+                {
                     SqlStr = @"insert into TenantImage values (@Image, @FileName, @ContentType, @Auth0ID, @email)";
                     var result = db.Execute(SqlStr, new
                     {
@@ -230,7 +235,9 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
                     });
 
-                } else if (imageCounts[0].count == 1) {
+                }
+                else if (imageCounts[0].count == 1)
+                {
                     SqlStr = @"Update TenantImage 
                                 set Image = @Image,
                                     FileName = @FileName,
@@ -249,18 +256,18 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
                 }
 
-            
+
             }
 
             return Ok();
         }
 
 
-		//this endpoint gets all the profile photos for the home page 
+        //this endpoint gets all the profile photos for the home page 
         [HttpGet]
         [Route("[action]")]
 
-        public IActionResult GetProfilePhoto ([FromRoute] string email)
+        public IActionResult GetProfilePhoto([FromRoute] string email)
         {
 
             var LoginUserIdentifier = "";
@@ -289,7 +296,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
 
 
-		//THIS endpoint gets all the news for the tenant related this his apartment 
+        //THIS endpoint gets all the news for the tenant related this his apartment 
         [HttpGet]
         [Route("[action]/{email}")]
 
@@ -320,7 +327,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
         }
 
-        
+        //gets the access token to the front end so it can interact to Twillo 
         [HttpPost]
         [Route("[action]")]
         public IActionResult GetToken([FromBody] JObject data)
@@ -332,12 +339,12 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
 
             }
             var token = _tokenGenerator.Generate(getToken.TenGuid, getToken.device);
-                return Ok(token);
+            return Ok(token);
 
         }
 
 
-        
+
 
     }
 }

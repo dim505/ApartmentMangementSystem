@@ -19,6 +19,7 @@ import AddNews from "./components/Announcements/AddNews";
 import Messenger from "./components/Messenger/Messenger";
 import Axios from "axios";
 
+//root of my application
 class App extends Component {
   constructor(props) {
     super(props);
@@ -33,11 +34,12 @@ class App extends Component {
   }
 
   componentDidMount() {
+    //sets title in tab
     document.title = "AMS";
     //checks if user is authenticated
     this.isUserAuthenticated();
-    console.log(process.env.REACT_APP_FrontEndSiteURL);
 
+    //gets data if there is none
     if (
       this.state.AccountDetails.length <= 0 &&
       this.state.ProfilePictures.length <= 0

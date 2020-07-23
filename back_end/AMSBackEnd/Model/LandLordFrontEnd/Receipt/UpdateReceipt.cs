@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-//this model is used to represent the data to update a receipt coming from the update receipt modal
+﻿//this model is used to represent the data to update a receipt coming from the update receipt modal
 namespace AMSBackEnd.Model
 {
     public class UpdateReceipt

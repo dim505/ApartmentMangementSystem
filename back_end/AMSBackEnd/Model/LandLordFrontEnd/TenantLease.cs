@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-//model used by the hangfire scheduled task send text to get all tenants and when their lease is due
+﻿//model used by the hangfire scheduled task send text to get all tenants and when their lease is due
 namespace AMSBackEnd.Model
 {
     public class TenantLease

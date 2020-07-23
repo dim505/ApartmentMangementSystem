@@ -1,19 +1,20 @@
-﻿using System;
+﻿using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
-
+using AMSBackEnd.Model;
+using AMSBackEnd.Model.home;
 using Dapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-using RestSharp;
+using System.IO;
 
 
 //this controller takes care of all the end points related to the account details page 
@@ -32,7 +33,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
         }
 
 
-		//end point responisble for updating and adding the landlord profile picture in the database
+        //end point responisble for updating and adding the landlord profile picture in the database
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> Add_Update_LandLord_Image([FromForm] IFormFile body)
@@ -109,7 +110,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
         }
 
 
-		//this endpoint is responsible for updating the text portion of the landlord information 
+        //this endpoint is responsible for updating the text portion of the landlord information 
         [HttpPost]
         [Route("[action]")]
         public IActionResult Add_Update_LandLordInfo([FromBody] JObject data)
@@ -176,7 +177,7 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
             return Ok();
         }
 
-		//this endpoint gets the landlord information to get display on the accounts detailed page 
+        //this endpoint gets the landlord information to get display on the accounts detailed page 
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetAccountInfo()
@@ -217,9 +218,9 @@ namespace AMSBackEnd.Controllers.LandLordFrontEnd
             return Ok(accountDetails);
 
         }
-		
-			
-		 //this end point gets the profile picture to display on the accounts detailed page for the landlord
+
+
+        //this end point gets the profile picture to display on the accounts detailed page for the landlord
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetAccountPhotoInfo()

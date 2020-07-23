@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-//this model is used to prepopulate the main tenant page with all the necessary information 
+﻿//this model is used to prepopulate the main tenant page with all the necessary information 
 namespace AMSBackEnd.Model
 {
     public class TenantModel

@@ -1,22 +1,22 @@
-﻿using System;
+﻿using AMSBackEnd.Model;
+
+using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AMSBackEnd.Model;
+using AMSBackEnd.Model.LandLordFrontEnd.AccountDetails;
+
 using Dapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
-
-
+using RestSharp;
+using Microsoft.AspNetCore.Authorization;
 //ReceiptController is responsible for all action methods related to the receipt page 
 
 namespace AMSBackEnd.Controllers

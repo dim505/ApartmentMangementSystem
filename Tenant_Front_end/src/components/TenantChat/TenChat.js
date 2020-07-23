@@ -3,8 +3,8 @@ import { Widget, addResponseMessage, addUserMessage } from "react-chat-widget";
 import Axios from "axios";
 import Chat from "twilio-chat";
 import SnackBar from "../Shared/SnackBar";
-import Image from "../Home/Hotel.jpg";
 
+//contains the chat client that sits in the lower left
 export default class TenChat extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +17,7 @@ export default class TenChat extends Component {
   }
 
   async componentDidMount() {
+    //window.addEventListener("scroll", this.HandleScroll, true);
     // Detect all clicks on the document
     document.addEventListener(
       "click",
@@ -29,12 +30,35 @@ export default class TenChat extends Component {
     );
   }
 
+  //gets update with each component render
   componentDidUpdate(prevProps) {
+    //gets update with each component render after the results load
     if (this.props.results.length > 0 && window.ApiCallAlreadyMade !== true) {
       this.GetChatData();
     }
   }
 
+  /*
+  HandleScroll = async () => {
+    var ChannelMessageCount = await this.channel.getMessagesCount();
+    var index = ChannelMessageCount - this.state.Messages.length;
+
+    var Element = document.getElementsByClassName("scrollable content");
+    if (
+      Element[0].scrollTop === 0 &&
+      ChannelMessageCount !== this.state.Messages.length
+    ) {
+      this.channel
+        .getMessages(60, index)
+        .then((messages) => this.LoadMessages(messages));
+    }
+  }; */
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.HandleScroll);
+  }
+
+  ////this gets access token be to authenticated by the twillo servers
   async GetChatData() {
     window.ApiCallAlreadyMade = true;
     window.ClickOpen = false;
@@ -53,6 +77,9 @@ export default class TenChat extends Component {
       .then(async (result) => this.setupChatClient(result))
       .catch(/*this.handleError */);
   }
+
+  //this functions set up twillo chat client and get data from twillo servers
+
   async setupChatClient(result) {
     var client = await Chat.create(result.data);
 
@@ -74,7 +101,7 @@ export default class TenChat extends Component {
       })
       .then((channel) => {
         this.channel
-          .getMessages()
+          .getMessages(1000)
           .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
@@ -84,26 +111,55 @@ export default class TenChat extends Component {
       })
       .catch(this.handleError);
   }
-
+  //function responsible for opening up the snack bar notification
   OpenNoti = (message) => {
-    debugger;
     this.setState({
       OpenNoti: true,
       Message: message,
     });
   };
 
+  //function responsible for closing the snack bar notification
   CloseNoti = () => {
     this.setState({
       OpenNoti: false,
     });
   };
 
+  //notifies user when it cant load chat data
   handleError = () => {
     this.OpenNoti("Chat failed to Load :C");
   };
 
-  LoadMessages = (messages) => {};
+  LoadMessages = (messages) => {
+    console.log(messages);
+    var MessageArray = [];
+    messages.items.map((message) => {
+      console.log(message.state);
+
+      if (message.state.author === this.props.results[0].tenGuid) {
+        addUserMessage(message.state.body, this.props.results[0].tenGuid);
+      } else {
+        addResponseMessage(
+          message.state.body,
+          this.props.results[0].landLordAuth0ID
+        );
+      }
+
+      /*     
+      MessageArray.push({
+        guid: message.state.author,
+        message : message.state.body
+      })*/
+    });
+    /*
+    await this.setState((prevState) => ({
+      ChatMessages:
+        prevState.ChatMessages.length <= 0 && prevState.ShowLoader === true
+          ? [...ChatMessages, ...prevState.ChatMessages]
+          : MessageArray,
+    })); */
+  };
 
   handleNewUserMessage = (messageText) => {
     var UserMessage = {};
@@ -114,14 +170,10 @@ export default class TenChat extends Component {
     this.setState((prevState) => ({
       ChatMessages: [...prevState.ChatMessages, UserMessage],
     }));
-
-    // addResponseMessage(message);
   };
 
+  //changes style dynamicly when clicking the widget. Have to do this because of styling issues
   handleClick = async (e) => {
-    debugger;
-
-    console.log(window.ClickOpen);
     window.ClickOpen = true;
     var WidgetDiv = document.getElementsByClassName("rcw-widget-container")[0];
     if (
@@ -141,17 +193,15 @@ export default class TenChat extends Component {
       WidgetDiv.style.height = "";
       WidgetDiv.style.width = "90vw";
     }
-
-    console.log(window.ClickOpen);
   };
   render() {
     return (
       <div className="widget" onClick={this.handleClick}>
         <Widget
           className={"clicked"}
-          profileAvatar={Image}
           handleNewUserMessage={this.handleNewUserMessage}
           fullScreenMode={false}
+          showTimeStamp={false}
           title="Welcome!"
           subtitle="Please type here to Chat with your landlord!"
         />

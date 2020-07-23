@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-
-//this model is used to prepopulate the main receipt page with all the necessary information 
+﻿//this model is used to prepopulate the main receipt page with all the necessary information 
 namespace AMSBackEnd.Model
 {
     public class ReceiptModel
@@ -24,7 +18,7 @@ namespace AMSBackEnd.Model
         public string ImageUrl { get; set; }
         public string Auth0ID { get; set; }
 
-        
+
 
     }
 }

@@ -14,6 +14,7 @@ export const ContactLandLordForm = props => {
     handleSubmit
   } = props;
 
+	//updates the state of the form, tracks the touched fields
   const change = (name, e) => {
     e.persist();
     handleChange(e);

@@ -1,6 +1,8 @@
 import React from 'react';
 import './ToolbarButton.css';
 
+
+//Obsolete code 
 export default function ToolbarButton(props) {
     const { icon } = props;
     return (
