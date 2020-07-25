@@ -60,6 +60,8 @@ export default class TenChat extends Component {
 
   ////this gets access token be to authenticated by the twillo servers
   async GetChatData() {
+    //gets auth token
+    const BearerToken = await this.props.auth.getTokenSilently();
     window.ApiCallAlreadyMade = true;
     window.ClickOpen = false;
     var Mydata = {};
@@ -69,10 +71,12 @@ export default class TenChat extends Component {
     };
     Mydata.GetToken = GetToken;
 
-    //makes api call to delete item
     let result = await Axios.post(
       `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
-      Mydata
+      Mydata,
+      {
+        headers: { Authorization: `bearer ${BearerToken}` },
+      }
     )
       .then(async (result) => this.setupChatClient(result))
       .catch(/*this.handleError */);

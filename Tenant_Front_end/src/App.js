@@ -192,7 +192,7 @@ class App extends Component {
                   GetPaymentInfo={this.GetPaymentInfo}
                 />
               </Route>
-              <TenChat results={this.state.results} />
+              <TenChat auth={this.props.auth} results={this.state.results} />
             </Fade>
           </div>
         ) : (
