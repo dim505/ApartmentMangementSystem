@@ -102,7 +102,9 @@ namespace WebApplication3.Controllers
                             inner join  RentHistory rent on ten.tenGuid = rent.TenGuid 
                             where ten.Email = @Email
                              ) src
-                             group by ShortDate";
+                             group by ShortDate
+                                order by CONVERT(datetime, ShortDate)
+";
             using (IDbConnection db = new SqlConnection(connStr))
             {
                 paymentHistInfoCard = db.Query<PaymentHistInfoCard>(SqlStr,

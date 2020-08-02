@@ -211,3 +211,8 @@
 .MuiSnackbarContent-message {
   margin: auto;
 }
+
+
+.BrainhubCarousel__arrows{
+    background-color: #3f51b5;
+}

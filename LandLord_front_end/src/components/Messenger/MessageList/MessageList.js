@@ -33,16 +33,17 @@ export default class MessageList extends Component {
     var Element = document.getElementsByClassName("scrollable content");
     if (
       Element[0].scrollTop === 0 &&
-      ChannelMessageCount !== this.state.Messages.length
+      ChannelMessageCount >= this.state.Messages.length
     ) {
+      window.GetOlderMessages = true;
       this.channel
-        .getMessages(60, index)
+        .getMessages(100, index)
         .then((messages) => this.LoadMessages(messages));
     }
   };
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this.HandleScroll);
+    window.removeEventListener("scroll", this.HandleScroll, true);
   }
   async componentDidUpdate(prevProps) {
     if (prevProps.tenGuid !== this.props.tenGuid && this.props.tenGuid !== "") {
@@ -74,7 +75,7 @@ export default class MessageList extends Component {
     Mydata.GetToken = GetToken;
     window.MY_USER_ID = this.props.InitialConversations[0].landLordAuth0ID;
     let result = await Axios.post(
-      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
+      `https://cors-anywhere.herokuapp.com/${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata
     )
       .then(async (result) => this.setupChatClient(result))
@@ -103,12 +104,31 @@ export default class MessageList extends Component {
       })
       .then((channel) => {
         this.channel
-          .getMessages(1000)
+          .getMessages(999)
           .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
       .then(() => {
-        //;
+        this.channel.on("messageAdded", (message) => {
+          if (
+            this.props.InitialConversations[0].landLordAuth0ID !==
+            message.author
+          ) {
+            this.LoadMessages(message);
+          }
+          this.channel.on("messageAdded", (message) => {
+            if (
+              this.props.InitialConversations[0].landLordAuth0ID !==
+              message.author
+            ) {
+              this.LoadMessages(message);
+            }
+
+            console.log(message.author + "in chrome", message.body);
+          });
+          console.log(message.author + "in chrome", message.body);
+        });
+
         console.log("Success");
       })
       .catch(this.handleError);
@@ -122,20 +142,33 @@ export default class MessageList extends Component {
   LoadMessages = async (messages) => {
     var MessageArray = [];
     console.log(messages);
-    messages.items.map((message) => {
+
+    if (messages.items !== undefined) {
+      messages.items.map((message) => {
+        var MessageObj = {
+          id: message.state.index,
+          author: message.state.author,
+          message: message.state.body,
+          timestamp: message.state.dateUpdated,
+        };
+
+        MessageArray.push(MessageObj);
+      });
+    } else {
       var MessageObj = {
-        id: message.state.index,
-        author: message.state.author,
-        message: message.state.body,
-        timestamp: message.state.dateUpdated,
+        id: messages.state.index,
+        author: messages.state.author,
+        message: messages.state.body,
+        timestamp: messages.state.dateUpdated,
       };
 
       MessageArray.push(MessageObj);
-    });
+    }
 
     await this.setState((prevState) => ({
       Messages:
-        prevState.Messages.length <= 0 && prevState.ShowLoader === true
+        (prevState.Messages.length <= 0 && prevState.ShowLoader === true) ||
+        window.GetOlderMessages === true
           ? [...MessageArray, ...prevState.Messages]
           : MessageArray,
     }));
@@ -145,6 +178,7 @@ export default class MessageList extends Component {
     ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
     window.scrollTo(0, document.body.scrollHeight);
     this.CallLoader();
+    window.GetOlderMessages = false;
   };
 
   //function responsible for opening up the snack bar notification

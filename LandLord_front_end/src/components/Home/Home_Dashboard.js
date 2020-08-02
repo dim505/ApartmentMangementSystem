@@ -12,6 +12,7 @@ import Loader from "react-dots-loader";
 import "react-dots-loader/index.css";
 import Axios from "axios";
 import QuickFacts from "./QuickFacts";
+import Typography from "@material-ui/core/Typography";
 
 const useStyles = withStyles({
   root: {
@@ -102,10 +103,15 @@ export default class Home_Dashboard extends Component {
         ) : (
           <Bounce top>
             <div className="Center CenterText">
-              <p>
+              <Typography variant="h4" gutterBottom>
+                Landlord Login Portal
+              </Typography>
+
+              <Typography variant="body1" gutterBottom>
                 Looks Like you are not logged in... If you would like to see the
-                rest of the application, Please Log in Here{" "}
-              </p>
+                rest of the application, Please Log in Here
+              </Typography>
+
               <Button
                 classes={{ label: "MenuItem" }}
                 onClick={this.Login}
@@ -115,10 +121,10 @@ export default class Home_Dashboard extends Component {
                 Log In
               </Button>
 
-              <h1>
-                {" "}
+              <Typography variant="subtitle1" gutterBottom>
                 Here are some bouncing balls while you wait <Loader size={10} />
-              </h1>
+              </Typography>
+
               <Stage className="canvas" width={400} height={400}>
                 <Game />
               </Stage>

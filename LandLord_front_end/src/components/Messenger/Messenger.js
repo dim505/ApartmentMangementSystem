@@ -19,7 +19,7 @@ export default class Messenger extends React.Component {
       tenGuid: tenGuid,
     });
   };
-
+	//updates the message header of the name/address of who was selected
   UpdateConvoList = (InitialConversations) => {
     this.setState({
       InitialConversations: InitialConversations,

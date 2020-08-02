@@ -38,21 +38,7 @@ export default class TenChat extends Component {
     }
   }
 
-  /*
-  HandleScroll = async () => {
-    var ChannelMessageCount = await this.channel.getMessagesCount();
-    var index = ChannelMessageCount - this.state.Messages.length;
-
-    var Element = document.getElementsByClassName("scrollable content");
-    if (
-      Element[0].scrollTop === 0 &&
-      ChannelMessageCount !== this.state.Messages.length
-    ) {
-      this.channel
-        .getMessages(60, index)
-        .then((messages) => this.LoadMessages(messages));
-    }
-  }; */
+ 
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this.HandleScroll);
@@ -72,14 +58,14 @@ export default class TenChat extends Component {
     Mydata.GetToken = GetToken;
 
     let result = await Axios.post(
-      `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
+      /*https://cors-anywhere.herokuapp.com/*/ `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
       }
     )
       .then(async (result) => this.setupChatClient(result))
-      .catch(/*this.handleError */);
+      .catch(this.handleError);
   }
 
   //this functions set up twillo chat client and get data from twillo servers
@@ -110,11 +96,18 @@ export default class TenChat extends Component {
         return this.channel.join().catch(() => {});
       })
       .then(() => {
-        //;
+        this.channel.on("messageAdded", (message) => {
+          if (this.props.results[0].tenGuid !== message.author) {
+            this.UpdateIncomingUserMessage(message.author, message.body);
+          }
+
+          console.log(message.author + "in chrome", message.body);
+        });
         console.log("Success");
       })
       .catch(this.handleError);
   }
+
   //function responsible for opening up the snack bar notification
   OpenNoti = (message) => {
     this.setState({
@@ -136,11 +129,8 @@ export default class TenChat extends Component {
   };
 
   LoadMessages = (messages) => {
-    console.log(messages);
     var MessageArray = [];
     messages.items.map((message) => {
-      console.log(message.state);
-
       if (message.state.author === this.props.results[0].tenGuid) {
         addUserMessage(message.state.body, this.props.results[0].tenGuid);
       } else {
@@ -149,20 +139,7 @@ export default class TenChat extends Component {
           this.props.results[0].landLordAuth0ID
         );
       }
-
-      /*     
-      MessageArray.push({
-        guid: message.state.author,
-        message : message.state.body
-      })*/
     });
-    /*
-    await this.setState((prevState) => ({
-      ChatMessages:
-        prevState.ChatMessages.length <= 0 && prevState.ShowLoader === true
-          ? [...ChatMessages, ...prevState.ChatMessages]
-          : MessageArray,
-    })); */
   };
 
   handleNewUserMessage = (messageText) => {
@@ -171,6 +148,18 @@ export default class TenChat extends Component {
     UserMessage.message = messageText;
 
     this.channel.sendMessage(messageText);
+    this.setState((prevState) => ({
+      ChatMessages: [...prevState.ChatMessages, UserMessage],
+    }));
+  };
+
+  UpdateIncomingUserMessage = (LandLordAuth0, messageText) => {
+    addResponseMessage(messageText, LandLordAuth0);
+
+    var UserMessage = {};
+    UserMessage.LandLordAuth0 = LandLordAuth0;
+    UserMessage.message = messageText;
+
     this.setState((prevState) => ({
       ChatMessages: [...prevState.ChatMessages, UserMessage],
     }));

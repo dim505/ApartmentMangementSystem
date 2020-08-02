@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration;
+
 using System;
 
 using System.Collections.Generic;
@@ -32,6 +32,7 @@ namespace AMSBackEnd
                 new ChatGrant {EndpointId = endpointId, ServiceSid = _config["TwilioAccount:ChatServiceSid"],  }
 
             };
+
 
             var token = new Token(
                 _config["TwilioAccount:AccountSid"],

@@ -42,11 +42,6 @@ namespace AMSBackEnd
         {
 
 
-            services.AddScoped<IMyJob, MyJob>();
-            services.AddScoped<Inter_LeaseDateSendText, LeaseDateSendText>();
-            services.AddScoped<ISendEmail, SendEmail>();
-            services.AddScoped<ITokenGenerator, TokenGenerator>();
-
             services.AddCors(options =>
             {
                 options.AddPolicy(MyAllowSpecificOrigins,
@@ -58,6 +53,15 @@ namespace AMSBackEnd
 
                 });
             });
+
+
+
+            services.AddScoped<IMyJob, MyJob>();
+            services.AddScoped<Inter_LeaseDateSendText, LeaseDateSendText>();
+            services.AddScoped<ISendEmail, SendEmail>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
+
+
 
 
             services.AddMvc().AddNewtonsoftJson();
