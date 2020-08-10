@@ -105,7 +105,7 @@ export default class LandLordNews extends Component {
       }
     ).then(() => this.GetPropNews());
     //open notification alert
-    this.OpenNoti("Delete was deleted");
+    this.OpenNoti("News was deleted");
   };
 
   //function used to open warning box

@@ -10,6 +10,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import "./MessageList.css";
 import Fade from "react-reveal/Fade";
 import Typography from "@material-ui/core/Typography";
+import { date } from "yup";
 
 //parent that contains all the messages for the selected conversation
 export default class MessageList extends Component {
@@ -22,6 +23,7 @@ export default class MessageList extends Component {
     window.address = " ";
     window.ApiCallAlreadyMade = false;
     window.MY_USER_ID = "";
+    window.GetOldMessTimeStamp = new Date();
 
     window.addEventListener("scroll", this.HandleScroll, true);
   }
@@ -31,11 +33,14 @@ export default class MessageList extends Component {
     var index = ChannelMessageCount - this.state.Messages.length;
 
     var Element = document.getElementsByClassName("scrollable content");
+
     if (
       Element[0].scrollTop === 0 &&
-      ChannelMessageCount >= this.state.Messages.length
+      ChannelMessageCount >= this.state.Messages.length &&
+      Math.abs(window.GetOldMessTimeStamp - new Date()) > 500
     ) {
       window.GetOlderMessages = true;
+      window.GetOldMessTimeStamp = new Date();
       this.channel
         .getMessages(100, index)
         .then((messages) => this.LoadMessages(messages));
@@ -86,25 +91,25 @@ export default class MessageList extends Component {
   async setupChatClient(result) {
     var client = await Chat.create(result.data);
 
-    var channelName =
+    window.channelName =
       this.props.tenGuid +
       "-" +
       this.props.InitialConversations[0].landLordAuth0ID;
     this.client = client;
     this.client
-      .getChannelByUniqueName(channelName)
+      .getChannelByUniqueName(window.channelName)
       .then((channel) => (this.channel = channel))
 
       .catch((error) => {
         if (error.body.code === 50300) {
-          return this.client.createChannel({ uniqueName: channelName });
+          return this.client.createChannel({ uniqueName: window.channelName });
         } else {
           this.handleError(error);
         }
       })
       .then((channel) => {
         this.channel
-          .getMessages(999)
+          .getMessages(100)
           .then((messages) => this.LoadMessages(messages));
         return this.channel.join().catch(() => {});
       })
@@ -112,20 +117,13 @@ export default class MessageList extends Component {
         this.channel.on("messageAdded", (message) => {
           if (
             this.props.InitialConversations[0].landLordAuth0ID !==
-            message.author
+              message.author &&
+            window.PreviousMessageID !== message.state.index
           ) {
+            window.PreviousMessageID = message.state.index;
             this.LoadMessages(message);
           }
-          this.channel.on("messageAdded", (message) => {
-            if (
-              this.props.InitialConversations[0].landLordAuth0ID !==
-              message.author
-            ) {
-              this.LoadMessages(message);
-            }
 
-            console.log(message.author + "in chrome", message.body);
-          });
           console.log(message.author + "in chrome", message.body);
         });
 
@@ -140,45 +138,49 @@ export default class MessageList extends Component {
   };
 
   LoadMessages = async (messages) => {
-    var MessageArray = [];
-    console.log(messages);
+    if (
+      window.channelName === messages.items[0].channel.channelState.uniqueName
+    ) {
+      var MessageArray = [];
+      console.log(messages);
 
-    if (messages.items !== undefined) {
-      messages.items.map((message) => {
+      if (messages.items !== undefined) {
+        messages.items.map((message) => {
+          var MessageObj = {
+            id: message.state.index,
+            author: message.state.author,
+            message: message.state.body,
+            timestamp: message.state.dateUpdated,
+          };
+
+          MessageArray.push(MessageObj);
+        });
+      } else {
         var MessageObj = {
-          id: message.state.index,
-          author: message.state.author,
-          message: message.state.body,
-          timestamp: message.state.dateUpdated,
+          id: messages.state.index,
+          author: messages.state.author,
+          message: messages.state.body,
+          timestamp: messages.state.dateUpdated,
         };
 
         MessageArray.push(MessageObj);
-      });
-    } else {
-      var MessageObj = {
-        id: messages.state.index,
-        author: messages.state.author,
-        message: messages.state.body,
-        timestamp: messages.state.dateUpdated,
-      };
+      }
 
-      MessageArray.push(MessageObj);
+      await this.setState((prevState) => ({
+        Messages:
+          (prevState.Messages.length <= 0 && prevState.ShowLoader === true) ||
+          window.GetOlderMessages === true
+            ? [...MessageArray, ...prevState.Messages]
+            : [...prevState.Messages, ...MessageArray],
+      }));
+
+      this.renderMessages();
+      this.CallLoader();
+      window.GetOlderMessages = false;
+      var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
+      ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
+      window.scrollTo(0, document.body.scrollHeight);
     }
-
-    await this.setState((prevState) => ({
-      Messages:
-        (prevState.Messages.length <= 0 && prevState.ShowLoader === true) ||
-        window.GetOlderMessages === true
-          ? [...MessageArray, ...prevState.Messages]
-          : MessageArray,
-    }));
-
-    this.renderMessages();
-    var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
-    ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
-    window.scrollTo(0, document.body.scrollHeight);
-    this.CallLoader();
-    window.GetOlderMessages = false;
   };
 
   //function responsible for opening up the snack bar notification

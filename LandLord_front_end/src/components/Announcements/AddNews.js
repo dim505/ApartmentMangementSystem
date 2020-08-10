@@ -125,7 +125,7 @@ class AddNews extends Component {
   OpenNoti = () => {
     this.setState({
       OpenNoti: true,
-      Message: "Announcement was scucessfully pushed",
+      Message: "Announcement was successfully pushed",
     });
   };
 
