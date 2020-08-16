@@ -105,7 +105,7 @@ export default class ReceiptMainTable extends Component {
                       </Button>
                     </Tooltip>
                   </TableCell>
-                  <TableCell>
+                  <TableCell align="right">
                     <Button
                       onClick={() => this.props.OpnReceiptViewModal(Receipt.id)}
                       variant="outlined"
@@ -113,8 +113,7 @@ export default class ReceiptMainTable extends Component {
                     >
                       View
                     </Button>
-                  </TableCell>
-                  <TableCell>
+
                     <Button
                       onClick={() => this.props.OpenModal(Receipt.id)}
                       variant="outlined"
@@ -122,8 +121,7 @@ export default class ReceiptMainTable extends Component {
                     >
                       Update
                     </Button>
-                  </TableCell>
-                  <TableCell>
+
                     <ReceiptRmvButton
                       OpenItmRmvNoti={this.props.OpenItmRmvNoti}
                       id={Receipt.id}

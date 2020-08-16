@@ -44,7 +44,7 @@ export default class PropertyRemoveButton extends Component {
           OpnSaveWarningBox={this.state.OpnSaveWarningBox}
           CloseSaveWarnBox={this.CloseSaveWarnBox}
           Save={() => this.OpenPropertyRmvNoti(this.props.guid)}
-          message="Are you sure you want to save?"
+          message="Are you sure you want to remove property?"
         />
 
         <Button

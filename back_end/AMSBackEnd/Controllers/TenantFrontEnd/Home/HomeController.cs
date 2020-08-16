@@ -214,7 +214,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
             {
                 List<ImageCount> imageCounts = new List<ImageCount>();
                 var SqlStr = @"Select count(*) as count from 
-                                        TenantImage where TenAuth0ID = @Auth0ID";
+                                        TenantImage where Auth0ID = @Auth0ID";
 
                 imageCounts = db.Query<ImageCount>(SqlStr,
                     new { Auth0ID = new DbString { Value = LoginUserIdentifier, IsFixedLength = false, IsAnsi = true } }

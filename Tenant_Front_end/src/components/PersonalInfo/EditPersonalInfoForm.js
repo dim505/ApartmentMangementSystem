@@ -45,7 +45,7 @@ export const EditPersonalInfoForm = (props) => {
       <Tooltip
         title={
           <span className={"StyleToolTip"}>
-            "Sorry! can't chance your email"
+            "Sorry! can't change your email"
           </span>
         }
         placement="top"

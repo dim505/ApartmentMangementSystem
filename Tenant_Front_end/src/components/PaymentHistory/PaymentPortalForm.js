@@ -109,7 +109,7 @@ class PaymentPortalForm extends Component {
         <Tooltip
           title={
             <span className={"StyleToolTip"}>
-              "Enter 4242 4242 4242 4242 4242 424 to pay rent"
+              "Enter test credit card 4242 4242 4242 4242 4242 424 to pay rent"
             </span>
           }
           placement="top"

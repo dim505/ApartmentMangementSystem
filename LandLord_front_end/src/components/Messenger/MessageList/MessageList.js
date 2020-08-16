@@ -23,7 +23,6 @@ export default class MessageList extends Component {
     window.address = " ";
     window.ApiCallAlreadyMade = false;
     window.MY_USER_ID = "";
-    window.GetOldMessTimeStamp = new Date();
 
     window.addEventListener("scroll", this.HandleScroll, true);
   }
@@ -35,7 +34,8 @@ export default class MessageList extends Component {
     var Element = document.getElementsByClassName("scrollable content");
 
     if (
-      Element[0].scrollTop === 0 &&
+      Element[0].scrollTop < 500 &&
+      Element[0].scrollTop > 1 &&
       ChannelMessageCount >= this.state.Messages.length &&
       Math.abs(window.GetOldMessTimeStamp - new Date()) > 500
     ) {
@@ -80,7 +80,7 @@ export default class MessageList extends Component {
     Mydata.GetToken = GetToken;
     window.MY_USER_ID = this.props.InitialConversations[0].landLordAuth0ID;
     let result = await Axios.post(
-      `https://cors-anywhere.herokuapp.com/${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
+      /*`https://cors-anywhere.herokuapp.com/*/ `${process.env.REACT_APP_BackEndUrl}/api/Tenhome/GetToken`,
       Mydata
     )
       .then(async (result) => this.setupChatClient(result))
@@ -108,10 +108,10 @@ export default class MessageList extends Component {
         }
       })
       .then((channel) => {
+        this.channel.join().catch(() => {});
         this.channel
           .getMessages(100)
           .then((messages) => this.LoadMessages(messages));
-        return this.channel.join().catch(() => {});
       })
       .then(() => {
         this.channel.on("messageAdded", (message) => {
@@ -138,49 +138,46 @@ export default class MessageList extends Component {
   };
 
   LoadMessages = async (messages) => {
-    if (
-      window.channelName === messages.items[0].channel.channelState.uniqueName
-    ) {
-      var MessageArray = [];
-      console.log(messages);
+    var MessageArray = [];
+    console.log(messages);
 
-      if (messages.items !== undefined) {
-        messages.items.map((message) => {
-          var MessageObj = {
-            id: message.state.index,
-            author: message.state.author,
-            message: message.state.body,
-            timestamp: message.state.dateUpdated,
-          };
-
-          MessageArray.push(MessageObj);
-        });
-      } else {
+    if (messages.items !== undefined) {
+      messages.items.map((message) => {
         var MessageObj = {
-          id: messages.state.index,
-          author: messages.state.author,
-          message: messages.state.body,
-          timestamp: messages.state.dateUpdated,
+          id: message.state.index,
+          author: message.state.author,
+          message: message.state.body,
+          timestamp: message.state.dateUpdated,
         };
 
         MessageArray.push(MessageObj);
-      }
+      });
+    } else {
+      var MessageObj = {
+        id: messages.state.index,
+        author: messages.state.author,
+        message: messages.state.body,
+        timestamp: messages.state.dateUpdated,
+      };
 
-      await this.setState((prevState) => ({
-        Messages:
-          (prevState.Messages.length <= 0 && prevState.ShowLoader === true) ||
-          window.GetOlderMessages === true
-            ? [...MessageArray, ...prevState.Messages]
-            : [...prevState.Messages, ...MessageArray],
-      }));
-
-      this.renderMessages();
-      this.CallLoader();
-      window.GetOlderMessages = false;
-      var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
-      ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
-      window.scrollTo(0, document.body.scrollHeight);
+      MessageArray.push(MessageObj);
     }
+
+    await this.setState((prevState) => ({
+      Messages:
+        (prevState.Messages.length <= 0 && prevState.ShowLoader === true) ||
+        window.GetOlderMessages === true
+          ? [...MessageArray, ...prevState.Messages]
+          : [...prevState.Messages, ...MessageArray],
+    }));
+
+    this.renderMessages();
+    this.CallLoader();
+    window.GetOldMessTimeStamp = new Date();
+    window.GetOlderMessages = false;
+    var ScrollDiv = document.getElementsByClassName("scrollable content")[0];
+    ScrollDiv.scrollTop = ScrollDiv.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
   };
 
   //function responsible for opening up the snack bar notification
@@ -293,14 +290,25 @@ export default class MessageList extends Component {
   };
 
   ShowMessages = () => {
-    if (this.props.tenGuid !== "") {
+    if (
+      this.state.Messages.length <= 0 &&
+      this.props.tenGuid !== "" &&
+      this.state.ShowLoader !== true
+    ) {
       return (
         <React.Fragment>
-          <Fade bottom opposite when={!this.state.ShowLoader}>
-            <div className="message-list-container">
-              {this.renderMessages()}
-            </div>
-          </Fade>
+          <div className="message-list-container">
+            <Typography
+              classes={{ root: "CenterText" }}
+              variant="h3"
+              gutterBottom
+            >
+              No conversations found. Type Away!!!
+            </Typography>
+
+            {this.renderMessages()}
+          </div>
+
           <div className="compose">
             <input
               onKeyPress={this.handleOnKeyPress}
@@ -313,11 +321,22 @@ export default class MessageList extends Component {
           </div>
         </React.Fragment>
       );
-    } else if (this.state.Messages.length <= 0 && this.props.tenGuid !== "") {
+    } else if (this.props.tenGuid !== "") {
       return (
-        <Typography classes={{ root: "CenterText" }} variant="h3" gutterBottom>
-          No conversations found. Type Away!!!
-        </Typography>
+        <React.Fragment>
+          <div className="message-list-container">{this.renderMessages()}</div>
+
+          <div className="compose">
+            <input
+              onKeyPress={this.handleOnKeyPress}
+              type="text"
+              className="compose-input"
+              placeholder="Type a message"
+            />
+
+            <SendIcon onClick={this.UpdateMessage} style={{ fontSize: 36 }} />
+          </div>
+        </React.Fragment>
       );
     } else {
       return (

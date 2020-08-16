@@ -168,7 +168,7 @@ class EditLandLordInfo extends Component {
             OpnSaveWarningBox={this.state.OpnSaveWarningBox}
             CloseSaveWarnBox={this.CloseSaveWarnBox}
             Save={this.Save}
-            message="Are you Sure you want to save?"
+            message="Are you sure you want to save?"
           />
         </React.Fragment>
       </Fade>

@@ -224,6 +224,13 @@ export default class PropertyHomePage extends Component {
             </h1>
           </div>
         )}
+
+        <SnackBar
+          position="bottom"
+          OpenNoti={this.state.OpenNoti}
+          CloseNoti={this.CloseNoti}
+          message={this.state.Message}
+        />
       </div>
     );
   }

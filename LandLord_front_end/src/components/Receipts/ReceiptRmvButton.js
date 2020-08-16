@@ -50,7 +50,7 @@ export default class ReceiptRmvButton extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <DialogBox
           OpnSaveWarningBox={this.state.OpnSaveWarningBox}
           CloseSaveWarnBox={this.CloseSaveWarnBox}
@@ -71,7 +71,7 @@ export default class ReceiptRmvButton extends Component {
             <CircularProgress />
           </div>
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

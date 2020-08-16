@@ -155,7 +155,7 @@ class AddNews extends Component {
                 variant="h5"
                 component="h2"
               >
-                Announcements
+                Add Announcements
               </Typography>
               <Formik
                 enableReinitialize
@@ -179,7 +179,7 @@ class AddNews extends Component {
             OpnSaveWarningBox={this.state.OpnSaveWarningBox}
             CloseSaveWarnBox={this.CloseSaveWarnBox}
             Save={this.Save}
-            message="Are you sure you want to send message"
+            message="Are you sure you want to add Announcement"
           />
         </React.Fragment>
       </Fade>

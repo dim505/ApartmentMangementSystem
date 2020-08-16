@@ -191,7 +191,7 @@ namespace AMSBackEnd.Controllers
             {
 
                 var SqlStr = @"Delete from tenants
-                                    where guid = @Guid and Auth0ID = @LoginUserIdentifier";
+                                    where guid = @Guid and LandLordAuth0ID = @LoginUserIdentifier";
                 db.Execute(SqlStr, new
                 {
                     Guid = id,

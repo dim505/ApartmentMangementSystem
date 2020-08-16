@@ -105,14 +105,14 @@ export default class LandLordNews extends Component {
       }
     ).then(() => this.GetPropNews());
     //open notification alert
-    this.OpenNoti("News was deleted");
+    this.OpenNoti("Announcement was deleted");
   };
 
   //function used to open warning box
   OpenSaveWarnBox = (DialogBoxMessage) => {
     this.setState({
       OpnSaveWarningBox: true,
-      DialogBoxMessage: "Are you sure you want to delete the record?",
+      DialogBoxMessage: "Are you sure you want to delete this record?",
     });
   };
   //function used to close warning box
