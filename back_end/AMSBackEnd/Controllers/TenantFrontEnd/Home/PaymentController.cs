@@ -134,7 +134,7 @@ namespace WebApplication3.Controllers
             }
 
 
-            var SqlStr = @"select CONVERT(varchar(10),CONVERT(DATE, DATEADD(d, -( DAY(DATEADD(m, 1, GETDATE())) ), DATEADD(m, 1, GetDate()))),101) as RentDueDate,  (select DATEDIFF(month,  DateAdded, GetDate()) *  RentDueEaMon  from tenants where Email = @Email) - SUM(AmountPaid )  as RentDue   from tenants ten  inner join  RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @email";
+            var SqlStr = @"select CONVERT(varchar(10), CONVERT(DATE, DATEADD(d, - ( DAY(DATEADD(m, 1, GETDATE())) ), DATEADD(m, 1, GetDate()))), 101) as RentDueDate, ( select case when DATEDIFF(month, DateAdded, GetDate()) = 0 then 1 else DATEDIFF(month, DateAdded, GetDate()) end * RentDueEaMon from tenants where Email = @Email ) - SUM(isnull(AmountPaid, 0) ) as RentDue from tenants ten left join RentHistory rent on ten.tenGuid = rent.TenGuid where ten.Email = @email";
             var connStr = _config["ConnectionStrings:DefaultConnection"];
             List<WhenRentDue> whenRentDues = new List<WhenRentDue>();
             using (IDbConnection db = new SqlConnection(connStr))

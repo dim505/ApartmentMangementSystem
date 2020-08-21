@@ -9,7 +9,7 @@ namespace WebApplication3.Modal
     {
 
         public string RentDueDate { get; set; }
-        public string RentDue { get; set; }
+        public float RentDue { get; set; }
 
     }
 }

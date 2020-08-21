@@ -57,7 +57,7 @@ export default class PaymentHistCard extends Component {
             Payment History
           </Typography>
 
-          {this.props.results.length <= 0 ? (
+          {this.state.PaymentInfo.length <= 0 ? (
             <p>No payment history found. Please make a payment.</p>
           ) : (
             <div>

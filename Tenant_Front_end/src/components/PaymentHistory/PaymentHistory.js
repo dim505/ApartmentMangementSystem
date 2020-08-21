@@ -81,14 +81,18 @@ export default class PaymentHistory extends Component {
             </Grid>
           ) : (
             <Typography align="center" variant="h4" gutterBottom>
-              You have a credit of
-              <span className="GreenText">
-                {" "}
-                ${this.props.PaymentInfoCard[0].rentDue.replace(
-                  "-",
-                  ""
-                )}.00{" "}
-              </span>
+              <div>
+                <h1>
+                  {" "}
+                  <span className="GreenText">
+                    {this.props.PaymentInfoCard[0].rentDue === 0
+                      ? "$0.00"
+                      : this.props.PaymentInfoCard[0].rentDue.replace("-", "") +
+                        ".00"}
+                  </span>{" "}
+                </h1>
+                <p> Yay! No rent is Due!</p>
+              </div>
             </Typography>
           )}
 

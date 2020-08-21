@@ -94,7 +94,7 @@ namespace AMSBackEnd.Controllers.TenantFrontEnd.Home
                     new { email = new DbString { Value = Useremail, IsFixedLength = false, IsAnsi = true } }
                     ).ToList();
 
-                if (updateTenAuth0ID.Count > 0)
+                if (updateTenAuth0ID.Count == 0)
                 {
                     var SqlStr = @"Update tenants 
                                 set TenAuth0ID =  @TenAuth0ID

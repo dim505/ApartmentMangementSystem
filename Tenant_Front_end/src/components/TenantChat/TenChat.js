@@ -38,8 +38,6 @@ export default class TenChat extends Component {
     }
   }
 
- 
-
   componentWillUnmount() {
     window.removeEventListener("scroll", this.HandleScroll);
   }
@@ -196,7 +194,7 @@ export default class TenChat extends Component {
           fullScreenMode={false}
           showTimeStamp={false}
           title="Welcome!"
-          subtitle="Please type here to Chat with your landlord!"
+          subtitle="Please type here to chat with your landlord!"
         />
 
         <SnackBar

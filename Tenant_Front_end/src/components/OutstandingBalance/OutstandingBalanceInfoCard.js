@@ -48,9 +48,8 @@ export default class OutstandingBalanceInfoCard extends Component {
       OpenNoti: false,
     });
   };
-  
-  
-	//returns the a different payment info depending on the balance of rent paid 
+
+  //returns the a different payment info depending on the balance of rent paid
   RenderPaymentInfo() {
     if (this.props.PaymentInfoCard.length !== 0) {
       if (this.props.PaymentInfoCard[0].rentDue > 0) {
@@ -69,21 +68,24 @@ export default class OutstandingBalanceInfoCard extends Component {
             </Button>
           </div>
         );
+      } else if (this.props.PaymentInfoCard.length === 0) {
+        return <p> No Rent Information found</p>;
       } else {
         return (
           <div>
             <h1>
               {" "}
               <span className="GreenText">
-                ${this.props.PaymentInfoCard[0].rentDue.replace("-", "")}.00
+                {this.props.PaymentInfoCard[0].rentDue === 0
+                  ? "$0.00"
+                  : this.props.PaymentInfoCard[0].rentDue.replace("-", "") +
+                    ".00"}
               </span>{" "}
             </h1>
-            <p> Yay! You Have credit on your account!</p>
+            <p> Yay! No rent is Due!</p>
           </div>
         );
       }
-    } else if (this.props.PaymentInfoCard.length === 0) {
-      return <p> No Rent Information found</p>;
     }
   }
   render() {

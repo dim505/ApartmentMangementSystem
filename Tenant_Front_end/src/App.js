@@ -90,7 +90,7 @@ class App extends Component {
     //makes api call and sets state
 
     const BearerToken = await this.props.auth.getTokenSilently();
-    var results = Axios.get(
+    /*  var results = Axios.get(
       `${process.env.REACT_APP_BackEndUrl}/api/TenHome/GetAccountDetails`,
       {
         headers: { Authorization: `bearer ${BearerToken}` },
@@ -99,7 +99,7 @@ class App extends Component {
       this.setState({
         results: results.data,
       })
-    );
+    );*/
     //makes 2nd api call to get profile photos
     var results2 = Axios.get(
       `${process.env.REACT_APP_BackEndUrl}/api/TenHome/GetProfilePhoto`,
